@@ -1,0 +1,8 @@
+# Internal planning docs (not part of the public repo)
+ucoz_skills_distribution_plan*.md
+ucoz_skills_catalogs*.csv
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp

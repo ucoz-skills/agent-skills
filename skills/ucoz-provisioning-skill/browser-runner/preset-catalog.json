@@ -1,0 +1,106 @@
+{
+  "version": 2,
+  "source": "Cards from the 'Site module set' step (/createsite). data-preset-id values are live from uCoz DOM (a.preset-btn.fancy-modal[data-preset-id]). Preset title/substr/aliases are Russian labels from the live uCoz UI — do not translate. Update `presets` when uCoz changes the interface.",
+  "presets": [
+    {
+      "title": "Интернет-магазин",
+      "substr": "Интернет-магазин",
+      "presetId": "eshop",
+      "aliases": [
+        "магазин",
+        "shop",
+        "интернет магазин",
+        "eshop"
+      ]
+    },
+    {
+      "title": "Бот-магазин в Telegram",
+      "substr": "Бот-магазин",
+      "presetId": "tgshop",
+      "aliases": [
+        "telegram",
+        "телеграм",
+        "бот магазин",
+        "tgshop",
+        "бот-магазин в telegram"
+      ]
+    },
+    {
+      "title": "Подписки и тарифы",
+      "substr": "Подписки",
+      "presetId": "subscriptions",
+      "aliases": [
+        "подписки",
+        "subscriptions",
+        "тарифы",
+        "подписки и тарифы"
+      ]
+    },
+    {
+      "title": "Лендинг",
+      "substr": "Лендинг",
+      "presetId": "landing",
+      "aliases": [
+        "лендинг",
+        "landing"
+      ]
+    },
+    {
+      "title": "Новости и статьи",
+      "substr": "Новости",
+      "presetId": "news",
+      "aliases": [
+        "новости",
+        "статьи",
+        "новости и статьи",
+        "новости/статьи",
+        "news"
+      ]
+    },
+    {
+      "title": "Портфолио",
+      "substr": "Портфолио",
+      "presetId": "portfolio",
+      "aliases": [
+        "портфолио",
+        "portfolio"
+      ]
+    },
+    {
+      "title": "Образовательный",
+      "substr": "Образовательный",
+      "presetId": "education",
+      "aliases": [
+        "образовательный",
+        "образование",
+        "школа",
+        "детский сад",
+        "education"
+      ]
+    },
+    {
+      "title": "Выбрать подходящий",
+      "substr": "Выбрать подходящий",
+      "presetId": "other",
+      "aliases": [
+        "выбрать подходящий",
+        "ручной выбор",
+        "другое",
+        "other",
+        "своё"
+      ]
+    },
+    {
+      "title": "Все модули",
+      "substr": "Все модули",
+      "presetId": "all",
+      "aliases": [
+        "все модули",
+        "all",
+        "все"
+      ]
+    }
+  ],
+  "notesForAgents": "Use live uCoz UI as source of truth. Do not choose Landing or any preset silently. Ask the user to choose from visible cards.",
+  "sourceOfTruth": "live uCoz UI; this catalog is advisory/fallback only"
+}

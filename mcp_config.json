@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "ucoz-mcp": {
+      "command": "npx",
+      "args": ["-y", "ucoz-mcp@latest"],
+      "env": {
+        "UCOZ_API_TOKEN": "${UCOZ_API_TOKEN}",
+        "UCOZ_SITE_URL": "${UCOZ_SITE_URL}",
+        "UCOZ_FTP_HOST": "${UCOZ_FTP_HOST}",
+        "UCOZ_FTP_USER": "${UCOZ_FTP_USER}",
+        "UCOZ_FTP_PASS": "${UCOZ_FTP_PASS}"
+      }
+    }
+  }
+}

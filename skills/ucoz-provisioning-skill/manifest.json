@@ -1,0 +1,89 @@
+{
+  "name": "ucoz-provisioning-skill",
+  "version": "1.1",
+  "description": "Portable package to prepare uCoz sites for work via the official ucoz-mcp.",
+  "entrypoint": "SKILL.md",
+  "license": "MIT",
+  "compatible_agents": [
+    "Cursor",
+    "Codex",
+    "Claude Desktop",
+    "Claude Code",
+    "generic MCP clients"
+  ],
+  "required_mcp_servers": [
+    {
+      "name": "ucoz-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "ucoz-mcp@latest"
+      ],
+      "required_env": [
+        "UCOZ_API_TOKEN",
+        "UCOZ_SITE_URL",
+        "UCOZ_FTP_HOST",
+        "UCOZ_FTP_USER",
+        "UCOZ_FTP_PASS"
+      ]
+    }
+  ],
+  "capabilities": [
+    "new_site_provisioning",
+    "existing_site_connection",
+    "domain_zone_selection_from_live_ui",
+    "site_configuration_card_selection_from_live_ui",
+    "module_activation_planning",
+    "uapi_key_creation_or_reuse",
+    "ftp_setup_or_reuse",
+    "mcp_config_assembly",
+    "readiness_verification",
+    "downstream_skill_handoff"
+  ],
+  "non_goals": [
+    "site_design",
+    "page_content_generation",
+    "business-specific template editing",
+    "module-specific content workflows"
+  ],
+  "downstream_skills": [
+    {
+      "name": "ucoz-landing-skill",
+      "trigger": "Build or edit a landing page, homepage promo page, lead form, menu, or SEO on the homepage",
+      "requires_modules": ["mail"],
+      "handoff_after": "MCP credentials configured and verified"
+    }
+  ],
+  "security": {
+    "secrets_in_package": false,
+    "redact_user_facing_secrets": true,
+    "raw_secret_output_requires_explicit_opt_in": true,
+    "excluded_from_public_package": [
+      ".env",
+      ".env.local",
+      "node_modules/",
+      "browser-runner/out/",
+      "browser auth state",
+      "cookies",
+      "raw uAPI tokens",
+      "FTP passwords",
+      "account passwords"
+    ]
+  },
+  "runtime_requirements": {
+    "browser_automation": "required for site provisioning via the uCoz web interface",
+    "recommended": [
+      "node >= 18",
+      "playwright"
+    ],
+    "alternatives": [
+      "any browser automation layer with DOM inspection, clicks, form submission, and page state reading"
+    ],
+    "note": "ucoz-mcp is required for MCP operations after credentials are prepared; use browser-runner (Playwright) from this package for initial web provisioning. FTP is configured via MCP ftp_tool."
+  },
+  "browser_runner": {
+    "path": "browser-runner/ucoz-provision.cjs",
+    "legacy_shim": "browser-runner/provision-new-site.mjs",
+    "env_reference": "references/browser-runner.md"
+  }
+}

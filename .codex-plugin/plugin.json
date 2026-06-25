@@ -1,0 +1,47 @@
+{
+  "name": "ucoz",
+  "version": "1.4.0",
+  "description": "Generate uCoz landing pages, provision new or existing sites, and manage templates, menus, FTP files, and mail forms. Includes landing and provisioning skills plus ucoz-mcp server.",
+  "author": {
+    "name": "uCoz",
+    "url": "https://www.ucoz.com"
+  },
+  "homepage": "https://www.ucoz.com/ai/skills",
+  "repository": "https://github.com/ucoz-skills/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "ucoz",
+    "ucoz-mcp",
+    "mcp",
+    "landing-page",
+    "cms",
+    "website-builder"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "uCoz",
+    "shortDescription": "Build uCoz landing pages and manage your site from Codex",
+    "longDescription": "Generate uCoz landing pages and provision new or existing sites with AI. Includes the Landing skill for hero sections, lead forms, SEO, and menus; the Provisioning skill for site setup, uAPI, FTP, and MCP config; plus ucoz-mcp for templates, FTP uploads, mail forms, and site modules.",
+    "developerName": "uCoz",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://www.ucoz.com/ai/skills",
+    "privacyPolicyURL": "https://www.ucoz.com/privacy/",
+    "termsOfServiceURL": "https://www.ucoz.com/terms/",
+    "defaultPrompt": [
+      "Build a landing page for my uCoz site with a hero section and lead form",
+      "Create a new uCoz site and connect MCP with uAPI and FTP",
+      "Provision my existing uCoz site for MCP integration",
+      "Update my uCoz homepage as a promo landing page with SEO and mobile menu"
+    ],
+    "brandColor": "#7B2FE3",
+    "composerIcon": "./assets/logo.svg",
+    "logo": "./assets/logo.svg",
+    "screenshots": []
+  }
+}

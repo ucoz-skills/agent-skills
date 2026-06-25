@@ -1,0 +1,19 @@
+{
+  "name": "ucoz-site-provision-helper-portable-runner",
+  "private": true,
+  "description": "Portable browser runner for uCoz site provisioning helper.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "provision": "node ucoz-provision.cjs",
+    "provision:legacy-shim": "node provision-new-site.mjs",
+    "install-browser": "playwright install chromium"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "playwright": "^1.51.0"
+  },
+  "version": "1.1"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "ucoz",
+  "description": "Generate uCoz landing pages and provision new or existing sites via MCP. Includes landing and provisioning skills plus ucoz-mcp.",
+  "version": "1.4.0",
+  "author": {
+    "name": "uCoz",
+    "url": "https://www.ucoz.com"
+  },
+  "homepage": "https://www.ucoz.com/ai/skills",
+  "repository": "https://github.com/ucoz-skills/agent-skills",
+  "license": "MIT",
+  "keywords": ["ucoz", "ucoz-mcp", "mcp", "landing-page", "cms", "website-builder"],
+  "mcpServers": "./.mcp.json",
+  "skills": [
+    "./skills/ucoz-landing-skill",
+    "./skills/ucoz-provisioning-skill"
+  ],
+  "logo": "assets/logo.svg"
+}

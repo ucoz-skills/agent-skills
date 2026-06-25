@@ -1,0 +1,12 @@
+{
+  "name": "ucoz",
+  "description": "uCoz agent skills and MCP server. Landing pages, site provisioning, templates, menus, FTP, and mail forms.",
+  "version": "1.4.0",
+  "author": {
+    "name": "uCoz",
+    "url": "https://www.ucoz.com"
+  },
+  "repository": "https://github.com/ucoz-skills/agent-skills",
+  "license": "MIT",
+  "keywords": ["ucoz", "ucoz-mcp", "mcp", "landing-page", "cms"]
+}
