@@ -1,0 +1,14 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "uCoz",
+      "description": "Official uCoz agent skills for landing pages, site provisioning, and MCP setup.",
+      "skills": [
+        "ucoz-landing-skill",
+        "ucoz-provisioning-skill"
+      ]
+    }
+  ]
+}

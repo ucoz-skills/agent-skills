@@ -68,6 +68,33 @@ Validate a local clone before installing:
 agy plugin validate /path/to/agent-skills
 ```
 
+### Hermes (Skills Hub)
+
+[Hermes Agent](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills) discovers skills from GitHub taps and the [skills.sh](https://skills.sh) index.
+
+**Subscribe to the repo (custom tap):**
+
+```bash
+hermes skills tap add ucoz-skills/agent-skills
+```
+
+**Install skills:**
+
+```bash
+hermes skills install ucoz-skills/agent-skills/skills/ucoz-landing-skill
+hermes skills install ucoz-skills/agent-skills/skills/ucoz-provisioning-skill
+```
+
+**Skills CLI** (also registers the repo with skills.sh telemetry for catalog indexing):
+
+```bash
+npx skills add ucoz-skills/agent-skills
+```
+
+After the first install, skills appear on [skills.sh/ucoz-skills/agent-skills](https://skills.sh/ucoz-skills/agent-skills) and in the Hermes Skills Hub index (refreshed periodically). Updates: push to GitHub; users run `hermes skills check` and `hermes skills update`.
+
+> Hermes uses the GitHub API to browse taps. Set `GITHUB_TOKEN` in `~/.hermes/.env` (or run `gh auth login`) if you hit API rate limits.
+
 ### Claude Code (marketplace)
 
 ```bash

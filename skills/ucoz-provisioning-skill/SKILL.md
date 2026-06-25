@@ -14,6 +14,8 @@ requires:
   - official ucoz-mcp for MCP operations
 metadata:
   tags: [ucoz, mcp, provisioning, helper, onboarding, portable-skill]
+  hermes:
+    tags: [ucoz, mcp, provisioning, onboarding, website-builder]
   compatible_agents: [Hermes, Claude Desktop, Cursor, Codex, OpenAI Agents, OpenWebUI, generic MCP clients]
   required_mcp_servers: [ucoz-mcp]
   downstream_skills: []

@@ -12,6 +12,9 @@ description: >
   If FTP credentials are missing — obtain/create via `ftp_tool` (`ftp_password_*`).
   Final step: confirm indexing preference and, if agreed, remove quarantine (`quarantine_unlock`).
   Do not ask the user to enable a custom homepage template in the control panel.
+metadata:
+  hermes:
+    tags: [ucoz, mcp, landing-page, cms, website-builder]
 ---
 
 # uCoz Landing Skill
