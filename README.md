@@ -8,6 +8,9 @@ Official [Agent Skills](https://agentskills.io) for AI agents working with uCoz:
 
 Each skill ships with the [ucoz-mcp](https://www.npmjs.com/package/ucoz-mcp) server — install the plugin once and get both instructions and tools.
 
+> **Security:** Credentials are used only with the official uCoz platform.
+> See [SECURITY.md](SECURITY.md) for the full security policy.
+
 Website catalog: [ucoz.com/ai/skills](https://www.ucoz.com/ai/skills)  
 MCP documentation: [api.ucoz.net/mcp](https://api.ucoz.net/en/mcp.html)
 

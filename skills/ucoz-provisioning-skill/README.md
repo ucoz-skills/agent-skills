@@ -101,7 +101,7 @@ UCOZ_FTP_PASS
 
 1. Connect or load this skill package in your agent.
 2. Run the flow from `SKILL.md`.
-3. Install Playwright dependencies: `cd browser-runner && npm install && npx playwright install chromium`.
+3. Install Playwright dependencies once on your machine (local setup, not at agent runtime): `cd browser-runner && npm install && npx playwright install chromium`.
 4. Before running, set credentials in one of two ways:
    - fill local `browser-runner/.env` on your machine (not included in the public archive) (`UCOZ_EMAIL`, `UCOZ_PASSWORD`, etc.);
    - or send data to the agent so it fills `.env` for you.
@@ -138,4 +138,4 @@ Add task skills there: shop, blog, users, forms, etc. This helper should finish 
 
 ## Public package hygiene
 
-The public ZIP excludes `node_modules/`, `.env`, `.env.local`, `browser-runner/out/`, browser auth state, cookies, raw uAPI tokens, FTP passwords, account passwords, and live provisioning results. Install dependencies locally with `npm install`.
+The public ZIP excludes `node_modules/`, `.env`, `.env.local`, `browser-runner/out/`, browser auth state, cookies, raw uAPI tokens, FTP passwords, account passwords, and live provisioning results. Install dependencies locally with `npm install` (one-time setup before first use).

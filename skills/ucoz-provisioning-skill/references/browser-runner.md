@@ -18,7 +18,11 @@ skills/ucoz-provisioning-skill/browser-runner/
 
 Selectors and navigation align with `references/NEW_SITE_WORKFLOW.md`. When uCoz markup changes, update **`ucoz-provision.cjs`**.
 
-## Installation (one-time)
+## Installation (one-time, local setup only)
+
+> **Note:** These commands install dependencies locally on the developer's
+> machine. No packages are installed at agent runtime — the runner is
+> pre-installed before use.
 
 From the `browser-runner/` directory:
 
@@ -39,7 +43,7 @@ Quick start: copy `browser-runner/.env.example` to `browser-runner/.env` and fil
 | `UCOZ_SITE_ADDRESS` | yes* | Full address like `prefix.zone`, e.g. `cursor-agent-007.ucoz.org` |
 | `UCOZ_SITE_PREFIX` | yes* | If `UCOZ_SITE_ADDRESS` is not set — prefix only |
 | `UCOZ_DOMAIN_SUFFIX` | yes* | If `UCOZ_SITE_ADDRESS` is not set — zone suffix without a leading dot (`ucoz.org`) |
-| `UCOZ_ORIGIN` | no | Default `https://www.ucoz.ru` |
+| `UCOZ_ORIGIN` | no | Default `https://www.ucoz.ru`. Must be one of: `https://www.ucoz.ru`, `https://www.ucoz.com`, `https://www.umi.ru` |
 | `UCOZ_PRESET_SUBSTR` | no | Substring for the preset card; no safe default; chosen by the user from the live UI. Validated against `preset-catalog.json` before the browser starts (unless disabled) |
 | `UCOZ_PRESET_STRICT` | no | Default `1` — unknown themes exit the runner with a clear list from the catalog. `0` / `false` / `no` — skip validation (stale catalog or new uCoz card) |
 | `UCOZ_SITE_TITLE` | no | Site name field in the preset modal; default = prefix |

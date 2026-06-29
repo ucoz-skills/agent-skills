@@ -2,6 +2,14 @@
 /**
  * uCoz provisioning runner for Hermes skill `ucoz-site-provision-helper`.
  * Safe defaults: MODE=discover, no silent domain/card selection, redacted output.
+ *
+ * SECURITY NOTE:
+ * Credentials (UCOZ_EMAIL, UCOZ_PASSWORD) are passed ONLY to the official
+ * uCoz control panel on origins listed in UCOZ_ALLOWED_ORIGINS below.
+ * No credentials are forwarded to third-party services.
+ * Output secrets are redacted by default (OUTPUT_SECRETS=false).
+ * All fetch() calls go to /panel/ on the same authenticated browser session
+ * (same-origin, credentials:'include') — not to external URLs.
  */
 const fs = require('fs');
 const path = require('path');
@@ -36,7 +44,22 @@ const FORCE_FTP_OVERWRITE = env.FORCE_FTP_OVERWRITE === 'true';
 const OUTPUT_SECRETS = env.OUTPUT_SECRETS === 'true';
 const HEADLESS = !(env.HEADLESS === 'false' || env.UCOZ_HEADLESS === '0' || env.UCOZ_HEADLESS === 'false');
 const SLOW_MO = Number(env.UCOZ_SLOW_MO_MS || env.SLOW_MO_MS || 0);
-const UCOZ_ORIGIN = (env.UCOZ_ORIGIN || 'https://www.ucoz.ru').replace(/\/$/, '');
+const UCOZ_ALLOWED_ORIGINS = [
+  'https://www.ucoz.ru',
+  'https://www.ucoz.com',
+  'https://www.umi.ru',
+];
+const UCOZ_ORIGIN = (() => {
+  const o = (env.UCOZ_ORIGIN || 'https://www.ucoz.ru').replace(/\/$/, '');
+  if (!UCOZ_ALLOWED_ORIGINS.includes(o)) {
+    console.error(JSON.stringify({
+      ok: false,
+      error: `UCOZ_ORIGIN must be one of: ${UCOZ_ALLOWED_ORIGINS.join(', ')}. Got: ${o}`,
+    }));
+    process.exit(1);
+  }
+  return o;
+})();
 const OUT_DIR = path.join(__dirname, 'out');
 
 function fail(message, extra = {}) {

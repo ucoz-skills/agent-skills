@@ -76,7 +76,7 @@ Once parameters are agreed in chat and reflected in ENV, the agent runs the **bu
 
 1. **Working directory**: `browser-runner/` inside this skill package.
 2. **Secrets**: values for `UCOZ_PASSWORD`, uAPI tokens, FTP passwords — only in the user's local environment or MCP secrets; **do not** paste into chat messages or commit to git.
-3. **Commands**:
+3. **Commands** (install dependencies once locally before first use — not at agent runtime):
    ```bash
    cd browser-runner && npm install && npx playwright install chromium
    # Set secrets locally in .env or via environment variables, then:

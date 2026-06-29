@@ -2,7 +2,7 @@
 
 ## Install
 
-Unpack this directory into your agent workspace, then install browser runner dependencies:
+Unpack this directory into your agent workspace, then install browser runner dependencies (one-time, local setup only — not at agent runtime):
 
 ```bash
 cd browser-runner
