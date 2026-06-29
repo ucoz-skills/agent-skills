@@ -19,8 +19,3 @@ official uCoz platform (ucoz.ru / ucoz.com ).
 
 The browser runner installs `playwright` and `dotenv` as npm dependencies
 at setup time (one-time, local only). This is intentional and documented.
-
-## Reporting a vulnerability
-
-Please open a private security advisory at:
-https://github.com/ucoz-skills/agent-skills/security/advisories/new
