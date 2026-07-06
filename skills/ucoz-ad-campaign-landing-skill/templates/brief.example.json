@@ -1,0 +1,29 @@
+{
+  "niche": "Custom songs",
+  "service": "Original song turnkey",
+  "business_description": "3-day turnaround. Lyrics based on client story. Recording + instrumental. From $200.",
+  "keywords": [
+    "wedding song as a gift",
+    "birthday song as a gift",
+    "order a custom song"
+  ],
+  "wordstat_seeds": [
+    "wedding song as a gift",
+    "birthday song as a gift",
+    "order a custom song"
+  ],
+  "region_ids": null,
+  "geo": "New York",
+  "devices": "all",
+  "base_url": "https://example.ucoz.ru",
+  "utm_source": "google",
+  "utm_campaign": null,
+  "ads_csv": null,
+  "folder_id": null,
+  "max_segments": 5,
+  "wordstat_num_phrases": 20,
+  "publish_to_ucoz": false,
+  "need_form": false,
+  "yandex_direct_access": "full",
+  "landing_scale": "multi"
+}

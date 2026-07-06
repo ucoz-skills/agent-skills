@@ -4,10 +4,12 @@
   "groupings": [
     {
       "title": "uCoz",
-      "description": "Official uCoz agent skills for landing pages, site provisioning, and MCP setup.",
+      "description": "Official uCoz agent skills for landing pages, site provisioning, ad campaigns, and shop optimization.",
       "skills": [
         "ucoz-landing-skill",
-        "ucoz-provisioning-skill"
+        "ucoz-provisioning-skill",
+        "ucoz-ad-campaign-landing-skill",
+        "ucoz-shop-optimizer-skill"
       ]
     }
   ]

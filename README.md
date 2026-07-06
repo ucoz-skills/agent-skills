@@ -20,6 +20,8 @@ MCP documentation: [api.ucoz.net/mcp](https://api.ucoz.net/en/mcp.html)
 |-------|-------------|---------|
 | [ucoz-landing-skill](skills/ucoz-landing-skill/SKILL.md) | Generate and edit landing pages via MCP | 1.3 |
 | [ucoz-provisioning-skill](skills/ucoz-provisioning-skill/SKILL.md) | Create or connect a uCoz site and configure MCP (uAPI, FTP, modules). Requires Playwright — see [browser-runner](skills/ucoz-provisioning-skill/browser-runner/) | 1.1 |
+| [ucoz-ad-campaign-landing-skill](skills/ucoz-ad-campaign-landing-skill/SKILL.md) | Ad creative → segment landing pages, UTM, Yandex Direct / Google Ads push | 1.0 |
+| [ucoz-shop-optimizer-skill](skills/ucoz-shop-optimizer-skill/SKILL.md) | Audit and improve uCoz Online Shop via MCP and uAPI | 0.6 |
 
 ## Installation
 

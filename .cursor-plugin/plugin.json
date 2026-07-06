@@ -1,6 +1,6 @@
 {
   "name": "ucoz",
-  "description": "Generate uCoz landing pages and provision new or existing sites via MCP. Includes landing and provisioning skills plus ucoz-mcp.",
+  "description": "Generate uCoz landing pages, ad campaign landings, shop optimization, and provision new or existing sites via MCP. Includes landing, provisioning, ad campaign and shop skills plus ucoz-mcp.",
   "version": "1.4.0",
   "author": {
     "name": "uCoz",
@@ -13,7 +13,9 @@
   "mcpServers": "./.mcp.json",
   "skills": [
     "./skills/ucoz-landing-skill",
-    "./skills/ucoz-provisioning-skill"
+    "./skills/ucoz-provisioning-skill",
+    "./skills/ucoz-ad-campaign-landing-skill",
+    "./skills/ucoz-shop-optimizer-skill"
   ],
   "logo": "assets/logo.svg"
 }
