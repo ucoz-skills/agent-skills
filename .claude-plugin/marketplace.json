@@ -8,7 +8,7 @@
       "name": "ucoz",
       "source": "./",
       "description": "uCoz agent skills and MCP server for landing pages, site setup, and more.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "strict": false
     }
   ]

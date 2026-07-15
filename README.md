@@ -4,7 +4,7 @@
 
 # uCoz Agent Skills
 
-Official [Agent Skills](https://agentskills.io) for AI agents working with uCoz: landing pages, site provisioning, ad campaigns.
+Official [Agent Skills](https://agentskills.io) for AI agents working with uCoz: landing pages, site provisioning, ad campaigns, shop optimization, and site translation.
 
 Each skill ships with the [ucoz-mcp](https://www.npmjs.com/package/ucoz-mcp) server — install the plugin once and get both instructions and tools.
 
@@ -22,6 +22,7 @@ MCP documentation: [api.ucoz.net/mcp](https://api.ucoz.net/en/mcp.html)
 | [ucoz-provisioning-skill](skills/ucoz-provisioning-skill/SKILL.md) | Create or connect a uCoz site and configure MCP (uAPI, FTP, modules). Requires Playwright — see [browser-runner](skills/ucoz-provisioning-skill/browser-runner/) | 1.1 |
 | [ucoz-ad-campaign-landing-skill](skills/ucoz-ad-campaign-landing-skill/SKILL.md) | Ad creative → segment landing pages, UTM, Yandex Direct / Google Ads push | 1.0 |
 | [ucoz-shop-optimizer-skill](skills/ucoz-shop-optimizer-skill/SKILL.md) | Audit and improve uCoz Online Shop via MCP and uAPI | 0.6 |
+| [ucoz-site-translator-skill](skills/ucoz-site-translator-skill/SKILL.md) | Translate and localize uCoz content in place or copy/migrate to another site via MCP and uAPI | 1.0 |
 
 ## Installation
 
@@ -88,6 +89,7 @@ hermes skills tap add ucoz-skills/agent-skills
 ```bash
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-landing-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-provisioning-skill
+hermes skills install ucoz-skills/agent-skills/skills/ucoz-site-translator-skill
 ```
 
 **Skills CLI** (also registers the repo with skills.sh telemetry for catalog indexing):
@@ -120,6 +122,7 @@ Install a single skill:
 ```bash
 npx skills add ucoz-skills/agent-skills --skill ucoz-landing-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-provisioning-skill
+npx skills add ucoz-skills/agent-skills --skill ucoz-site-translator-skill
 ```
 
 > Skills CLI installs instructions only. Add [`.mcp.json`](.mcp.json) to your project or IDE separately for MCP tools.
@@ -130,6 +133,7 @@ Copy a skill folder into your agent skills directory:
 
 - `skills/ucoz-landing-skill`
 - `skills/ucoz-provisioning-skill` (includes `browser-runner/` for Playwright provisioning)
+- `skills/ucoz-site-translator-skill`
 
 | Tool | Skills path |
 |------|-------------|
