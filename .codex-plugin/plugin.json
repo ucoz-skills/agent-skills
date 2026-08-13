@@ -1,7 +1,7 @@
 {
   "name": "ucoz",
-  "version": "1.5.0",
-  "description": "Generate uCoz landing pages, provision new or existing sites, translate and localize site content, and manage templates, menus, FTP files, and mail forms. Includes landing, provisioning, and translator skills plus ucoz-mcp server.",
+  "version": "1.6.0",
+  "description": "Generate uCoz landing pages, provision new or existing sites, translate and localize site content, restyle site design, and manage templates, menus, FTP files, and mail forms. Includes landing, provisioning, translator, and design editor skills plus ucoz-mcp server.",
   "author": {
     "name": "uCoz",
     "url": "https://www.ucoz.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "uCoz",
     "shortDescription": "Build uCoz landing pages and manage your site from Codex",
-    "longDescription": "Generate uCoz landing pages, provision new or existing sites, and translate or localize site content with AI. Includes the Landing skill for hero sections, lead forms, SEO, and menus; the Provisioning skill for site setup, uAPI, FTP, and MCP config; the Site Translator skill for in-place translation and cross-site migration; plus ucoz-mcp for templates, FTP uploads, mail forms, and site modules.",
+    "longDescription": "Generate uCoz landing pages, provision new or existing sites, translate or localize site content, and restyle site design with AI. Includes the Landing skill for hero sections, lead forms, SEO, and menus; the Provisioning skill for site setup, uAPI, FTP, and MCP config; the Site Translator skill for in-place translation and cross-site migration; the Design Editor skill for CSS, chrome, and module templates; plus ucoz-mcp for templates, FTP uploads, mail forms, and site modules.",
     "developerName": "uCoz",
     "category": "Coding",
     "capabilities": [
@@ -38,7 +38,8 @@
       "Create a new uCoz site and connect MCP with uAPI and FTP",
       "Provision my existing uCoz site for MCP integration",
       "Update my uCoz homepage as a promo landing page with SEO and mobile menu",
-      "Translate the latest news posts into English and keep the URLs unchanged"
+      "Translate the latest news posts into English and keep the URLs unchanged",
+      "Restyle my uCoz site: modern colors, typography, header and footer"
     ],
     "brandColor": "#7B2FE3",
     "composerIcon": "./assets/logo.svg",

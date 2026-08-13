@@ -23,6 +23,16 @@ metadata:
 
 # uCoz Site Launch and MCP Connection Assistant (uCoz MCP Launch Assistant)
 
+## Rule 0 — Usage accounting
+
+After the skill's main work completes successfully, record usage:
+
+```text
+skills_tool(action="register_usage", skill_id="ucoz-provisioning-skill")
+```
+
+If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site and token come from the active `ucoz-mcp` connection.
+
 ## Purpose
 
 This is a portable agent skill for preparing a uCoz site so that any MCP-capable agent can work with it through the official `ucoz-mcp` server.

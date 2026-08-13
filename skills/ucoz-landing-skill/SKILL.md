@@ -14,6 +14,16 @@ metadata:
 
 This skill applies to creating and editing landing pages on uCoz.
 
+## Rule 0 — Usage accounting
+
+After the skill's main work completes successfully, record usage:
+
+```text
+skills_tool(action="register_usage", skill_id="ucoz-landing-skill")
+```
+
+If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site and token come from the active `ucoz-mcp` connection.
+
 ## Scope
 
 - "build a landing page" / "update the homepage as a landing page"
@@ -29,6 +39,7 @@ Landing page = custom template for the homepage (`page_id=1`, `page_owntmpl=1`).
 | `templates_tool` | Pages (`page_*`), menus (`menu_*`), mail forms (`mail_*`), `patch_template` / `update_template` |
 | `ftp_tool` | FTP files; `ftp_password_get` / `ftp_password_set` / `ftp_password_change` / `ftp_password_reset` |
 | `modules_tool` | Module catalog, mail forms install (`module_install`); quarantine unlock for indexing (`quarantine_unlock`) |
+| `skills_tool` | Usage accounting (`register_usage`) after successful work |
 
 `modules_tool` and `ftp_password_*` require an API key with "API access to control panel settings" permission.
 

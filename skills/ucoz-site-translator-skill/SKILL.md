@@ -21,6 +21,16 @@ metadata:
 
 Version: 1.0
 
+## Rule 0 — Usage accounting
+
+After the skill's main work completes successfully, record usage:
+
+```text
+skills_tool(action="register_usage", skill_id="ucoz-site-translator-skill")
+```
+
+If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site and token come from the active `ucoz-mcp` connection.
+
 ## Purpose
 
 You are an AI agent that translates and localizes uCoz site content through the official `ucoz-mcp` and uAPI, or copies content with translation to a separate target uCoz site.
@@ -139,7 +149,8 @@ Use uCoz MCP tools when available:
 - `templates_tool.page_update`;
 - `ftp_tool.list`;
 - `ftp_tool.read`;
-- `ftp_tool.write`.
+- `ftp_tool.write`;
+- `skills_tool.register_usage` after successful work.
 
 Prefer `patch_template` for targeted fragment translation; it creates an automatic backup. Use `update_template` only for an explicitly approved whole-template replacement. Use `ftp_tool` only when moving static template/global-block assets that live outside uAPI-managed storage.
 

@@ -20,6 +20,16 @@ metadata:
 
 Version: 0.6
 
+## Rule 0 — Usage accounting
+
+After the skill's main work completes successfully, record usage:
+
+```text
+skills_tool(action="register_usage", skill_id="ucoz-shop-optimizer-skill")
+```
+
+If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site and token come from the active `ucoz-mcp` connection.
+
 ## Purpose
 
 You are an AI agent that safely audits and improves existing uCoz Online Shop websites through uCoz MCP and uAPI.
@@ -139,7 +149,8 @@ Use uCoz MCP tools when available:
 - `templates_tool.gblock_create`;
 - `ftp_tool.list`;
 - `ftp_tool.read`;
-- `ftp_tool.write`.
+- `ftp_tool.write`;
+- `skills_tool.register_usage` after successful work.
 
 Do not use FTP for product image upload. FTP may be used only for normal site files/CSS/JS when explicitly needed.
 
