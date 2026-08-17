@@ -1,7 +1,7 @@
 {
   "name": "ucoz",
-  "version": "1.6.0",
-  "description": "Generate uCoz landing pages, provision new or existing sites, translate and localize site content, restyle site design, and manage templates, menus, FTP files, and mail forms. Includes landing, provisioning, translator, and design editor skills plus ucoz-mcp server.",
+  "version": "1.7.0",
+  "description": "Generate uCoz landing pages, provision new or existing sites, translate and localize site content, restyle site design, create original site templates, and manage templates, menus, FTP files, and mail forms. Includes landing, provisioning, translator, design editor, and template creator skills plus ucoz-mcp server.",
   "author": {
     "name": "uCoz",
     "url": "https://www.ucoz.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "uCoz",
     "shortDescription": "Build uCoz landing pages and manage your site from Codex",
-    "longDescription": "Generate uCoz landing pages, provision new or existing sites, translate or localize site content, and restyle site design with AI. Includes the Landing skill for hero sections, lead forms, SEO, and menus; the Provisioning skill for site setup, uAPI, FTP, and MCP config; the Site Translator skill for in-place translation and cross-site migration; the Design Editor skill for CSS, chrome, and module templates; plus ucoz-mcp for templates, FTP uploads, mail forms, and site modules.",
+    "longDescription": "Generate uCoz landing pages, provision new or existing sites, translate or localize site content, restyle site design, and create original site templates with AI. Includes the Landing skill for hero sections, lead forms, SEO, and menus; the Provisioning skill for site setup, uAPI, FTP, and MCP config; the Site Translator skill for in-place translation and cross-site migration; the Design Editor skill for CSS, chrome, and module templates; the Template Creator skill for site-wide frameworks via tmaker; plus ucoz-mcp for templates, FTP uploads, mail forms, and site modules.",
     "developerName": "uCoz",
     "category": "Coding",
     "capabilities": [
@@ -39,7 +39,8 @@
       "Provision my existing uCoz site for MCP integration",
       "Update my uCoz homepage as a promo landing page with SEO and mobile menu",
       "Translate the latest news posts into English and keep the URLs unchanged",
-      "Restyle my uCoz site: modern colors, typography, header and footer"
+      "Restyle my uCoz site: modern colors, typography, header and footer",
+      "Create an original uCoz site template from scratch and publish it site-wide"
     ],
     "brandColor": "#7B2FE3",
     "composerIcon": "./assets/logo.svg",

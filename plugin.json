@@ -1,7 +1,7 @@
 {
   "name": "ucoz",
-  "description": "uCoz agent skills and MCP server. Landing pages, site provisioning, translation, design restyling, templates, menus, FTP, and mail forms.",
-  "version": "1.6.0",
+  "description": "uCoz agent skills and MCP server. Landing pages, site provisioning, translation, design restyling, original templates, menus, FTP, and mail forms.",
+  "version": "1.7.0",
   "author": {
     "name": "uCoz",
     "url": "https://www.ucoz.com"

@@ -4,7 +4,7 @@
 
 # uCoz Agent Skills
 
-Official [Agent Skills](https://agentskills.io) for AI agents working with uCoz: landing pages, site provisioning, ad campaigns, shop optimization, site translation, and design restyling.
+Official [Agent Skills](https://agentskills.io) for AI agents working with uCoz: landing pages, site provisioning, ad campaigns, shop optimization, site translation, design restyling, and original site templates.
 
 Each skill ships with the [ucoz-mcp](https://www.npmjs.com/package/ucoz-mcp) server — install the plugin once and get both instructions and tools.
 
@@ -24,6 +24,7 @@ MCP documentation: [api.ucoz.net/mcp](https://api.ucoz.net/en/mcp.html)
 | [ucoz-shop-optimizer-skill](skills/ucoz-shop-optimizer-skill/SKILL.md) | Audit and improve uCoz Online Shop via MCP and uAPI | 0.6 |
 | [ucoz-site-translator-skill](skills/ucoz-site-translator-skill/SKILL.md) | Translate and localize uCoz content in place or copy/migrate to another site via MCP and uAPI | 1.0 |
 | [ucoz-design-editor-skill](skills/ucoz-design-editor-skill/SKILL.md) | Redesign and restyle a uCoz site via MCP: CSS, chrome, global blocks, menus, and module templates | 1.0 |
+| [ucoz-template-creator-skill](skills/ucoz-template-creator-skill/SKILL.md) | Create an original site-wide uCoz template via MCP: framework, CSS, modules, informers, rating, and custom Pages | 1.0 |
 
 ## Installation
 
@@ -92,6 +93,7 @@ hermes skills install ucoz-skills/agent-skills/skills/ucoz-landing-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-provisioning-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-site-translator-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-design-editor-skill
+hermes skills install ucoz-skills/agent-skills/skills/ucoz-template-creator-skill
 ```
 
 **Skills CLI** (also registers the repo with skills.sh telemetry for catalog indexing):
@@ -126,6 +128,7 @@ npx skills add ucoz-skills/agent-skills --skill ucoz-landing-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-provisioning-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-site-translator-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-design-editor-skill
+npx skills add ucoz-skills/agent-skills --skill ucoz-template-creator-skill
 ```
 
 > Skills CLI installs instructions only. Add [`.mcp.json`](.mcp.json) to your project or IDE separately for MCP tools.
@@ -138,6 +141,7 @@ Copy a skill folder into your agent skills directory:
 - `skills/ucoz-provisioning-skill` (includes `browser-runner/` for Playwright provisioning)
 - `skills/ucoz-site-translator-skill`
 - `skills/ucoz-design-editor-skill`
+- `skills/ucoz-template-creator-skill`
 
 | Tool | Skills path |
 |------|-------------|
@@ -192,6 +196,7 @@ Example MCP config (also in [`.mcp.json`](.mcp.json) and [`mcp_config.json`](mcp
 | `templates_tool` | Page templates, menus, mail forms, backups |
 | `ftp_tool` | Upload CSS/JS/images, manage site files |
 | `modules_tool` | Install modules, quarantine/indexing |
+| `tmaker_tool` | Template frameworks: generate, validate, and publish site-wide designs |
 
 ## License
 

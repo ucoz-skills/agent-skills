@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="[LANG]" data-theme="gallery-atelier">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?if($SEO_TITLE$)?>$SEO_TITLE$<?else?>[TITLE]<?endif?></title><?if($SEO_DESCRIPTION$)?><meta name="description" content="$SEO_DESCRIPTION$"><?endif?><?if($SEO_KEYWORDS$)?><meta name="keywords" content="$SEO_KEYWORDS$"><?endif?><link type="text/css" rel="stylesheet" href="/_st/my.css?v=1"></head>
+<body class="module-$MODULE_ID$ page-$PAGE_ID$">
+  <!-- <header> -->
+  <!-- <global_icons> -->
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="ga-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="ga-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="ga-camera" viewBox="0 0 24 24"><path d="M4 8h4l2-3h4l2 3h4v11H4z"/><circle cx="12" cy="13" r="4"/></symbol>
+    <symbol id="ga-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+    <symbol id="ga-comment" viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4Z"/></symbol>
+    <symbol id="ga-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+  </svg>
+  <!-- </global_icons> -->
+  <header class="ga-head"><a class="ga-brand" href="$HOME_PAGE_LINK$">$SITE_NAME$<small>Visual archive</small></a><input class="ga-nav-state" id="ga-nav-state" type="checkbox"><label class="ga-nav-open" for="ga-nav-state" aria-label="Открыть меню"><svg viewBox="0 0 24 24"><use href="#ga-menu"/></svg></label><div class="ga-drawer"><label class="ga-nav-close" for="ga-nav-state" aria-label="Закрыть меню"><svg viewBox="0 0 24 24"><use href="#ga-close"/></svg></label><nav><!-- <sblock_nmenu> --><?if($NMENU_1$)?><!-- <bc> -->$NMENU_1$<!-- </bc> --><?endif?><!-- </sblock_nmenu> --></nav><div class="ga-account">$LOG_FORM$</div></div><label class="ga-scrim" for="ga-nav-state" aria-hidden="true"></label></header>
+  <!-- </header> -->
+  <!-- <middle> --><main class="ga-main"><header class="ga-intro"><p>Selected works / $YEAR$</p><h1>[TITLE]</h1></header><section class="ga-content">[BODY]</section><aside class="ga-index"><span>Current selection</span>$MYINF_1$</aside></main><!-- </middle> -->
+  <!-- <container1> --><aside class="ga-panel"><span>Explore</span><nav>$NMENU_1$</nav></aside><!-- </container1> -->
+  <!-- <container2> --><aside class="ga-panel ga-panel--dark"><span>Collector access</span>$LOG_FORM$</aside><!-- </container2> -->
+  <!-- <footer> --><footer class="ga-foot"><strong>$SITE_NAME$</strong><p>Images, notes and visual fieldwork.</p><nav>$NMENU_1$</nav><span>$POWERED_BY$</span></footer><!-- </footer> -->
+  <!-- <popup> --><section class="ga-popup"><header><span>Atelier window</span><h1>[TITLE]</h1></header><div>[BODY]</div></section><!-- </popup> -->
+  <!-- <config> -->{"rstars_b_image":"data:image/svg+xml,%3Csvg%20xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width=%2724%27%20height=%2772%27%20viewBox=%270%200%2024%2072%27%3E%3Cpath%20fill=%27%23c9c4bd%27%20d=%27M12%202.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3Cpath%20fill=%27%23d85d3f%27%20d=%27M12%2026.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3Cpath%20fill=%27%23234f46%27%20d=%27M12%2050.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3C%2Fsvg%3E","rstars_b_size":"24","rstars_s_image":"data:image/svg+xml,%3Csvg%20xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width=%2724%27%20height=%2772%27%20viewBox=%270%200%2024%2072%27%3E%3Cpath%20fill=%27%23c9c4bd%27%20d=%27M12%202.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3Cpath%20fill=%27%23d85d3f%27%20d=%27M12%2026.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3Cpath%20fill=%27%23234f46%27%20d=%27M12%2050.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3C%2Fsvg%3E","rstars_s_size":"24"}<!-- </config> -->
+  <!-- <photo_entry_view> -->
+  <article class="ga-photo"><a class="ga-photo__image" href="$PHOTO_LIGHTBOX_URL$" data-url="$PHOTO_URL$">$PHOTO$<span><svg viewBox="0 0 24 24"><use href="#ga-camera"/></svg>View work</span></a><div class="ga-photo__caption"><h2><a href="$PHOTO_URL$">$PHOTO_NAME$</a></h2><div class="ga-photo__meta"><span><svg viewBox="0 0 24 24"><use href="#ga-eye"/></svg>$REVIEWS$</span><?if($COMMENTS_URL$)?><a href="$COMMENTS_URL$"><svg viewBox="0 0 24 24"><use href="#ga-comment"/></svg>$COMMENTS_NUM$</a><?endif?><?if($RATING$)?><span class="ga-photo__rating">$RATING$</span><?endif?></div></div></article>
+  <!-- </photo_entry_view> -->
+</body></html>

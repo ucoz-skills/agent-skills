@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="[LANG]" data-theme="editorial-journal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><?if($SEO_TITLE$)?>$SEO_TITLE$<?else?>[TITLE]<?endif?></title>
+  <?if($SEO_DESCRIPTION$)?><meta name="description" content="$SEO_DESCRIPTION$"><?endif?>
+  <?if($SEO_KEYWORDS$)?><meta name="keywords" content="$SEO_KEYWORDS$"><?endif?>
+  <link type="text/css" rel="stylesheet" href="/_st/my.css?v=1">
+</head>
+<body class="module-$MODULE_ID$ page-$PAGE_ID$">
+  <!-- <header> -->
+  <!-- <global_icons> -->
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="ej-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="ej-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="ej-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+    <symbol id="ej-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></symbol>
+    <symbol id="ej-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+    <symbol id="ej-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 3.5-6 8-6s7.2 2 8 6"/></symbol>
+  </svg>
+  <!-- </global_icons> -->
+
+  <header class="ej-head"><a class="ej-brand" href="$HOME_PAGE_LINK$">$SITE_NAME$</a><input class="ej-state" id="ej-state" type="checkbox"><label class="ej-open" for="ej-state" aria-label="Открыть меню"><svg viewBox="0 0 24 24"><use href="#ej-menu"/></svg></label><div class="ej-drawer"><label class="ej-close" for="ej-state" aria-label="Закрыть меню"><svg viewBox="0 0 24 24"><use href="#ej-close"/></svg></label><nav><!-- <sblock_nmenu> --><?if($NMENU_1$)?><!-- <bc> -->$NMENU_1$<!-- </bc> --><?endif?><!-- </sblock_nmenu> --></nav><a href="/search/">Поиск</a><div>$LOG_FORM$</div></div><label class="ej-scrim" for="ej-state" aria-hidden="true"></label></header>
+  <!-- </header> -->
+
+  <!-- <middle> -->
+  <main class="ej-main"><section class="ej-content">[BODY]</section><aside class="ej-rail"><h2>Из архива</h2>$MYINF_1$</aside></main>
+  <!-- </middle> -->
+
+  <!-- <container1> --><section class="ej-block"><h2>Навигация</h2><nav>$NMENU_1$</nav></section><!-- </container1> -->
+  <!-- <container2> --><section class="ej-block ej-block--tint"><h2>Личный кабинет</h2>$LOG_FORM$</section><!-- </container2> -->
+
+  <!-- <footer> -->
+  <footer class="ej-foot"><strong>$SITE_NAME$</strong><nav>$NMENU_1$</nav><span>$POWERED_BY$</span></footer>
+  <!-- </footer> -->
+
+  <!-- <popup> --><section class="ej-popup"><h1>[TITLE]</h1><div>[BODY]</div></section><!-- </popup> -->
+  <!-- <config> -->{"rstars_b_image":"data:image/svg+xml,%3Csvg%20xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width=%2724%27%20height=%2772%27%20viewBox=%270%200%2024%2072%27%3E%3Cpath%20fill=%27%23b8ad9f%27%20d=%27M12%202.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3Cpath%20fill=%27%23a74f37%27%20d=%27M12%2026.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3Cpath%20fill=%27%232f5d50%27%20d=%27M12%2050.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3C%2Fsvg%3E","rstars_b_size":"24","rstars_s_image":"data:image/svg+xml,%3Csvg%20xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width=%2724%27%20height=%2772%27%20viewBox=%270%200%2024%2072%27%3E%3Cpath%20fill=%27%23b8ad9f%27%20d=%27M12%202.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3Cpath%20fill=%27%23a74f37%27%20d=%27M12%2026.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3Cpath%20fill=%27%232f5d50%27%20d=%27M12%2050.2l2.9%205.9%206.5.9-4.7%204.6%201.1%206.5-5.8-3.1-5.8%203.1%201.1-6.5-4.7-4.6%206.5-.9z%27%2F%3E%3C%2Fsvg%3E","rstars_s_size":"24"}<!-- </config> -->
+
+  <!-- <news_entry_view> -->
+  <article class="ej-story"><?if($COVER_IMAGE$)?><a class="ej-story__media" href="$ENTRY_URL$"><img src="$COVER_URL$" alt="$TITLE$" loading="lazy"><?if($CATEGORY_NAME$)?><b>$CATEGORY_NAME$</b><?endif?></a><?endif?><div class="ej-story__body"><h2><a href="$ENTRY_URL$">$TITLE$</a></h2><div>$MESSAGE$</div><footer class="ej-meta"><span><svg><use href="#ej-calendar"/></svg>$DATE$</span><span><svg><use href="#ej-eye"/></svg>$READS$</span><?if($USERNAME$)?><span><svg><use href="#ej-user"/></svg>$USERNAME$</span><?endif?><?if($RATING$)?><span>$RATING$</span><?endif?><a href="$ENTRY_URL$">Читать <svg><use href="#ej-arrow"/></svg></a></footer></div></article>
+  <!-- </news_entry_view> -->
+</body>
+</html>
