@@ -12,7 +12,7 @@ skills/ucoz-provisioning-skill/browser-runner/
 └── provision-new-site.mjs  # thin wrapper → calls ucoz-provision.cjs (backward compatibility)
 ```
 
-**`ucoz-provision.cjs`** is the main script: defaults to `MODE=new` (unless `BASE_URL` is set without a site address). Supports the address as **`UCOZ_SITE_ADDRESS`** or **`SITE_PREFIX` + `DOMAIN`**, preset as **`UCOZ_PRESET_SUBSTR`** or **`PRESET_MATCH`**, `UCOZ_HEADLESS` / **`UCOZ_SLOW_MO_MS`** / **`UCOZ_USER_AGENT`**, writes **`out/provision-result.json`**, machine-readable responses (`needs: …`), and optionally **`SETUP_UAPI`**. Mode **`MODE=discover`** lists zones and presets from the catalog (must be set explicitly). FTP is configured via MCP (`ftp_tool`), not through the runner.
+**`ucoz-provision.cjs`** is the main script: defaults to `MODE=discover`; `new` / `existing` must be set explicitly. Supports the address as **`UCOZ_SITE_ADDRESS`** or **`SITE_PREFIX` + `DOMAIN`**, preset as **`UCOZ_PRESET_SUBSTR`** or **`PRESET_MATCH`**, `UCOZ_HEADLESS` / **`UCOZ_SLOW_MO_MS`** / **`UCOZ_USER_AGENT`**, writes **`out/provision-result.json`**, machine-readable responses (`needs: …`), and optionally **`SETUP_UAPI`**. Mode **`MODE=discover`** lists zones and presets from the catalog (must be set explicitly). FTP is configured via MCP (`ftp_tool`), not through the runner.
 
 **`preset-catalog.json`** is the current uCoz preset reference with `title`, `presetId` (`data-preset-id` in the DOM), `substr` (substring for matching), and `aliases`. The runner validates against it before launching the browser and uses `presetId` as the primary click key.
 

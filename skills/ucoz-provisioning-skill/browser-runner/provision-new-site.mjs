@@ -18,6 +18,7 @@ const ALLOWED_ENV_KEYS = [
   'SITE_TITLE', 'KEY_NAME', 'PANEL_PASSWORD',
   'FTP_PASSWORD', 'SECRET_ANSWER',
   'SETUP_UAPI', 'REGENERATE_UAPI_KEY', 'SETUP_FTP', 'FORCE_FTP_OVERWRITE',
+  'HUMAN_DELAY_MS',
 ];
 const filteredEnv = Object.fromEntries(
   Object.entries(process.env).filter(([k]) =>

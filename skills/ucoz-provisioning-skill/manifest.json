@@ -1,6 +1,6 @@
 {
   "name": "ucoz-provisioning-skill",
-  "version": "1.1",
+  "version": "1.2",
   "description": "Portable package to prepare uCoz sites for work via the official ucoz-mcp.",
   "entrypoint": "SKILL.md",
   "license": "MIT",

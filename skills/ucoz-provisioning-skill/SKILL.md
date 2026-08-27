@@ -4,7 +4,7 @@ description: >
   Agent skill for preparing a uCoz site for work via MCP: create a new site or configure an existing one, ask clarifying questions for the scenario,
   choose available domain zones and site theme presets from the live uCoz interface, enable required modules, create/reuse uAPI and FTP credentials,
   assemble the official ucoz-mcp configuration, verify access, and hand off control to downstream task skills.
-version: "1.1"
+version: "1.2"
 author: uCoz / Hermes Agent
 license: MIT
 requires:

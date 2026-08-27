@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "source": "Cards from the 'Site module set' step (/createsite). data-preset-id values are live from uCoz DOM (a.preset-btn.fancy-modal[data-preset-id]). Preset title/substr/aliases are Russian labels from the live uCoz UI — do not translate. Update `presets` when uCoz changes the interface.",
+  "version": 3,
+  "source": "Cards from the 'Site module set' step (/createsite). data-preset-id values are live from uCoz DOM (a.preset-btn.fancy-modal[data-preset-id]). Preset title/substr/aliases are Russian labels from the live uCoz UI — do not translate. Verified against the live uCoz UI on 2026-08-27. Update `presets` when uCoz changes the interface.",
   "presets": [
     {
       "title": "Интернет-магазин",
@@ -14,13 +14,16 @@
       ]
     },
     {
-      "title": "Бот-магазин в Telegram",
+      "title": "Бот-магазин",
       "substr": "Бот-магазин",
-      "presetId": "tgshop",
+      "presetId": "botshop",
       "aliases": [
         "telegram",
         "телеграм",
         "бот магазин",
+        "бот-магазин",
+        "веб-бот",
+        "botshop",
         "tgshop",
         "бот-магазин в telegram"
       ]

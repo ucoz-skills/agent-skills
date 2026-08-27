@@ -2,6 +2,29 @@
 
 A portable skill package for AI agents that need to prepare a uCoz site for use with the official `ucoz-mcp` server.
 
+## Changes in 1.2
+
+**Runner** (`browser-runner/ucoz-provision.cjs`)
+
+- **Fixed site creation.** With `PRESET_MATCH` / `PRESET_ID` set, the runner took the resume branch and skipped `/createsite`, failing with `site_configuration_cards_not_found`. Site existence is now decided by an HTTP probe (uCoz answers 404 for an unregistered subdomain) and reported as `siteExistedBeforeRun`. The site is created and the card applied in a single run.
+- Dedicated `address_unavailable_or_existing` error when the site exists but its panel shows no cards: already configured, or owned by another account.
+- **Anti-bot handling.** `/createsite` is guarded by CleanTalk Bot Detector, which scores time on page and pointer/keyboard activity. Added a pre-submit pause (`UCOZ_HUMAN_DELAY_MS`, default 8000 ms), pointer movement, real key events instead of `fill()`, and a wait for `ct_bot_detector_event_token`. On rejection the runner returns `rate_limited_or_bot_check` with advice to raise the delay.
+- `enterPanelViaAccount()` — enters the panel through the owner SSO link from the account dashboard, so `MODE=existing` works on an owned site without its dedicated panel password.
+- `safeUrl()` — redacts the password carried in SSO links (`password=`) before any URL is surfaced.
+- `dumpDebug()` — on a stop, saves a screenshot and HTML into `out/` with secrets scrubbed first.
+- `dotenv` is called with `quiet: true`: v17 prints tips to stdout and corrupts the JSON result contract.
+
+**Security**
+
+- Restored the `UCOZ_ALLOWED_ORIGINS` allowlist: credentials go only to `ucoz.ru`, `ucoz.com`, `umi.ru`. Without it `UCOZ_ORIGIN` accepts any host. This package lineage had no allowlist.
+- Restored the environment filter in `provision-new-site.mjs`: the child process receives only the variables it needs, not the whole `process.env`. `HUMAN_DELAY_MS` added to that allowlist.
+- Restored the SECURITY NOTE header block in the runner.
+
+**Preset catalog** (v3) — `tgshop` / "Бот-магазин в Telegram" is now `botshop` / "Бот-магазин", verified against the live uCoz UI on 2026-08-27. The old id is kept as an alias for compatibility.
+
+**Docs** — the runner defaults to `MODE=discover`, not `MODE=new`.
+
+
 ## What the package does
 
 The package gives the agent a structured provisioning flow for:

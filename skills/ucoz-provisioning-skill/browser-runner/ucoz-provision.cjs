@@ -16,8 +16,9 @@ const path = require('path');
 let dotenv = null;
 try { dotenv = require('dotenv'); } catch {}
 if (dotenv) {
-  dotenv.config({ path: path.join(process.cwd(), '.env') });
-  dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+  // quiet: dotenv v17 prints tips to stdout, which would corrupt the JSON result contract.
+  dotenv.config({ path: path.join(process.cwd(), '.env'), quiet: true });
+  dotenv.config({ path: path.join(process.cwd(), '.env.local'), quiet: true });
 }
 const { chromium } = require('playwright');
 
@@ -44,6 +45,9 @@ const FORCE_FTP_OVERWRITE = env.FORCE_FTP_OVERWRITE === 'true';
 const OUTPUT_SECRETS = env.OUTPUT_SECRETS === 'true';
 const HEADLESS = !(env.HEADLESS === 'false' || env.UCOZ_HEADLESS === '0' || env.UCOZ_HEADLESS === 'false');
 const SLOW_MO = Number(env.UCOZ_SLOW_MO_MS || env.SLOW_MO_MS || 0);
+// /createsite is guarded by CleanTalk Bot Detector (scores pointer/keyboard activity and time on page,
+// rejects forms "submitted too quickly"). Total human-like pause before the submit click, ms.
+const HUMAN_DELAY_MS = Number(env.UCOZ_HUMAN_DELAY_MS || env.HUMAN_DELAY_MS || 8000);
 const UCOZ_ALLOWED_ORIGINS = [
   'https://www.ucoz.ru',
   'https://www.ucoz.com',
@@ -77,6 +81,25 @@ function redact(value) {
   return `${value.slice(0, 4)}***${value.slice(-4)}`;
 }
 function log(msg) { console.error(`[${new Date().toISOString()}] ${msg}`); }
+async function dumpDebug(page, tag) {
+  // Save a screenshot + raw HTML of the current page so the agent can inspect what the runner
+  // saw when it stopped (selector drift, validation errors, unexpected overlays). out/ is gitignored.
+  try {
+    fs.mkdirSync(OUT_DIR, { recursive: true });
+    const safe = String(tag).replace(/[^a-z0-9_-]/gi, '_');
+    const png = path.join(OUT_DIR, `debug-${safe}.png`);
+    const html = path.join(OUT_DIR, `debug-${safe}.html`);
+    await page.screenshot({ path: png, fullPage: true }).catch(() => {});
+    // Scrub secrets before writing: the account dashboard embeds the owner panel password in
+    // "Мои сайты" SSO links (…&password=…), and a uAPI page may carry raw sk_live_ tokens.
+    const scrubbed = String(await page.content().catch(() => ''))
+      .replace(/((?:password|pass|pwd)=)[^"'&<>\s]+/gi, '$1***REDACTED***')
+      .replace(/sk_live_[A-Za-z0-9_-]+/g, 'sk_live_***REDACTED***');
+    fs.writeFileSync(html, scrubbed, { mode: 0o600 });
+    log(`Debug artifacts: ${png}, ${html}`);
+    return { screenshot: png, html };
+  } catch (e) { log(`Debug dump failed: ${e.message}`); return null; }
+}
 function loadCatalog() {
   try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'preset-catalog.json'), 'utf8')); }
   catch { return { presets: [] }; }
@@ -109,9 +132,26 @@ async function login(page) {
   ]);
   await page.waitForTimeout(2000);
 }
+async function humanPause(page, ms) {
+  // Spread the wait over a few unhurried mouse moves so the bot detector sees pointer activity.
+  const steps = Math.max(3, Math.round(ms / 800));
+  for (let i = 0; i < steps; i++) {
+    const x = 300 + Math.round(Math.random() * 800), y = 200 + Math.round(Math.random() * 500);
+    await page.mouse.move(x, y, { steps: 8 }).catch(() => {});
+    await page.waitForTimeout(Math.round(ms / steps));
+  }
+}
+async function waitForBotDetectorToken(page) {
+  // The detector fills input[name="ct_bot_detector_event_token"] asynchronously; submit only after that.
+  await page.waitForFunction(() => {
+    const t = document.querySelector('input[name="ct_bot_detector_event_token"]');
+    return !t || (t.value && t.value.length > 10);
+  }, null, { timeout: 15000 }).catch(() => {});
+}
 async function openCreateSite(page) {
   await page.goto(`${UCOZ_ORIGIN}/createsite`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(1500);
+  await waitForBotDetectorToken(page);
 }
 async function getDomainZones(page) {
   return await page.evaluate(() => {
@@ -149,7 +189,11 @@ async function getPresetCards(page) {
 async function fillAddressAndDomain(page) {
   const addressSelector = '#site_address, input[name="addr"], input[placeholder*="website" i], input[aria-label*="website" i], input[type="text"]';
   await page.waitForSelector(addressSelector, { timeout: 30000 });
-  await page.fill(addressSelector, SITE_PREFIX);
+  // Type with real key events (not fill()) — the bot detector scores keyboard activity.
+  const addr = page.locator(addressSelector).first();
+  await addr.click().catch(() => {});
+  await addr.fill('');
+  await addr.pressSequentially(SITE_PREFIX, { delay: 90 + Math.round(Math.random() * 60) });
   const zones = await getDomainZones(page);
   if (!DOMAIN) need('domain_zone_choice', { sitePrefix: SITE_PREFIX, availableZones: zones });
   const matched = zones.find(z => z.value === DOMAIN || z.label.replace(/^\./, '') === DOMAIN || z.label.includes(DOMAIN));
@@ -174,9 +218,16 @@ async function submitCreateSite(page) {
   const submitLocator = page.locator('#submit_btn, button:has-text("Создать сайт"), button[type="submit"], input[type="submit"]').first();
   const submitCount = await submitLocator.count();
   if (!submitCount) {
-    need('submit_button_not_found', { url: page.url(), pageText: (await page.textContent('body').catch(() => '')).slice(0, 800) });
+    const debug = await dumpDebug(page, 'submit-not-found');
+    need('submit_button_not_found', { url: page.url(), pageText: (await page.textContent('body').catch(() => '')).slice(0, 800), debug });
   }
   await submitLocator.scrollIntoViewIfNeeded().catch(() => {});
+  // Human-like pacing: the bot detector rejects submits that come right after page load.
+  log(`Pausing ~${HUMAN_DELAY_MS} ms before submit (bot-detector pacing)`);
+  await humanPause(page, HUMAN_DELAY_MS);
+  await waitForBotDetectorToken(page);
+  await submitLocator.hover().catch(() => {});
+  await page.waitForTimeout(400);
   await submitLocator.click({ force: true });
   log('Submit clicked, waiting for preset cards...');
 
@@ -188,14 +239,27 @@ async function submitCreateSite(page) {
   await page.waitForTimeout(2000);
 
   const body = await page.textContent('body').catch(() => '');
-  if (/занят|существует|недоступ/i.test(body || '')) need('address_unavailable_or_existing', { sitePrefix: SITE_PREFIX, domain: DOMAIN, pageText: body.slice(0, 800) });
+  if (/too quickly|Слишком много попыток|submitted too/i.test(body || '')) {
+    const debug = await dumpDebug(page, 'bot-check-rejected');
+    need('rate_limited_or_bot_check', {
+      message: 'uCoz anti-bot (CleanTalk Bot Detector) rejected the submission ("submitted too quickly" / "too many attempts"). Wait several minutes before retrying; if it persists, raise UCOZ_HUMAN_DELAY_MS (default 8000).',
+      sitePrefix: SITE_PREFIX, domain: DOMAIN, debug
+    });
+  }
+  if (/занят|существует|недоступ/i.test(body || '')) {
+    const debug = await dumpDebug(page, 'address-unavailable');
+    need('address_unavailable_or_existing', { sitePrefix: SITE_PREFIX, domain: DOMAIN, pageText: body.slice(0, 800), debug });
+  }
 }
 async function choosePreset(page) {
   const cards = await getPresetCards(page);
   if (!cards.length) {
+    const debug = await dumpDebug(page, 'cards-not-found');
+    const pageErrors = await page.evaluate(() => Array.from(document.querySelectorAll('.error, .err, .alert, .warning, [class*="error" i], [id*="error" i]'))
+      .map(e => (e.innerText || e.textContent || '').trim().replace(/\s+/g, ' ')).filter(Boolean).slice(0, 10)).catch(() => []);
     need('site_configuration_cards_not_found', {
       message: 'No live configuration cards were found on the current page; do not mark preset selection as successful.',
-      url: page.url()
+      url: page.url(), pageErrors, debug
     });
   }
   const catalog = loadCatalog();
@@ -242,10 +306,16 @@ async function closePhonePopupIfPresent(page) {
   await page.waitForTimeout(150);
 }
 async function isOnPasswordGate(page) {
+  // Detect the panel LOGIN form specifically (form#lform posting a=dologin to /panel/sub/).
+  // A generic "has a password input" check misfires on ordinary panel pages such as
+  // ?a=ftppass ("Пароли и телефон — Пароль FTP"), which also contain password fields.
   return page.evaluate(() => {
+    const loginForm = document.querySelector('form#lform, form[action*="/panel/sub/"]');
+    const dologin = document.querySelector('input[name="a"][value="dologin"]');
+    const title = (document.title || '') + ' ' + (document.querySelector('h1,h2,.title')?.textContent || '');
+    const looksLikeGate = /Вход в панель управления/i.test(title) || /Вход в панель управления/i.test(document.body?.innerText || '');
     const pass = document.querySelector('input[name="password"], input[type="password"]');
-    const text = document.body?.innerText || '';
-    return Boolean(pass && (/парол/i.test(text) || location.href.includes('/admin/')));
+    return Boolean(pass && (loginForm || dologin || looksLikeGate));
   }).catch(() => false);
 }
 async function tryPanelPassword(page, pwd) {
@@ -277,9 +347,10 @@ async function handlePanelPasswordGate(page) {
     if (await tryPanelPassword(page, PANEL_PASSWORD)) return true;
   }
   // Both failed — stop and ask the user
+  const debug = await dumpDebug(page, 'panel-password-gate');
   need('panel_password_separate', {
     message: 'The site panel (/admin/) rejected all provided passwords. This site likely has a separate panel password different from the uCoz account password. Set PANEL_PASSWORD (or UCOZ_PANEL_PASSWORD) env variable with the correct panel password and retry.',
-    url: page.url()
+    url: page.url(), debug
   });
 }
 async function extractUidLoginUrl(page) {
@@ -328,7 +399,42 @@ async function handlePanelAuthGate(page) {
   if (await handlePanelUidGate(page)) return 'uid';
   return false;
 }
+function safeUrl(u) {
+  // Never surface the owner panel password that rides in dologin SSO links.
+  return String(u || '').replace(/([?&](?:password|pass|pwd)=)[^&#]*/gi, '$1***');
+}
+async function enterPanelViaAccount(page, base) {
+  // The uCoz account dashboard ("Мои сайты") signs the owner into a site panel with an SSO link:
+  //   <site>/panel/sub/?a=dologin&ss=3&hst=1&siteauthcook=1&password=<owner panel password>
+  // This is how the browser enters without a panel-password prompt. Reusing it lets MODE=existing
+  // work on an owned site whose dedicated panel password we don't (and shouldn't need to) know.
+  const host = new URL(base).host;
+  // The "Мои сайты" list is rendered asynchronously, so wait for the links instead of a fixed pause,
+  // and fall back to the dedicated my-sites page if this view does not list the site.
+  let ssoUrl = '';
+  for (const url of [`${UCOZ_ORIGIN}/createsite`, `${UCOZ_ORIGIN}/mysites`, `${UCOZ_ORIGIN}/panel/?a=mysites`]) {
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await page.waitForSelector('a[href*="/panel/sub/"]', { timeout: 12000 }).catch(() => {});
+    ssoUrl = await page.evaluate((h) => {
+      const a = Array.from(document.querySelectorAll('a[href*="/panel/sub/"]'))
+        .find(x => { const href = x.getAttribute('href') || ''; return href.includes(h) && /a=dologin/.test(href); });
+      return a ? a.href : '';
+    }, host).catch(() => '');
+    if (ssoUrl) break;
+  }
+  if (!ssoUrl) { log(`No account SSO link found for ${host}; falling back to the panel login form`); return false; }
+  // Follow the owner SSO link (carries the panel password — do not log this URL), then land on the panel.
+  await page.goto(ssoUrl, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await page.waitForTimeout(1500);
+  await closePhonePopupIfPresent(page);
+  await page.goto(`${base}/panel/`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await page.waitForTimeout(1000);
+  await closePhonePopupIfPresent(page);
+  return !(await isOnPasswordGate(page));
+}
 async function enterPanel(page, base) {
+  // Prefer owner SSO entry from the account dashboard (no panel password needed).
+  if (await enterPanelViaAccount(page, base)) { log('Entered panel via account SSO link'); return; }
   await page.goto(`${base}/panel/`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2000);
   await closePhonePopupIfPresent(page);
@@ -354,15 +460,23 @@ async function listPanelModules(page, base) {
 }
 async function getUserLogin(page, base) {
   await page.goto(`${base}/panel/?a=users&l=find`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(2000);
   await closePhonePopupIfPresent(page);
-  return await page.evaluate(() => {
+  const login = await page.evaluate(() => {
     for (const row of document.querySelectorAll('tr')) {
       const cells = row.querySelectorAll('td');
-      if (cells.length > 1 && cells[0]?.textContent?.trim() === '1') return cells[1]?.textContent?.trim().replace(/\*+$/, '') || 'admin';
+      const first = cells[0]?.textContent?.trim();
+      if (cells.length > 1 && (first === '1' || first === '1.')) {
+        const l = (cells[1]?.textContent || '').trim().replace(/\*+$/, '');
+        if (l) return l;
+      }
     }
-    return 'admin';
-  }).catch(() => 'admin');
+    // Fallback: uCoz "find users" often renders rows as a list/links rather than a plain table.
+    const link = document.querySelector('a[href*="a=users"][href*="u="], a[href*="uid="]');
+    return link ? (link.textContent || '').trim() : '';
+  }).catch(() => '');
+  if (!login) await dumpDebug(page, 'users-find');
+  return login || 'admin';
 }
 async function setupUapi(page, base) {
   await page.goto(`${base}/panel/?a=uapi`, { waitUntil: 'domcontentloaded', timeout: 45000 });
@@ -384,8 +498,28 @@ async function setupUapi(page, base) {
     const r = await fetch('/panel/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'X-Requested-With': 'XMLHttpRequest' }, body: p.toString(), credentials: 'include' });
     return { status: r.status, text: await r.text() };
   }, { KEY_NAME, userLogin, ssid });
-  const token = ([...resp.text.matchAll(/data-copy="([^"]*sk_live_[^"]+)"/g)].map(m => m[1])[0]) || '';
-  return { status: token ? 'created' : 'unknown_check_panel', token, userLogin };
+  let token = ([...resp.text.matchAll(/data-copy="([^"]*sk_live_[^"]+)"/g)].map(m => m[1])[0])
+    || ([...resp.text.matchAll(/sk_live_[A-Za-z0-9_-]+/g)].map(m => m[0])[0]) || '';
+  // If the POST response didn't carry the token, reload the uAPI page and read it from the list.
+  if (!token) {
+    await page.goto(`${base}/panel/?a=uapi`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+    await page.waitForTimeout(1500);
+    await closePhonePopupIfPresent(page);
+    token = await page.evaluate(() => {
+      const html = document.documentElement.innerHTML;
+      return ([...html.matchAll(/data-copy="([^"]*sk_live_[^"]+)"/g)].map(m => m[1])[0])
+        || ([...html.matchAll(/sk_live_[A-Za-z0-9_-]+/g)].map(m => m[0])[0]) || '';
+    }).catch(() => '');
+  }
+  if (!token) {
+    try {
+      fs.mkdirSync(OUT_DIR, { recursive: true });
+      fs.writeFileSync(path.join(OUT_DIR, 'debug-uapi-post-response.html'), String(resp.text || ''));
+    } catch {}
+    await dumpDebug(page, 'uapi-after-create');
+    log(`uAPI create returned status=${resp.status}, body ${String(resp.text||'').length} chars, no token; see out/debug-uapi-*`);
+  }
+  return { status: token ? 'created' : 'unknown_check_panel', token, userLogin, postStatus: resp.status };
 }
 function parseFtpHelperText(text, base) {
   const hostFallback = new URL(base).host;
@@ -460,18 +594,32 @@ async function setupFtp(page, base) {
     if (MODE === 'new') {
       base = `https://${SITE_PREFIX}.${DOMAIN}`;
       result.site = base + '/';
-      if (PRESET_MATCH || PRESET_ID || PRESET_INDEX !== null) {
-        // Resume-safe path: if a previous run already created the site and stopped at
-        // configuration choice, enter the site panel first to pass possible /admin/
-        // password gates, then open the configuration page.
+      // Does the site already exist? uCoz answers HTTP 404 ("Site not registered") for unknown
+      // subdomains, so a probe decides between resuming and going through /createsite.
+      // (Previously the resume path was taken whenever a preset was requested, which skipped
+      // /createsite for brand-new sites and ended with site_configuration_cards_not_found.)
+      const probe = await page.goto(`${base}/`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => null);
+      const siteExists = Boolean(probe) && probe.status() !== 404;
+      result.siteExistedBeforeRun = siteExists;
+      if (siteExists) {
+        // Resume-safe path: a previous run already created the site and stopped at the
+        // configuration choice. Enter the panel first (passing possible /admin/ gates),
+        // then open the configuration page and read the live cards.
+        log(`Site ${base} already exists; resuming at configuration choice`);
         await enterPanel(page, base);
         await page.goto(`${base}/panel/?a=cp`, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => null);
         await page.waitForTimeout(2000);
         // Phone popup can reappear after panel navigation — close it again
         await closePhonePopupIfPresent(page);
-      }
-      let cards = await getPresetCards(page);
-      if (!cards.length && !(PRESET_MATCH || PRESET_ID || PRESET_INDEX !== null)) {
+        const cards = await getPresetCards(page);
+        if (!cards.length) {
+          need('address_unavailable_or_existing', {
+            sitePrefix: SITE_PREFIX, domain: DOMAIN, url: page.url(),
+            message: 'Site already exists and its panel shows no configuration cards: it is either already configured or belongs to another account. Use MODE=existing with BASE_URL, or choose another prefix.'
+          });
+        }
+      } else {
+        log(`Site ${base} does not exist yet; creating via /createsite`);
         await openCreateSite(page);
         const domainResult = await fillAddressAndDomain(page);
         result.domainZones = domainResult.zones;
@@ -508,10 +656,12 @@ async function setupFtp(page, base) {
       };
     }
     fs.mkdirSync(OUT_DIR, { recursive: true });
-    fs.writeFileSync(path.join(OUT_DIR, 'provision-result.json'), JSON.stringify(result, null, 2));
+    // 0600: with OUTPUT_SECRETS=true this file carries a raw sk_live_ token.
+    fs.writeFileSync(path.join(OUT_DIR, 'provision-result.json'), JSON.stringify(result, null, 2), { mode: 0o600 });
     console.log(JSON.stringify(result, null, 2));
   } catch (err) {
-    fail(err.message || String(err), { url: page.url() });
+    const debug = await dumpDebug(page, 'fatal').catch(() => null);
+    fail(err.message || String(err), { url: safeUrl(page.url()), debug });
   } finally {
     await browser.close();
   }
