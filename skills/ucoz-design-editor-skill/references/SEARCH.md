@@ -66,10 +66,12 @@ Do NOT re-add old 280px absolute dropdown rules — the overlay CSS in `AHEADER`
 
 Same pattern as other full-page shells:
 
-- Font + `/.s/src/css/2301.css` + `/_st/shop.css` in `<head>` — module 19 does **NOT** auto-load shop CSS; link it manually.
+- Font + versioned `/_st/my.css` (required) + `/_st/shop.css` when used in `<head>` — module 19 does **NOT** auto-load shop CSS; link it manually. Keep the system theme reference (`/.s/src/css/2301.css`) if the good site shells use it, but **do not** rely on `2301.css` alone without `/_st/my.css`.
 - `$GLOBAL_AHEADER$` + full-width main, **no sidebar** (remove `CLEFTER` / `#sidebar` block entirely from the template).
 - `$GLOBAL_BFOOTER$`
 - `<?if(0)?>$POWERED_BY$<?endif?>` (copyright lives in `BFOOTER`)
+
+**High-risk orphan:** if the live `19/1` shell still links bare `/my.css` or uses foreign layout classes (`#layout`, `search-layout` from another brand), rewrite the shell to match a known-good site shell **before** styling the form/results.
 
 Body class: `module-search search-page`, layout: `search-layout`.
 
@@ -113,4 +115,5 @@ Style the platform `$SEARCHFORM$` output:
 - [ ] Close via X, overlay click, Escape, second icon click — all four methods work
 - [ ] No native blue clear button in drawer input (WebKit/Edge)
 - [ ] `/search/?q=…` — header + footer present, no sidebar, correct font, styled form + result cards
+- [ ] Live HTML `<head>` includes versioned `/_st/my.css` (not bare `/my.css`)
 - [ ] Pagination matches site button style

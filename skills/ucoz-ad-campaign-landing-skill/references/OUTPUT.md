@@ -1,132 +1,104 @@
-# Output Package and Page Deployment
+# Result Format
 
----
+## 1. Manifest
 
-## §OUTPUT_PACK: final report
+For each test cell, save:
 
-The agent generates this report **itself** — reads `segments.json` and fills in the template below.
+| Field | Contents |
+|---|---|
+| segment_id | stable internal ID |
+| niche | niche |
+| hypothesis | what is being tested |
+| price_visibility | shown / hidden |
+| destination | signup / thematic_templates / all_templates / other |
+| internal_label | service name, not public copy |
+| landing_url | published URL without UTM |
+| destination_url | destination CTA |
+| final_url | ad URL with UTM |
+| page_id | uCoz page ID |
+| validation_status | validate_template / fallback / failed |
+| campaign_id | Yandex Direct campaign ID |
+| ad_group_id | ad group ID |
+| ad_id | ad ID |
+| package_strategy_id | package strategy ID |
+| package_weekly_budget | shared weekly budget of the package |
 
-### Mapping from segments.json
+## 2. Linkage table
 
-```
-brief.niche / geo / base_url / utm_source → report header
-len(segments) → number of segments
-seg.segment_id / segment_name / main_keyword → identification
-seg.ad.headline_1 / headline_2 / text → ad copy
-seg.final_url / final_url_yandex / final_url_google → URL with UTM
-seg.page_ownurl → /slug
-seg.landing.h1 → Hero H1
-seg.message_match.status → pass/revise/fail
-seg.seo.title / description → SEO fields
-seg.competitor_insights → competitor data
-seg.ucoz.page_id / published → publish status
-seg.test_notes[] → test recommendations
-```
+    | Micro-segment | Landing page | Campaign | Status | Package |
 
-Segment status:
-- `ucoz.published = true` → "published"
-- `final_url` exists, `published` is missing → "URL ready, check page_add"
-- otherwise → "draft"
+URLs must be clickable. State the budget at package level when it is shared.
 
----
+## 3. Goals
 
-### Summary (once at the beginning of the report)
+    | Event | product_event_status | metrika_goal_status | direct_conversion_status | Decision |
 
-```markdown
-## Segmented Traffic Package — {niche}, {geo}
+Add the date, the timezone, the analysis window, counter_id, and goal_id. Do not collapse the table into one overall status.
 
-**Date:** {YYYY-MM-DD}
-**Segments:** {N}
-**Site:** {base_url}
-**Research:** Wordstat ✓ / WebSearch (fallback) / user keywords
+## 4. Package strategies
 
-### Segments
+For each package:
 
-| ID | Offer | URL | Status |
-|----|-------|-----|--------|
-| seg_01 | … | https://… | published / draft |
+- ID and the exact name;
+- niche;
+- campaign_id values of the members;
+- shared weekly budget;
+- strategy and payment model;
+- counter and goal;
+- campaign status;
+- what was not done: launch, moderation, top-up.
 
-### What to do manually
+## 5. Evidence
 
-1. Create a campaign in {Yandex Direct/Google} with N ad groups.
-2. Insert ad copy from blocks below.
-3. Enter **final_url** (pages already published via page_add).
-4. Launch with the recommended test budget.
-```
+Store separately:
 
----
+- the read-only state before;
+- the user’s explicit command to change something;
+- the actual change;
+- the check after;
+- errors and fallback;
+- duplicates found, and the decision about them.
 
-### Block for one segment (repeat for each)
+Do not include tokens, cookies, passwords, or personal data.
 
-```markdown
----
+## 6. Short report for the owner
 
-## Segment: {segment_name} (`{segment_id}`)
+Structure:
 
-### Intent and keywords
-- **Main keyword:** {main_keyword}
-- **Additional keywords:** key1, key2, …
+1. how many landing pages, campaigns, and packages were created;
+2. which micro-segments are being tested;
+3. links to every landing page;
+4. the budget of each package and the total budget;
+5. the optimization goal and its limitation;
+6. the current status: drafts / launched;
+7. which decision is needed from the owner.
 
-### Ad ({yandex|google})
+## 7. Telegram version
 
-**Headline 1:** …
-**Headline 2:** …
-**Text:** …
-**A/B variant:** …
+The text must be copyable without tables:
 
-### Landing
-- **URL:** {full_url_with_utm}
-- **Slug:** /{page_ownurl}
-- **Message match:** pass ✓ (overlap_ratio: 0.8)
-- **Hero H1:** "…"
+    Prepared: N landing pages and N search campaigns.
+    Micro-segmentation: {factors and values}.
 
-### SEO
-- **Title:** …
-- **Description:** …
+    {Niche 1}:
+    • {variant}: https://...
+    ...
+    Package No. ..., shared budget ... ₽/week.
 
-### UTM (breakdown)
-| Parameter | Value |
-|-----------|-------|
-| utm_source | yandex |
-| utm_medium | cpc |
-| utm_campaign | … |
-| utm_content | {segment_id} |
-| utm_term | … |
+    {Niche 2}:
+    ...
 
-### Competitors (SERP)
-- **Source:** SERP API v2 / WebSearch (fallback)
-- **Our angle:** {our_angle}
-- **Sample offers:** domain — offer
+    Total: ... ₽/week. Campaigns are drafts.
+    Optimization: {goal}, counter {counter_id}; limitation: {if any}.
+    Needs approval: {budget / goal / launch}.
 
-### Test recommendations
-1. A/B: headline 1 variant A vs B — evaluate CTR after 30+ clicks.
-2. Success metric: form CR / phone click.
-3. Stop ad when: CPC > X₽ + 0 conversions in 50 clicks.
+Do not write “10 000 ₽ for each campaign” when that amount is the single shared budget of the package strategy.
 
-### Technical (if published on uCoz)
-- `page_id`: …
-- MCP actions: page_add, ftp write css/js
-```
+## 8. Handing off local files
 
----
+In the final answer, give clickable absolute links to:
 
-### Draft without publishing
-
-If user requests texts only without MCP:
-- Deliver segment blocks **without** `page_id`.
-- Add: "HTML template available on request".
-- If `page_add` was not performed — do not specify `final_url`; mark as "draft, publishing pending".
-
----
-
-## §Page deployment on uCoz
-
-Full MCP rules, CSS/JS, forms, SEO, checklists — in **[LANDING_PLAYBOOK.md](LANDING_PLAYBOOK.md)** (section 0 and step 10A).
-
-Brief:
-
-1. `page_list` — check available `page_ownurl`
-2. `page_add` — publish landing **before** giving `final_url`
-3. `page_get` — record `page_id` and `url` in `segments.json`
-
-Homepage (`page_id=1`) — only on explicit request → **step 10B** in `LANDING_PLAYBOOK.md`.
+- SKILL.md or the manifest;
+- the zip package, if one was created;
+- the evidence or the change report;
+- local HTML/JSON only if the user needs them.

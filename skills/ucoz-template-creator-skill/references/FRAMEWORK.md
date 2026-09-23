@@ -6,8 +6,14 @@
 - Required MCP actions
 - Service blocks
 - Conditional rendering
-- Module views and system markup
 - CSS contract
+- CSS live verification
+- Containing-block trap (`position:fixed`)
+- Class/markup mismatch
+- Menu variables (`$NMENU_*$` vs `$SMENU_*$`)
+- Module views and system markup
+- `$POWERED_BY$` production rules
+- Search
 - Global blocks and popup
 - Publication safety
 - Active-template migration
@@ -88,9 +94,88 @@ The framework contains structure only. Include this link in `<head>`:
 <link type="text/css" rel="stylesheet" href="/_st/my.css?v=1">
 ```
 
-Do not add `<style>` blocks. For a new design, send the complete stylesheet to `templates_tool.update_template(module_id=3, template_id=3)`. This is a full replacement, not an append operation. Never send a CSS fragment to `update_template`.
+**Forbidden stylesheet paths:** bare `/my.css`, `/css/my.css`, `my.css`, and stale `/.s/t/<design-id>/` theme assets as the site design stylesheet. Those paths do not receive the compiled `3/3` table the same way `/_st/my.css?v=…` does and produce orphan shells (Search `19/1` is a frequent offender). Local lint fails on missing versioned `/_st/my.css` and on bare `/my.css`.
+
+Do not add `<style>` blocks. For a new design, send the complete stylesheet to `templates_tool.update_template(module_id=3, template_id=3)`. This is a full replacement, not an append operation. Never send a CSS fragment to `update_template`. Read `VISUAL.md` before writing the stylesheet (non-negotiables, tokens, type/spacing floors).
 
 After the first full write, use `read_template` plus `patch_template` for incremental CSS changes. The generated site rewrites the query version automatically; independent custom pages require a manual version bump.
+
+### Site chrome vs module CSS templates
+
+Header, footer, nav, and other site-wide chrome **always** live in `3/3` (`/_st/my.css`). Module-only stylesheet templates exist and load only on that module's pages — use them solely for module-local widgets:
+
+| Module CSS | Typical role |
+|---|---|
+| `20/9` | Shop (e.g. `.goods-list` mobile overrides) |
+| `9/10` | Photo |
+| `25/8` | Subscriptions |
+| `22/11` | Video |
+
+Rules left only in module CSS will not style `$GLOBAL_AHEADER$` / `$GLOBAL_BFOOTER$` on non-module pages. Derive accents and shared tokens from the site design system in `3/3`; module CSS may refine local grids/forms but must not redefine the brand palette in isolation.
+
+DOM traps for lists, shop grids, and standard `.eBlock` chrome → [SYSTEM-MARKUP.md](SYSTEM-MARKUP.md).
+
+## CSS live verification
+
+**Never trust `/.s/src/css/2301.css`** (or similar stock theme paths) to verify that `3/3` edits went live — that URL is a static theme-default asset and never reflects your stylesheet, no matter how many times you publish or `patch_template`.
+
+**Correct procedure — every time:**
+1. Fetch any live page HTML and find the *actual* stylesheet `<link>` it serves — typically `/_st/my.css?v=…` (and module CSS URLs such as `/_st/shop.css` when present).
+2. Fetch that exact URL (keep its cache-busting query, or append a fresh `?v=` timestamp) and search for a unique string from your edit.
+3. Only if the string is genuinely absent from *that* file should you suspect the save did not go through.
+
+Do not retry `update_template` / `patch_template` or burn backups based on a `2301.css` check. After framework publish, also confirm module CSS URLs on module pages when those tables were edited.
+
+## Containing-block trap (`position:fixed`)
+
+If any ancestor of a `position:fixed` element has a non-`none` **`filter`**, **`backdrop-filter`**, **`transform`**, **`perspective`**, **`contain`** (`layout`/`paint`/`strict`), or **`will-change`** implying one of those, that ancestor becomes the **containing block** for the fixed element instead of the viewport. The overlay then spans only the ancestor's box, not the full screen.
+
+**Typical victim:** a full-screen mobile menu / search drawer nested inside a header with `backdrop-filter` — the "full-screen" panel becomes only as tall as the header bar.
+
+**Checklist before adding these properties to any header/nav/toolbar:**
+1. Check whether any `position:fixed` element (off-canvas, modal, cart popup, cookie banner, search overlay) is nested inside that element in the HTML.
+2. If yes, either avoid those properties on that ancestor, or move the fixed overlay out of the DOM so it is not a descendant (re-verify JS/checkbox hooks after moving).
+3. Live-check on a page where content below the header is visually distinct (e.g. a colorful hero) — a plain white page can hide the bug.
+
+## Class/markup mismatch
+
+Themes and example CSS can drift: markup may use one class while CSS defines a similarly named but different class. After restyle, **verify selectors match live DOM classes** from `get_variables` / browser inspection — not assumed class names from examples or prior projects.
+
+1. Read the actual framework / global-block / module markup and note every class it outputs.
+2. Grep `3/3` (and relevant module CSS) for those *exact* class names.
+3. If a class in markup has no matching rule, add one. Do not assume a near-miss name is close enough.
+
+Especially important after redesigning header/footer/sidebar and after adapting an `examples/` starter.
+
+## Menu variables (`$NMENU_*$` vs `$SMENU_*$`)
+
+- `$NMENU_<ID>$` expands to **vertical** menu markup (typically `.uMenuV` / `.uMenuRoot`).
+- `$SMENU_<ID>$` expands to **horizontal** menu markup.
+- The **variable name**, not the control-panel `layout` flag on `menu_create`, decides the rendered orientation. Confirm orientation by the variable you insert, then inspect `.uMenuV` / `.uMenuRoot` live before writing CSS.
+- Declare `sblock_nmenu` once (normally in `header`); reuse `$NMENU_1$` (or `$SMENU_1$` when horizontal chrome is intentional) elsewhere without a second service placeholder.
+- **Never** wrap `$NMENU_*$` / `$SMENU_*$` inside your own `<ul>` — the platform already emits a nested list. Style the real `.uMenuRoot` tree; do not style only an outer decorative wrapper and ignore the platform nodes.
+- Hide empty submenu lists; empty `<ul>` under a leaf item often still exists in the DOM.
+
+### DOM reset pattern
+
+After confirming the live DOM for `$NMENU_1$` or `$SMENU_1$`:
+
+```css
+/* after confirming live DOM for $NMENU_1$ or $SMENU_1$ */
+.site-nav .uMenuV { display: contents; } /* or reset as needed */
+.site-nav .uMenuRoot {
+  display: flex;
+  gap: /* token */;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav .uMenuRoot > li { list-style: none; }
+.site-nav .uMenuRoot > li > ul:empty { display: none; }
+/* never wrap $NMENU_$ inside your own <ul> */
+```
+
+Adapt selectors to your shell class names; keep the idea: neutralize platform wrappers, flex the real root list, and suppress empty submenu `ul`s.
 
 ## Module views and system markup
 
@@ -128,9 +213,50 @@ A full-material block should keep the title, cover, content, native rating, meta
 
 Confirm every variable and condition against the retrieved News full-page source. Adapt the same regions and visual language to each supported module rather than copying News variables into Blog, Publ, Photo, Shop, or other blocks.
 
-Not every template has a framework service block. When structure is acceptable, style standard uCoz markup through `3/3`, including verified `.breadcrumbs`, `.eBlock`, `.eTitle`, `.eMessage`, `.eDetails`, `.e-category`, `.e-reads`, `.e-author`, `.ed-title`, `.ed-value`, comments, tables, forms, pagination, and `_uWnd` classes. Change a template only when semantic order, shell, or required structure cannot be made consistent with CSS.
+Not every template has a framework service block. When structure is acceptable, style standard uCoz markup through `3/3`, including verified `.breadcrumbs`, `.eBlock`, `.eTitle`, `.eMessage`, `.eDetails`, `.e-category`, `.e-reads`, `.e-author`, `.ed-title`, `.ed-value`, comments, tables, forms, pagination, and `_uWnd` classes. Change a template only when semantic order, shell, or required structure cannot be made consistent with CSS. Grid and shop traps for that markup → [SYSTEM-MARKUP.md](SYSTEM-MARKUP.md).
 
 Breadcrumb consistency is a hard contract. Use one wrapper/item class system, typography, gaps, outer gutter, rule treatment, responsive behavior, and one `currentColor` SVG separator in archives, categories, full materials, Search, system pages, and custom Pages. Only path depth and verified labels/URLs may change. Keep an optional separator inside the same condition as its optional level. If standard markup differs, make it visually identical with shared CSS or perform an authorized targeted template migration.
+
+## `$POWERED_BY$` production rules
+
+`$POWERED_BY$` is the mandatory platform copyright link. Production rules (from Design Editor GBLOCKS):
+
+- **One visible instance** via the footer path (`BFOOTER` / framework `footer` → `$GLOBAL_BFOOTER$`).
+- **Never hide** with CSS (`display:none`, `opacity:0`, matching background color, `height:0`, off-screen, overlay).
+- Full HTML shells that already render copyright through `$GLOBAL_BFOOTER$` may keep a validator-only stub near `</body>`:
+
+```html
+$GLOBAL_BFOOTER$
+<?if(0)?>$POWERED_BY$<?endif?>
+```
+
+- **Never duplicate a visible** `$POWERED_BY$` after `$GLOBAL_BFOOTER$` — the second occurrence renders empty and leaves a styled blank bar under the footer.
+
+## Search
+
+Always migrate Search after framework publish. Treat Search as high-risk chrome — stock shells often ship orphan `/my.css` and foreign layout classes.
+
+### Shell `19/1` (`/search/`, high-risk)
+
+- Match a known-good live shell: versioned `/_st/my.css?v=…`, same fonts, `$GLOBAL_AHEADER$` / `$GLOBAL_BFOOTER$`, theme body/layout classes — **not** a foreign orphan with bare `/my.css`.
+- Keep the system theme reference the good shells use (`/.s/src/css/2301.css` or the site's `/_st/…` pattern) consistently, but **never** rely on `2301.css` alone without `/_st/my.css` (see [CSS live verification](#css-live-verification)).
+- Prefer no sidebar on Search (remove `CLEFTER` / foreign `#sidebar` blocks unless the design intentionally keeps a rail).
+- Browser-test live `/search/?q=…` on desktop and mobile after every redesign.
+
+### Result rows `19/2`
+
+- Style via `3/3` (`.eBlock` family or design cards); no second stylesheet path.
+- Prefer a consistent card/list treatment: optional thumb, title link, snippet, meta — reuse archive card tokens where possible.
+
+### Header search overlay (if present)
+
+Some designs include a search toggle/drawer in `$GLOBAL_AHEADER$`. **Do not invent IDs or JS hooks** from memory — verify the live DOM (and any theme `main.js` contracts) before styling or wiring:
+
+- Confirm toggle button, panel/drawer root, close control, and form `action="/search/"` + query field name on the live site.
+- Panel is typically `position:fixed`; keep it outside ancestors that create a containing block (see [Containing-block trap](#containing-block-trap-positionfixed)).
+- Do not add a duplicate click listener if theme JS already toggles the panel open class.
+
+Style Search chrome and results primarily through `3/3`. Details and list DOM traps → [SYSTEM-MARKUP.md](SYSTEM-MARKUP.md).
 
 ## Global blocks and popup
 
@@ -167,7 +293,8 @@ A successful `skeleton_publish` does not prove every live system template was re
 3. Classify each template as current theme, standard inner markup safely handled by shared CSS, or stale/structurally incompatible markup requiring a targeted change.
 4. For each stale template, call `get_variables`, preserve required placeholders and behavior, validate the candidate, then use `patch_template` for a narrow structural edit or `update_template` for one complete template. Do not republish the entire framework to fix one missed system template.
 5. Read changed templates back. A full document must use the current shell and versioned `/_st/my.css?v=...`; a partial must not duplicate `<html>`, `<head>`, or the stylesheet link. Check UTF-8, no old `/.s/t/<design-id>/` assets, no literal `CONTENT` or unknown variables, and exactly one visible `$POWERED_BY$` across a rendered full document.
-6. Browser-test a representative URL from every active family on desktop and mobile. A 200 response or correct CSS URL alone is not proof of migration.
+6. **Full-page shell chrome audit** (mandatory): against one known-good live shell, verify every full HTML shell of enabled modules — (1) CSS only `/_st/…`, never `/my.css`; (2) matching font `<link>`s; (3) `$GLOBAL_AHEADER$` / `$GLOBAL_BFOOTER$`; (4) body/layout classes match the theme, not a foreign skeleton; (5) no foreign brand strings; (6) one visible `$POWERED_BY$` (shells may use `<?if(0)?>$POWERED_BY$<?endif?>` when BFOOTER already renders it). Treat Search `19/1` as high-risk. **Users shells** to inventory briefly: `4/1` login, `4/2` register, `4/3` access denied, `4/5` profile, `4/6` edit info, `4/7` user list, `4/8` user comments, `4/11` PM (forms `4/4`, `4/9`, `4/10`, `4/12`, `4/14` are fragments — style via `3/3`, verify live `#uf-register` on register). Fragments (`19/2`, entry views) are styled via `3/3`, but their parent shell must still pass.
+7. Browser-test a representative URL from every active family on desktop and mobile, including `/search/?q=…`. A 200 response or correct CSS URL alone is not proof of migration.
 
 If a template has the current shell but standard inner markup, prefer narrowly scoped shared CSS. Old shells, scripts, compiled globals, legacy assets, or unrelated blocks are structural defects and require a targeted template update within the approved migration. Record every template ID changed after publication so a future framework publication can preserve or intentionally reapply it.
 
@@ -181,9 +308,12 @@ Test at 320, 375, 768, 1024, and wide desktop widths:
 
 - homepage/custom Page, archive, category, full entry with comments, Users/login, Search, popup, and every enabled high-value module;
 - no overflow, clipped text, media overlap, double borders, empty rails, inconsistent gutters, or unexplained header offset;
+- **menu DOM**: live `.uMenuV` / `.uMenuRoot` reset, no custom `<ul>` wrapping `$NMENU_*$`/`$SMENU_*$`, empty submenu `ul`s hidden, drawer items visible;
+- **`#allEntries` on archive/category**: grid on `td.archiveEntries` (or `:has(table)` split), not a single squeezed column;
+- **button / CTA specificity**: theme buttons keep accent colors; no bare `a { color: inherit }` (or equally broad link reset) beating CTA link colors;
 - working desktop navigation, one mobile close control, visible drawer items, keyboard operation, focus states, and reduced-motion behavior;
-- working Search, authentication, basket, forms, pagination, comments, editors, and native module actions;
-- identical breadcrumbs everywhere and one visible `$POWERED_BY$`;
+- working Search on live `/search/?q=…`, authentication, basket, forms, pagination, comments, editors, and native module actions;
+- identical breadcrumbs everywhere; **copyright line** visible — one `$POWERED_BY$` via BFOOTER, not CSS-hidden and not a duplicate empty bar;
 - informer creation in the control panel after pass one and correct placement with no tail after `</html>` after pass two;
 - one five-star native rating row with correct normal/hover/selected states, tooltip, and voting interaction;
 - the exact live `/_st/*.css?v=...` contains a unique selector from the new theme and no rendered page loads stale design assets;

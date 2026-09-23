@@ -1,20 +1,10 @@
 ---
 name: ucoz-design-editor-skill
-version: "1.0"
-description: >
-  Redesign and restyle uCoz sites via MCP: colors, typography, CSS, header/footer,
-  global blocks, menus, forms, and module templates (blog, shop, forum, photos, users,
-  search, subscriptions). Use when the user asks to redesign, restyle, change the design
-  or CSS, or make a uCoz site look better.
-author: uCoz
-license: MIT
-requires:
-  - official ucoz-mcp for templates, FTP, modules, global blocks, menus, and forms
+version: "1.1"
+description: "Give any uCoz site a beautiful, modern makeover — safely. Refreshes the whole look and feel: colors, typography, CSS, header/footer and global blocks, menus and forms, plus a tailored restyle for every module (blog, shop, forum, photos, users, search, subscriptions). Includes a visual design system (identity extraction, style routing, typography/spacing, color tokens, component states, icons, modern CSS/JS, motion, imagery, accessibility) so every module ends up visually consistent. Works with the platform instead of against it, so pages stay pixel-perfect and unbroken. Use for any 'redesign / restyle / make my site look better / change the design or CSS' request via ucoz-mcp."
 metadata:
   hermes:
     tags: [ucoz, mcp, design, design-system, templates, css, cms]
-  compatible_agents: [Hermes, Claude Desktop, Cursor, Codex, OpenAI Agents, OpenWebUI, generic MCP clients]
-  required_mcp_servers: [ucoz-mcp]
 ---
 
 # uCoz Design Editor Skill
@@ -48,7 +38,6 @@ If the usage API is unavailable or returns an error, show a brief warning and co
 | `templates_tool` | Templates, backups, global blocks, menus, mail forms, pages |
 | `ftp_tool` | File upload/download; FTP password management |
 | `modules_tool` | Install/uninstall modules, quarantine; needs Control Panel API access |
-| `skills_tool` | Usage accounting (`register_usage`) after successful work |
 
 ## Safety checklist (before `patch_template` / `update_template`)
 
@@ -62,6 +51,7 @@ If the usage API is unavailable or returns an error, show a brief warning and co
 - [ ] Never hide `$POWERED_BY$` (including CSS tricks)
 - [ ] After save: re-`read_template` or fetch live page — `patch_template` can report success without persisting
 - [ ] Risky bulk change: check backup headroom (`list_backups`)
+- [ ] Full-page shell chrome audit after site-wide redesign: every enabled module's full HTML shells must use `/_st/…` CSS (never bare `/my.css`), matching font links, `$GLOBAL_AHEADER$`/`$GLOBAL_BFOOTER$`, theme body/layout classes, no foreign brand strings; treat Search `19/1` as high-risk orphan
 
 **Always confirm with the user first:** `update_template` on an existing template, `restore_backup`, `delete_backup`, `page_delete` / `menu_delete` / `mail_delete_form`, `module_uninstall`, `quarantine_unlock`, `ftp_password_reset` / `ftp_password_change`.
 
@@ -79,11 +69,15 @@ Details: [EDITING.md](references/EDITING.md), [ARCHITECTURE.md](references/ARCHI
 | Hide `$POWERED_BY$` | Keep visible in `BFOOTER` |
 | Grid on wrapper around `$BODY$` instead of `#allEntries` | See [SYSTEM-MARKUP.md](references/SYSTEM-MARKUP.md) |
 | Assume template markup is what the live page renders | Fetch the live page first (`#uf-register`, widgets, …) |
+| Hand-drawn SVG icon path data | Heroicons/Lucide/Tabler — [VISUAL.md](references/VISUAL.md) §4 |
+| Same default palette/style on every redesign regardless of niche | Extract existing identity first, route deliberately — [VISUAL.md](references/VISUAL.md) §1 |
+| Orphan shell with `/my.css` or foreign layout classes (esp. `19/1`) | Align shell to a known-good live template: `/_st/my.css`, theme wrappers, AHEADER/BFOOTER |
 
 ## Quick decision helper
 
 | Task | Open |
 |---|---|
+| Colors, typography, icons, tokens, motion, imagery — any "what should it look like" question | [VISUAL.md](references/VISUAL.md) |
 | Find module/template IDs | [ARCHITECTURE.md](references/ARCHITECTURE.md) → `list_modules` |
 | Header / footer / shared chrome | [GBLOCKS.md](references/GBLOCKS.md) |
 | Custom global block / `$GLOBAL_*$` | [GBLOCKS.md](references/GBLOCKS.md) |
@@ -110,23 +104,24 @@ Details: [EDITING.md](references/EDITING.md), [ARCHITECTURE.md](references/ARCHI
 1. **Locate** — `list_modules` if needed → `read_template`.
 2. **Diagnose** — `$GLOBAL_XXX$` → edit that global block; list card → Entry view template; else page template. Fetch live DOM when layout/CSS is involved.
 3. **Verify variables** — [LANGUAGE.md](references/LANGUAGE.md).
-4. **Edit** — `patch_template` (byte-exact) or confirmed `update_template`; menus/mail/pages via their APIs ([TOOLS.md](references/TOOLS.md)).
-5. **Validate** — `validate_template` for non-trivial changes.
+4. **Edit** — before writing any CSS/HTML rule, read [VISUAL.md](references/VISUAL.md) (identity extraction, style routing, non-negotiables/anti-references, typography/spacing, color tokens, component states, icons, CSS/JS toolbox, motion, imagery, accessibility). Then `patch_template` (byte-exact) or confirmed `update_template`; menus/mail/pages via their APIs ([TOOLS.md](references/TOOLS.md)).
+5. **Validate** — `validate_template` for non-trivial changes, plus the accessibility checklist in [VISUAL.md](references/VISUAL.md) §10.
 6. **Confirm** — re-read template or live page after save.
-7. **Report** — what changed (module/template/block) and any manual CP step.
+7. **Report** — what changed (module/template/block), the visual direction used (kept-and-systematized vs. replaced, per `VISUAL.md` §1.2), and any manual CP step.
 
 ## Site-wide redesign order
 
 Prefer cheapest/safest first:
 
-1. Design tokens in the CSS template / canonical stylesheet
-2. Component CSS (hardcoded values → tokens)
+1. Identity extraction and token contract ([VISUAL.md](references/VISUAL.md) §1, §3) in the CSS template / canonical stylesheet
+2. Component CSS (hardcoded values → tokens, per [VISUAL.md](references/VISUAL.md) §3.5–§3.6)
 3. Structural HTML last — and only where needed; keep JS-wired DOM shapes intact ([SYSTEM-MARKUP.md](references/SYSTEM-MARKUP.md))
 
 ## References
 
 | File | Contents |
 |---|---|
+| [VISUAL.md](references/VISUAL.md) | Visual design system: identity extraction, style routing, typography/spacing, color tokens, component states, icons, modern CSS/JS toolbox, motion, imagery, accessibility |
 | [EDITING.md](references/EDITING.md) | Patch/update, validation, backups, troubleshooting |
 | [LANGUAGE.md](references/LANGUAGE.md) | Variables and expressions |
 | [ARCHITECTURE.md](references/ARCHITECTURE.md) | Template structure, CSS strategy |

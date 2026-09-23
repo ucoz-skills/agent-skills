@@ -178,6 +178,25 @@ Do not retry `patch_template` or burn backups based on a `2301.css` check.
 
 ---
 
+## Full-page shell chrome audit
+
+Mandatory after any site-wide redesign (and after enabling modules whose shells were never adapted):
+
+1. `list_modules` / inventory every full HTML document shell (`</html>` present): Page editor pages, Users `4/1,2,3,5,6,7,8,11`, Blog/News/Publ/Photo/Video/Forum/Shop/Subscriptions public shells, **Search `19/1`**.
+2. Pick one known-good live shell (e.g. homepage or blog/shop home) as the chrome reference.
+3. For each shell `read_template` and verify:
+   - Stylesheet links are `/_st/...` (e.g. `/_st/my.css?v=…`, `/_st/shop.css` when needed) — **never** bare `/my.css`, `/css/my.css`, or stale `/.s/t/<design-id>/` assets.
+   - Keep/restore the system theme stylesheet reference the good shell uses (`/.s/src/css/2301.css` or the site's compiled `/_st/…` pattern) consistently.
+   - Font `<link>`s match the site-wide set.
+   - Public pages render exactly `$GLOBAL_AHEADER$` and `$GLOBAL_BFOOTER$`.
+   - `<body>` / layout wrapper classes match the theme (do not leave a foreign skeleton like `#layout.layout` from another project).
+   - No leftover foreign brand/site strings from stock skeletons.
+   - One visible `$POWERED_BY$` via BFOOTER; shells may keep `<?if(0)?>$POWERED_BY$<?endif?>` for the validator — never hide POWERED_BY with CSS.
+4. **`19/1` is high-risk**: Search often ships as an orphan shell with a broken `/my.css` link and unrelated layout classes. Always open `/search/?q=…` in the browser after a redesign.
+5. Fragments (`19/2`, entry views) are not full shells — style them via `3/3`, but their parent shell must still pass this audit.
+
+---
+
 ## Global block CSS must go in module 3/3
 
 Classes used in `$GLOBAL_AHEADER$`, `$GLOBAL_BFOOTER$`, and any custom `$GLOBAL_<ID>$` block that appears on non-module pages **must** be in `module 3/3`, not only in a module CSS file. Module CSS (e.g. `module 20/9`) loads only on pages of that module — rules left there will be missing on every other page type, causing the header/footer to render differently depending on the active module.

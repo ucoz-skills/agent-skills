@@ -18,13 +18,13 @@ MCP documentation: [api.ucoz.net/mcp](https://api.ucoz.net/en/mcp.html)
 
 | Skill | Description | Version |
 |-------|-------------|---------|
-| [ucoz-landing-skill](skills/ucoz-landing-skill/SKILL.md) | Generate and edit landing pages via MCP | 1.3 |
+| [ucoz-landing-skill](skills/ucoz-landing-skill/SKILL.md) | Generate and edit homepage landings via MCP (visual design system + playbook) | 1.4 |
 | [ucoz-provisioning-skill](skills/ucoz-provisioning-skill/SKILL.md) | Create or connect a uCoz site and configure MCP (uAPI, FTP, modules). Requires Playwright — see [browser-runner](skills/ucoz-provisioning-skill/browser-runner/) | 1.2 |
-| [ucoz-ad-campaign-landing-skill](skills/ucoz-ad-campaign-landing-skill/SKILL.md) | Ad creative → segment landing pages, UTM, Yandex Direct / Google Ads push | 1.0 |
+| [ucoz-ad-campaign-landing-skill](skills/ucoz-ad-campaign-landing-skill/SKILL.md) | Hyper-segmentation experiment matrix → per-segment landings + UTM, Yandex Direct drafts/packages, Metrica goals (Google Ads on request) | 2.0 |
 | [ucoz-shop-optimizer-skill](skills/ucoz-shop-optimizer-skill/SKILL.md) | Audit and improve uCoz Online Shop via MCP and uAPI | 0.6 |
 | [ucoz-site-translator-skill](skills/ucoz-site-translator-skill/SKILL.md) | Translate and localize uCoz content in place or copy/migrate to another site via MCP and uAPI | 1.0 |
-| [ucoz-design-editor-skill](skills/ucoz-design-editor-skill/SKILL.md) | Redesign and restyle a uCoz site via MCP: CSS, chrome, global blocks, menus, and module templates | 1.0 |
-| [ucoz-template-creator-skill](skills/ucoz-template-creator-skill/SKILL.md) | Create an original site-wide uCoz template via MCP: framework, CSS, modules, informers, rating, and custom Pages | 1.0 |
+| [ucoz-design-editor-skill](skills/ucoz-design-editor-skill/SKILL.md) | Redesign and restyle a uCoz site via MCP: CSS, chrome, global blocks, menus, and module templates | 1.1 |
+| [ucoz-template-creator-skill](skills/ucoz-template-creator-skill/SKILL.md) | Create an original site-wide uCoz template via MCP: framework, CSS, modules, informers, rating, and custom Pages | 1.2 |
 
 ## Installation
 
@@ -91,6 +91,8 @@ hermes skills tap add ucoz-skills/agent-skills
 ```bash
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-landing-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-provisioning-skill
+hermes skills install ucoz-skills/agent-skills/skills/ucoz-ad-campaign-landing-skill
+hermes skills install ucoz-skills/agent-skills/skills/ucoz-shop-optimizer-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-site-translator-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-design-editor-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-template-creator-skill
@@ -126,6 +128,8 @@ Install a single skill:
 ```bash
 npx skills add ucoz-skills/agent-skills --skill ucoz-landing-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-provisioning-skill
+npx skills add ucoz-skills/agent-skills --skill ucoz-ad-campaign-landing-skill
+npx skills add ucoz-skills/agent-skills --skill ucoz-shop-optimizer-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-site-translator-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-design-editor-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-template-creator-skill
@@ -139,6 +143,8 @@ Copy a skill folder into your agent skills directory:
 
 - `skills/ucoz-landing-skill`
 - `skills/ucoz-provisioning-skill` (includes `browser-runner/` for Playwright provisioning)
+- `skills/ucoz-ad-campaign-landing-skill`
+- `skills/ucoz-shop-optimizer-skill`
 - `skills/ucoz-site-translator-skill`
 - `skills/ucoz-design-editor-skill`
 - `skills/ucoz-template-creator-skill`

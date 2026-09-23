@@ -3,6 +3,7 @@
 ## Contents
 
 - Selection rule
+- Niche → direction routing
 - Editorial atelier
 - Neo-brutalist index
 - Warm craft journal
@@ -15,6 +16,29 @@
 ## Selection rule
 
 Choose a direction from the site's subject, audience, content density, and supplied brand assets. Combine at most two compatible directions. Change hierarchy and composition, not only colors. Record the selected direction in the final report.
+
+**Pick the named direction before writing any CSS.** Do not default to teal gradients, glass cards, or Inter. After selecting a direction, write non-negotiables + must-not-look-like per [VISUAL.md](VISUAL.md) before writing CSS. Typography/spacing/tokens/icons/CSS toolbox in `VISUAL.md` override soft vibe notes here when they conflict.
+
+## Niche → direction routing
+
+When the brief has no brand palette/fonts, route niche → one of the **six** directions below (pick one; offer an alt if useful). Do **not** invent a twelve-style catalog — stay inside these six. State the choice in one sentence before CSS.
+
+| Niche | Default candidates (pick one) | Only on explicit request |
+|---|---|---|
+| Clinic / medical / legal / finance | Swiss cultural grid, Editorial atelier | Neo-brutalist index |
+| Education / courses / coaching | Soft playful studio, Warm craft journal, Editorial atelier; Technical observatory for tech courses | — |
+| Construction / repair / logistics | Neo-brutalist index, Technical observatory, Swiss cultural grid | Soft playful studio |
+| Beauty / real estate / premium retail | Editorial atelier, Warm craft journal, Swiss cultural grid | — |
+| Wellness / eco / food / family | Warm craft journal, Soft playful studio | — |
+| IT / SaaS / startups / science | Technical observatory, Swiss cultural grid | Neo-brutalist index |
+| Events / kids / casual consumer | Soft playful studio, Warm craft journal | Neo-brutalist index |
+| Creative agency / portfolio / culture / photography | Swiss cultural grid, Editorial atelier | Neo-brutalist index |
+| Communities / independent media / event archives | Neo-brutalist index, Soft playful studio | — |
+| Museums / architecture / publications | Swiss cultural grid, Editorial atelier | — |
+
+**Exotic looks are opt-in only** (ask or wait for explicit request): glassmorphism, neumorphism, multi-neon cyberpunk, heavy kinetic motion. They clash with platform chrome (menus, `_uWnd`, Search) and cost more QA than they are worth as a silent default.
+
+Example framework starters in `examples/` (editorial-journal, technical-catalog, compact-community, gallery-atelier, brutalist-bulletin) illustrate compositions that map into these directions — they are not a second catalog.
 
 ## Editorial atelier
 

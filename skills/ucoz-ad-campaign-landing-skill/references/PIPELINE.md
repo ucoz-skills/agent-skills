@@ -1,170 +1,94 @@
-# Pipeline: From Brief to Ready Package
+# Pipeline v2
 
-The agent performs all steps natively. No scripts.
+## 0. Read-only audit
 
----
+Read AGENTS.md, the source materials, and the current state of uCoz, Yandex Metrica, and Yandex Direct. Record the evidence before any changes.
 
-## Branching (start)
+## 1. Brief
 
-```
-Are there ready-made ads (CSV or text)?
-├── YES → 2A: Segments from ads → COPY → landing → UTM
-└── NO  → 2B: Research → generate ads → landing → UTM
+Fill in the fields from INTAKE.md. Choose a branch:
 
-Are the ads already in the Yandex Direct / Google Ads account?
-└── ADS.md §Fetch → select → to-segment → proceed as 2A
-```
+    ready-made ads → normalization and message match
+    no ads → demand research and generation
 
----
+    publish_to_ucoz=false → local final files
+    publish_to_ucoz=true → LANDING_PLAYBOOK.md
 
-## Step 0. Brief
+    direct_surface=prepare_only → the ad package only
+    direct_surface=api → DIRECT_API.md
+    direct_surface=browser → DIRECT_BROWSER_AND_PACKAGES.md
 
-Details and questions: **[INTAKE.md](INTAKE.md)**.
+## 2. Experiment matrix
 
-Record `brief.json`:
+Build every test cell before writing HTML. Each cell has unique values for:
 
-| Field | Required | Example |
-|-------|----------|---------|
-| `niche` / `service` | yes | "Custom song composition" |
-| `geo` | yes | Moscow / Russia online |
-| `business_description` | yes | Timelines, prices, USP, constraints |
-| `keywords` | yes* | List; *empty → Wordstat/WebSearch |
-| `base_url` | for UTM | `https://site.ucoz.ru` |
-| `yandex_direct_access` | before API | `test` / `full` / `none` |
-| `landing_scale` | before page_add | `single` / `multi` / `match_ads` |
+- segment_id;
+- internal_label;
+- hypothesis;
+- slug;
+- utm_content;
+- destination_url;
+- the expected campaign name.
 
----
+Check that the public copy does not reveal internal_label.
 
-## 2A. Segments from ads (creative-first)
+## 3. Copy and keywords
 
-Have CSV or ad texts — the agent reads them and builds `segments.json` itself:
+Follow COPY.md and, when needed, RESEARCH.md. Align price, CTA, geo, and bans. For each segment, prepare two ad variants and negative keywords.
 
-1. For each row: `headline_1` → `landing.h1` (same value — message match).
-2. `page_ownurl` — transliteration from `headline_1`, 2–4 words, hyphenated:
-   ```
-   "Custom Telegram Chatbot Development" → "custom-telegram-chatbot-development"
-   ```
-3. Enrich `hero_lead`, FAQ, SEO per **[COPY.md §Landing](COPY.md)**.
-4. Segment schema: `templates/segments.manifest.example.json`.
+## 4. Landing pages
 
-Detailed CSV import: **[ADS.md §Import](ADS.md)**.
+1. Create a shared design system for the series.
+2. Generate the variant from the matrix.
+3. Check links and UTM parameters.
+4. Publish through LANDING_PLAYBOOK.md if that is allowed.
+5. Run page_get and validate_template, or record why they do not apply.
+6. Check the public URL and the sizes 320/375/768/1024+.
 
----
+Do not issue final_url before a successful publish.
 
-## 2B. Research (no ads)
+## 5. Yandex Metrica
 
-1. **Wordstat** — 3–5 seed phrases for the niche. No API → `WebSearch` on seed queries.
-2. **Competitors** — TopReplies on main keywords or WebSearch. Details: **[RESEARCH.md](RESEARCH.md)**.
-3. Cluster keywords by intent → draft segments.
-4. Next → step 3 (ad generation).
+Install the confirmed counter on every page. Follow MEASUREMENT.md and save the three status layers of each goal.
 
----
+## 6. Campaigns
 
-## Step 3. Ad generation (only for branch 2B)
+Create one campaign per test cell if that granularity is approved. Campaigns remain drafts.
 
-For each segment per **[COPY.md](COPY.md)**:
-1. Fill in segment brief per `COPY.md §Message Match`.
-2. Headline 1 = offer_core = future H1.
-3. Formats and limits: COPY.md §Formats.
-4. Self-check against COPY.md checklist.
+After creating or duplicating, reconcile the campaign, the ad group, and the ad. Check the final URL at the level of a real click, not only the campaign name.
 
----
+## 7. Package strategy
 
-## Step 4. Message match
+After every campaign in one niche has been checked:
 
-The agent checks **independently** per **[COPY.md §Message Match](COPY.md)**:
+1. get an explicit decision on the shared weekly budget;
+2. create or update the package;
+3. add only the approved campaign_id values;
+4. choose a verified goal;
+5. save them as drafts;
+6. read the package card after saving;
+7. find extra copies, but do not delete them without confirmation.
 
-```
-overlap_ratio = |significant words in headline_1 ∩ words in H1| / |significant words in headline_1|
-≥ 0.60 → pass ✓   0.35–0.59 → revise   < 0.35 → fail → rewrite H1
-```
+## 8. Final audit
 
-Status `fail` or `revise` → fix before `page_add`.
+Check:
 
----
+- URL, UTM, and message match;
+- price and CTA;
+- screenshots and responsiveness;
+- campaign_id and package_strategy_id;
+- the shared budget, the counter, and the goal;
+- absence of launch and of moderation;
+- absence of unaccounted duplicates.
 
-## Step 5. Landing on uCoz
+## 9. Handoff
 
-For **each** segment → **[LANDING_PLAYBOOK.md](LANDING_PLAYBOOK.md)**:
+Produce:
 
-1. Agent generates HTML following `LANDING_PLAYBOOK.md` + COPY.md rules.
-2. `page_list` → check if `page_ownurl` is available.
-3. Shared `/css/style.css`, `/js/script.js`, favicon, menu — **once** per site.
-4. `page_add` → get `page_id`, `url` → record in `segments.json`.
+- segments.json;
+- a “landing page → campaign → package” table;
+- before/after evidence;
+- a list of constraints and requirements before launch;
+- a short Telegram report with clickable URLs and the shared budget of the packages.
 
-Do not output `final_url` until `page_add` succeeds.
-
----
-
-## Step 6. UTM
-
-Agent builds the string using the formula:
-
-```
-{base_url}/{page_ownurl}?utm_source={source}&utm_medium=cpc
-  &utm_campaign={niche}_{geo}_{YYYYMMDD}
-  &utm_content={segment_id}
-  &utm_term={url_encoded_keyword}
-```
-
-URL-encode Cyrillic via Shell if needed:
-```bash
-python -c "import urllib.parse; print(urllib.parse.quote('keyword here'))"
-```
-
----
-
-## Step 7. API push (Yandex Direct / Google Ads) — only with permission
-
-1. Agent assembles payload per **[DIRECT_API.md](DIRECT_API.md)** / **[GOOGLE_ADS.md](GOOGLE_ADS.md)**.
-2. Shows the user exactly what will be created.
-3. Explicitly asks: "Shall we submit? Mode: sandbox / prod?"
-4. Only after confirmation — executes via Shell (`curl`).
-
-Update the URL in an existing ad: **[ADS.md §Sync](ADS.md)**.
-
----
-
-## Step 8. Final report
-
-The agent generates the OUTPUT_PACK per **[OUTPUT.md](OUTPUT.md)** from the updated `segments.json`.
-
----
-
-## Automation checklist
-
-```
-[ ] brief.json filled (niche, geo, base_url, yandex_direct_access, landing_scale)
-[ ] segments.json: 3–7 segments, headline_1 = h1, page_ownurl = transliteration
-[ ] COPY.md: texts ready, not draft
-[ ] competitor_insights filled (or explicitly "SERP unavailable")
-[ ] page_add for each segment → page_id and url recorded
-[ ] message match: pass for each segment
-[ ] final_url with UTM after page_add
-[ ] OUTPUT_PACK delivered to user
-```
-
----
-
-## Limitations
-
-| Agent does natively | Requires external |
-|---------------------|-------------------|
-| CSV → segments.json | Wordstat API (Yandex Cloud key) |
-| Landing HTML, UTM strings | OAuth tokens for Yandex Direct and Google Ads |
-| Message match, SEO, FAQ | Real API push (only with permission) |
-| OUTPUT_PACK, A/B recommendations | SERP via API (fallback — WebSearch) |
-
----
-
-## MCP order (summary)
-
-```text
-1) templates_tool(action="page_list")
-2) [research — Wordstat or WebSearch]
-3) ftp: /css/style.css, /js/script.js, /favicon.ico (once per site)
-4) For each segment:
-   templates_tool(action="page_add", page_owntmpl=1, page_ownurl=..., page_tmpl=..., meta_*)
-   [mail_* if form]
-5) templates_tool(action="page_get", page_id=<new>) → record url
-```
+The full format is OUTPUT.md.

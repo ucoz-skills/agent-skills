@@ -77,6 +77,40 @@ def lint(text: str) -> dict[str, object]:
     if not re.search(r"<link\b[^>]*href=[\"'][^\"']*/_st/my\.css\?v=[^\"']+[\"'][^>]*>", text, re.IGNORECASE):
         add(errors, "CSS_LINK", "Add a versioned /_st/my.css?v=... stylesheet link in <head>.")
 
+    if re.search(
+        r"<link\b[^>]*href=[\"'](?:/css/)?/?my\.css(?:\?[^\"']*)?[\"']",
+        text,
+        re.IGNORECASE,
+    ):
+        add(
+            errors,
+            "BARE_MY_CSS",
+            "Bare /my.css (or /css/my.css) is forbidden; use versioned /_st/my.css?v=... so compiled 3/3 styles apply.",
+        )
+
+    header_match = re.search(
+        r"<!--\s*<header>\s*-->(.*?)<!--\s*</header>\s*-->",
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    header_body = header_match.group(1) if header_match else ""
+    has_menu_placeholder = bool(re.search(r"<!--\s*<sblock_nmenu>\s*-->", text, re.IGNORECASE))
+    has_nmenu = bool(re.search(r"\$NMENU_\d+\$", text))
+    has_smenu = bool(re.search(r"\$SMENU_\d+\$", text))
+    if has_menu_placeholder and not (has_nmenu or has_smenu):
+        add(
+            warnings,
+            "MENU_VARIABLE_MISSING",
+            "sblock_nmenu is declared but neither $NMENU_N$ nor $SMENU_N$ appears; expand the placeholder or reuse a menu variable.",
+        )
+    if header_body and not (re.search(r"\$NMENU_\d+\$", header_body) or re.search(r"\$SMENU_\d+\$", header_body) or re.search(r"sblock_nmenu", header_body, re.IGNORECASE)):
+        if has_nmenu or has_smenu or has_menu_placeholder:
+            add(
+                warnings,
+                "MENU_NOT_IN_HEADER",
+                "A menu variable/placeholder exists outside header; confirm the primary nav lives in the header path ($NMENU_*$ vertical, $SMENU_*$ horizontal).",
+            )
+
     for match in BLOCK_RE.finditer(text):
         name = match.group("name").lower()
         if name.startswith("global_") and not re.fullmatch(r"global_[a-z]{1,10}", name):

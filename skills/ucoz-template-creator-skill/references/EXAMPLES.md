@@ -1,6 +1,6 @@
 # Varied implementation patterns
 
-These are optional patterns, not a house style. Choose by content and rewrite names, copy, spacing, and hierarchy. Platform rules in the other references override examples.
+These are optional patterns, not a house style. Choose by content and rewrite names, copy, spacing, and hierarchy. Platform rules in the other references override examples. Resolve colors, type pairs, spacing, and component states through `VISUAL.md` (and the selected direction in `DESIGN-DIRECTIONS.md`) — example hex stacks and font stacks are illustrative defaults, not a universal house palette. Do not default every project to Inter.
 
 ## Contents
 
@@ -71,6 +71,8 @@ See [gallery-atelier-framework.html](../examples/gallery-atelier-framework.html)
 See [brutalist-bulletin-framework.html](../examples/brutalist-bulletin-framework.html) and [brutalist-bulletin.css](../examples/brutalist-bulletin.css).
 
 All five framework files keep CSS outside the skeleton and point to `/_st/my.css?v=1`. A saved tmaker project stores the framework source, not its companion CSS file. Before publishing a chosen example, upload its matching CSS as the complete `3/3` template and run the normal backup/validation workflow.
+
+**Companion CSS link reset:** example stylesheets use `a:not([class]):not([style]){color:inherit}` for unclassed body links and style CTAs with **explicit** colors on `a.btn` / `.button` / `.cta a` — never bare `a{color:inherit}` at a scope that beats buttons. Follow the same pattern in new themes ([VISUAL.md](VISUAL.md) §3.5).
 
 ## Editorial lead story
 

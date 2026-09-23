@@ -1,29 +1,41 @@
 {
-  "niche": "Custom songs",
-  "service": "Original song turnkey",
-  "business_description": "3-day turnaround. Lyrics based on client story. Recording + instrumental. From $200.",
-  "keywords": [
-    "wedding song as a gift",
-    "birthday song as a gift",
-    "order a custom song"
-  ],
-  "wordstat_seeds": [
-    "wedding song as a gift",
-    "birthday song as a gift",
-    "order a custom song"
-  ],
-  "region_ids": null,
-  "geo": "New York",
-  "devices": "all",
-  "base_url": "https://example.ucoz.ru",
-  "utm_source": "google",
-  "utm_campaign": null,
-  "ads_csv": null,
-  "folder_id": null,
-  "max_segments": 5,
-  "wordstat_num_phrases": 20,
+  "niche": "Websites for professional services",
+  "service": "Website builder",
+  "geo": "Russia",
+  "timezone": "Europe/Moscow",
+  "business_description": "A 14-day trial, ready-made templates, and 24/7 support.",
+  "keywords": [],
+  "base_url": "https://landing.example.ru",
+  "brand_assets": {
+    "logo": "https://example.ru/logo.png",
+    "icons": "assets/icons.svg",
+    "references": ["https://example.ru/product"]
+  },
+  "landing_scale": "multi",
+  "experiment_factors": {
+    "price_visibility": ["shown", "hidden"],
+    "destination": ["signup", "thematic_templates", "all_templates"]
+  },
+  "destination_urls": {
+    "signup": "https://product.example.ru/signup",
+    "thematic_templates": "https://product.example.ru/templates/category",
+    "all_templates": "https://product.example.ru/templates/all"
+  },
+  "utm_source": "yandex",
+  "utm_medium": "cpc",
+  "utm_campaign": "product_niche_ru_yyyymmdd",
   "publish_to_ucoz": false,
-  "need_form": false,
-  "yandex_direct_access": "full",
-  "landing_scale": "multi"
+  "direct_surface": "prepare_only",
+  "direct_mode": "draft_only",
+  "direct_placements": ["search"],
+  "package_weekly_budget": null,
+  "total_weekly_cap": null,
+  "metrika_counter_id": null,
+  "optimization_goal": {
+    "event_name": null,
+    "goal_id": null,
+    "product_event_status": "needs verification",
+    "metrika_goal_status": "needs verification",
+    "direct_conversion_status": "needs verification"
+  }
 }

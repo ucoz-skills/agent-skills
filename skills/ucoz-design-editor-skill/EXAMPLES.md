@@ -4,6 +4,13 @@ Ready-to-adapt UI/JS/CSS patterns from real uCoz redesign work.
 Platform rules live in `references/`; use this file when implementing optional UI features
 (auth modal, card grids, shop tokens, dashboard shells) so you do not repeat known pitfalls.
 
+**Reading the CSS below:** literal hex values here (`#191925`, `#2a2a38`, `#e8eaed`, `#9ca3af`, …)
+are illustrative defaults for a specific example project, kept consistent across sections on
+purpose (ink / ink-hover / border / muted). Before pasting a pattern into a live project, resolve
+these through that project's own token contract — declare them once in the canonical `:root`
+(`ARCHITECTURE.md`'s token workflow, values and naming per `VISUAL.md` §3.1) and reference them
+via `var(--aa-color-…)`, rather than copying the literal hex into a second, undeclared spot.
+
 ---
 
 ## Table of contents
@@ -54,9 +61,10 @@ Add at the very end of `AHEADER`, after all existing `</script>` tags:
     <div class="nt-modal-head">
       <span class="nt-modal-title" id="nt-modal-title">Sign in</span>
       <button class="nt-modal-close" id="nt-modal-close" type="button" aria-label="Close">
-        <svg viewBox="0 0 16 16" fill="none">
-          <path d="M2 2l12 12M14 2L2 14" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round"/>
+        <!-- Heroicons "x-mark" outline, 24x24 — see VISUAL.md §4 (no hand-drawn icon paths) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
@@ -221,6 +229,7 @@ markup and load `/js/script.js` before their closing `</body>` tag. Affected tem
   appearance:none;background:transparent;border:0;color:#fff;
   cursor:pointer;line-height:1;opacity:.7;padding:4px;
 }
+.nt-modal-close svg{display:block;height:20px;width:20px} /* explicit size — SVG has no width/height attrs */
 .nt-modal-close:hover{opacity:1}
 .nt-modal-body{padding:24px 24px 28px}
 
@@ -699,6 +708,7 @@ A duplicate listener would double-toggle and immediately close the drawer.
 ```html
 <html ...>
 <head>
+  <link rel="stylesheet" href="/_st/my.css?v=1" />
   <!-- Manrope font, /_st/shop.css (manual link — module 19 does not auto-load it), $AJAX_JS$ -->
 </head>
 <body class="module-search search-page">

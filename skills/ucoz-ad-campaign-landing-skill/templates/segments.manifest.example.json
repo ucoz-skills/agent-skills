@@ -1,51 +1,74 @@
 {
   "campaign_meta": {
-    "niche": "Custom songs",
-    "geo": "United States",
-    "base_url": "https://example.ucoz.ru",
-    "utm_source": "google"
+    "niche": "Professional services",
+    "geo": "Russia",
+    "base_url": "https://landing.example.ru",
+    "utm_source": "yandex",
+    "utm_medium": "cpc",
+    "utm_campaign": "product_niche_ru_yyyymmdd",
+    "timezone": "Europe/Moscow"
+  },
+  "measurement": {
+    "counter_id": null,
+    "event_name": null,
+    "goal_id": null,
+    "product_event_status": "needs verification",
+    "metrika_goal_status": "needs verification",
+    "direct_conversion_status": "needs verification",
+    "analysis_window": null
+  },
+  "package_strategy": {
+    "id": null,
+    "name": null,
+    "weekly_budget": null,
+    "budget_scope": "shared",
+    "status": "not_created"
   },
   "segments": [
     {
-      "segment_id": "seg_wedding_gift",
-      "segment_name": "Wedding song as a gift",
-      "intent": "wedding gift",
-      "offer_core": "Wedding song as a gift — ready for the wedding in 3 days",
-      "main_keyword": "wedding song as a gift",
-      "forbidden_generic_hero": ["Custom songs", "Music studio"],
-      "page_ownurl": "wedding-song-gift",
+      "segment_id": "niche_price_signup",
+      "internal_label": "shown / signup",
+      "hypothesis": "A specific price and a direct path to signup",
+      "price_visibility": "shown",
+      "destination": "signup",
+      "destination_url": "https://product.example.ru/signup",
+      "page_ownurl": "sajt-dlya-nishi-price-signup",
+      "main_keyword": "create a website for the niche",
       "ad": {
-        "headline_1": "Wedding song as a gift",
-        "headline_2": "In 3 days · based on your story",
-        "text": "Recording + lyrics + instrumental. The perfect wedding gift."
-      },
-      "seo": {
-        "title": "Wedding song as a gift — order in 3 days",
-        "description": "Custom wedding song: lyrics based on your story, recording and instrumental track.",
-        "keywords": "wedding song as a gift, wedding song gift"
+        "headline_1": "Create a website for your practice",
+        "headline_2": "14 days free",
+        "text": "Ready-made blocks and 24/7 support. Start building the site.",
+        "cta": "Create a website"
       },
       "landing": {
-        "h1": "Wedding song as a gift",
-        "hero_lead": "A ready song for the wedding in 3 days — lyrics based on your story.",
-        "cta": "Order a song"
+        "h1": "Create a website for your practice",
+        "hero_lead": "A ready-made structure, responsive design, and 24/7 support.",
+        "public_copy_exposes_internal_label": false,
+        "screenshot_sources": []
       },
-      "message_match": { "status": "pass" },
-      "final_url": "https://example.ucoz.ru/wedding-song-gift?utm_source=google&utm_medium=cpc&utm_campaign=songs_us_20260603&utm_content=seg_wedding_gift&utm_term=wedding+song+as+a+gift",
-      "competitor_insights": {
-        "source": "research.competitors (SERP API)",
-        "items": [
-          { "domain": "example-tracks.com", "offer": "personalized gift songs", "gap": "clarify price/turnaround in our USP" }
-        ],
-        "our_angle": "From $200, 3 days, lyrics from client story — from brief.business_description"
+      "utm": {
+        "source": "yandex",
+        "medium": "cpc",
+        "campaign": "product_niche_ru_yyyymmdd",
+        "content": "niche_price_signup",
+        "term": "{keyword}"
       },
-      "test_notes": [
-        "A/B: accent on \"gift\" vs \"in 3 days\"",
-        "Evaluate CR after 30–50 clicks",
-        "Negative keywords: free, karaoke, download instrumental"
-      ],
+      "landing_url": null,
+      "final_url": null,
       "ucoz": {
         "page_id": null,
-        "published": false
+        "published": false,
+        "page_get_verified": false,
+        "validation_status": "pending"
+      },
+      "direct": {
+        "campaign_id": null,
+        "ad_group_id": null,
+        "ad_id": null,
+        "status": "not_created",
+        "campaign_url_verified": false,
+        "ad_final_url_verified": false,
+        "package_strategy_id": null
       }
     }
   ]

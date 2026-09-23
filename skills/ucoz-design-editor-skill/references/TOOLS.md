@@ -173,7 +173,7 @@ Every menu item **must** have a non-empty URL. For landing-page or anchor naviga
 | Action | Notes |
 |---|---|
 | `menu_list` | Lists all site menus |
-| `menu_create` | Creates a new menu. `layout`: `0` = horizontal, `1` = vertical |
+| `menu_create` | Creates a new menu. `layout`: `0` = horizontal, `1` = vertical — this only sets the control-panel preview default, it does **not** change which output variable renders which shape. See below. |
 | `menu_get` | Returns a menu with its items |
 | `menu_update` | Updates menu title and/or layout |
 | `menu_delete` | Deletes a menu. **Confirm with user first** — irreversible |
@@ -183,6 +183,10 @@ Every menu item **must** have a non-empty URL. For landing-page or anchor naviga
 
 - `$NMENU_<ID>$` — vertical menu with the given ID.
 - `$SMENU_<ID>$` — horizontal menu with the given ID.
+
+**The output variable, not the `layout` param, decides the rendered shape.** Match them: `layout=1` + `$NMENU_<ID>$` for a real vertical placement (sidebar, footer column, mobile drawer list); `layout=0` + `$SMENU_<ID>$` for a horizontal top nav. Using `$NMENU_<ID>$` for a horizontal header (or vice versa) still emits that variable's own fixed wrapper/list markup — you'll be fighting the wrong default list/box styles on top of the CSS pitfalls below, not just missing a class.
+
+Before restyling any existing menu block, don't assume its DOM shape from memory or from another site — confirm the current markup with `menu_get` and/or a live render of the page. The empty-`<ul>`/`uWithSubmenu` pattern below is what one theme emits; wrapper class names and nesting can differ elsewhere.
 
 ### Recommended workflow
 

@@ -1,8 +1,8 @@
-# Yandex Direct API v5 — Authorization and Quick Start
+# Yandex Direct API v5 — authorization and quick start
 
-The agent works directly with **Yandex Direct API v5** via Shell (`curl`).
+The agent works with the **Yandex Direct API v5** directly via Shell (`curl`).
 
-The token is **not the same** as `YANDEX_SEARCH_API_KEY` (Wordstat / Search API in Yandex Cloud) — a separate **OAuth token** for the Yandex Direct user account is required.
+The token **is not the same** as `YANDEX_SEARCH_API_KEY` (Wordstat / Search API in Yandex Cloud) — a separate **OAuth token** of the Direct user is required.
 
 Official documentation:
 - [Application registration](https://yandex.ru/dev/direct/doc/ru/concepts/register)
@@ -10,73 +10,73 @@ Official documentation:
 
 ---
 
-## For the agent: when the user doesn't have `YANDEX_DIRECT_TOKEN`
+## For the agent: when the user has no `YANDEX_DIRECT_TOKEN`
 
-If the variable is not set — **do not push**, but provide the user with the instructions below (briefly, with a link to this file).
+If the variable is not set — **do not run the push**; give the user the instruction below (briefly, with a link to this file).
 
 **What to tell the user (template):**
 
-> To upload campaigns to Yandex Direct you need an OAuth token `YANDEX_DIRECT_TOKEN`. Add it to `.env.local`.
+> To upload campaigns to Direct you need the OAuth token `YANDEX_DIRECT_TOKEN`. Add it to `.env.local`.
 >
-> **Quick guide:**
-> 1. Register an app at [Yandex ID](https://oauth.yandex.ru/client/new) → type **"For API access or debugging"**.
-> 2. In the **"Data access"** block add permission **"Yandex.Direct API usage"** (`direct:api`) — without it the API won't work.
-> 3. In [Yandex Direct API Settings](https://direct.yandex.ru/registered/main.pl) create an **application** (full or test access), specify the Client ID, wait for status "approved".
-> 4. Accept the **API terms of service** in Yandex Direct account (API tab).
-> 5. Get a token via the authorization link (see "Step 4" below) and add to `.env.local`:
+> **In short:**
+> 1. Register an application in [Yandex ID](https://oauth.yandex.ru/client/new) → type **“For API access or debugging”**.
+> 2. In the **“Data access”** block, add the permission **“Using the Yandex Direct API”** (`direct:api`) — without it the API will not work.
+> 3. In [Direct API settings](https://direct.yandex.ru/registered/main.pl) create an **application** (full or test access), specify the application Client ID, and wait for the status “approved”.
+> 4. Accept the API **user agreement** in the Direct account (API tab).
+> 5. Get a token via the authorization link (see “Step 4” below) and add it to `.env.local`:
 >    `YANDEX_DIRECT_TOKEN=...`
 >
-> Full details: `references/DIRECT_API.md`
+> Details: `references/DIRECT_API.md`
 
 ---
 
-## User instructions (obtaining a token)
+## Instructions for the user (obtaining a token)
 
-### What you'll need
+### What you will need
 
 | What | Why |
-|------|-----|
-| Yandex login with access to **Yandex Direct** | Token is issued on behalf of this user |
-| At least **one campaign** in Yandex Direct web interface | Otherwise the "API Settings" page won't open |
-| Registered app in **Yandex ID** | Client ID for the application and OAuth |
-| **Approved application** for Yandex Direct API access | Without approval, API requests are rejected |
+|-----|--------|
+| A Yandex login with access to **Yandex Direct** | The token is issued on behalf of this user |
+| At least **one campaign** in the Direct web interface | Otherwise the “API settings” page will not open |
+| A registered application in **Yandex ID** | Client ID for the application and for OAuth |
+| An **approved application** for Direct API access | Without approval, API requests are rejected |
 
 ---
 
-### ⚠️ Required: permissions in Yandex ID (don't confuse with the application in Yandex Direct)
+### ⚠️ Required: permissions in Yandex ID (do not confuse with the application in Direct)
 
-The **"Approved"** status is checked in **Yandex Direct** → Settings → API → "My Applications".  
-In **Yandex ID** (oauth.yandex.ru) there is **no** application status — only **app permissions**.
+The **“Approved”** status is checked in **Direct** → Settings → API → “My applications”.
+In **Yandex ID** (oauth.yandex.ru) there is **no** application status — only **application permissions**.
 
 | Where | What to configure |
-|-------|------------------|
-| **Yandex ID** → app → "Data access" | At minimum **`direct:api`** ("Yandex.Direct API usage") |
-| **Yandex Direct** → Settings → API | Application with your **Client ID** + terms of service |
+|-----|----------------|
+| **Yandex ID** → application → “Data access” | At minimum **`direct:api`** (“Using the Yandex Direct API”) |
+| **Yandex Direct** → Settings → API | An application with your **Client ID** + the offer |
 
-**Without `direct:api`:** an OAuth token may be issued, but the Yandex Direct API won't work properly.
+**Without `direct:api`:** an OAuth token may be issued, but the Direct API will not work as required.
 
-**If the permission was added later** — the old token doesn't pick up the new scopes. You need to go through OAuth again (Step 4 below) and update `YANDEX_DIRECT_TOKEN` in `.env.local`.
+**If the permission was added later** — the old token does not pick up the new scope. You need to go through OAuth again (Step 4 below) and update `YANDEX_DIRECT_TOKEN` in `.env.local`.
 
 | API error | Common cause |
-|-----------|--------------|
-| **58** Incomplete registration | No **approved application** in Yandex Direct for this Client ID |
-| **53** AccessDenied | Terms of service **not accepted** in Yandex Direct account |
-| Token exists, 58 persists | Application is on a **different** Client ID or token was created before adding `direct:api` |
+|------------|----------------|
+| **58** Incomplete registration | There is no **approved application** in Direct for this Client ID |
+| **53** AccessDenied | The API **offer** has not been accepted in the Direct account |
+| Token exists, 58 remains | The application is for a **different** Client ID, or the token predates adding `direct:api` |
 
-`passport:business` (Yandex ID organizations) is **not required** for the skill — **`direct:api`** is sufficient.
+`passport:business` (Yandex ID organizations) is **not required** for the skill — **`direct:api`** is enough.
 
 ---
 
-### Step 1 — App in Yandex ID
+### Step 1 — Application in Yandex ID
 
-1. Open [Create application](https://oauth.yandex.ru/client/new) or [app list](https://oauth.yandex.ru/).
-2. Choose type: **"For API access or debugging"** (not "Web services" for site login, if the goal is only Yandex Direct).
-3. Fill in the name and contact email.
-4. **"Data access"** block → add:
+1. Open [Create an application](https://oauth.yandex.ru/client/new) or the [application list](https://oauth.yandex.ru/).
+2. Choose the type: **“For API access or debugging”** (not “Web services” for signing in to a site, if the only goal is Direct).
+3. Fill in the name and a contact email.
+4. **“Data access”** block → add:
 
-   **Yandex.Direct API usage** — **`direct:api`** (required)
+   **Using the Yandex Direct API** — **`direct:api`** (required)
 
-   > Wordstat (`YANDEX_SEARCH_API_KEY`) — a separate key in Yandex Cloud, not this permission.
+   > Wordstat (`YANDEX_SEARCH_API_KEY`) is a separate key in Yandex Cloud, not this permission.
 
 5. Save the application.
 6. Save the **Client ID** and **Client secret** in `.env.local`:
@@ -86,112 +86,126 @@ YANDEX_DIRECT_CLIENT_ID=05c89462fef4400eb3493c4f67d9ceea
 YANDEX_DIRECT_CLIENT_SECRET=...
 ```
 
-App list: [oauth.yandex.ru](https://oauth.yandex.ru/).
+Application list: [oauth.yandex.ru](https://oauth.yandex.ru/).
 
-More details: [App registration — Yandex ID](https://yandex.ru/dev/direct/doc/ru/concepts/register#registraciya-na-servise-yandeks-id).
+More: [Application registration — Yandex ID](https://yandex.ru/dev/direct/doc/ru/concepts/register#registraciya-na-servise-yandeks-id).
 
 ---
 
-### Step 2 — Application for Yandex Direct API access
+### Step 2 — Application for Direct API access
 
-Without an approved application, a token may be issued but API calls will return an error.
+Without an approved application a token may be issued, but API calls will be rejected.
 
-1. Log in to [Yandex Direct](https://direct.yandex.ru/) under the same login that will own the campaigns.
-2. Open **Settings → API** (or [applications page](https://direct.yandex.ru/registered/main.pl)).
-3. On first visit — **accept the API terms of service**.
-4. **"New application"** → select type:
+1. Sign in to [Yandex Direct](https://direct.yandex.ru/) with the same login that will own the campaigns.
+2. Open **Settings → API** (or the [applications page](https://direct.yandex.ru/registered/main.pl)).
+3. On the first visit — **accept the API user agreement**.
+4. **“New application”** → choose the type:
    - **Full access** — manage real campaigns + sandbox;
-   - **Test access** — [sandbox](https://yandex.ru/dev/direct/doc/ru/concepts/sandbox) only (for debugging without live impressions).
-5. Enter the **Client ID** from step 1, current email, application description.
-6. Submit the application. Review time — **up to 7 business days**, check status in the **"My Applications"** tab.
+   - **Test access** — [sandbox](https://yandex.ru/dev/direct/doc/ru/concepts/sandbox) only (for debugging without production impressions).
+5. Specify the **Client ID** from step 1, a current email, and an application description.
+6. Submit the application. Review takes **up to 7 business days**; check the status on the **“My applications”** tab.
 
-### After **test** application is approved
+### After a **test** application is approved
 
-| Status in account | API host |
+| Status in the account | API host |
 |-------------------|----------|
 | **approved** + **test** access | `api-sandbox.direct.yandex.com` |
 | **approved** + **full** access | `api.direct.yandex.com` |
 
-In `.env.local` for test application:
+In `.env.local` for a test application:
 
 ```env
 YANDEX_DIRECT_USE_SANDBOX=1
 ```
 
-**Sandbox must be enabled manually:** Yandex Direct → Settings → API → **"Sandbox"** tab → **"Start sandbox"**. Without this, error **513** ("login not connected").
+**The sandbox must be enabled manually:** Direct → Settings → API → **“Sandbox”** tab → **“Start the sandbox”**. Without this, error **513** (“логин не подключен” / login is not connected).
 
-**Sandbox limitation (June 2026):** `campaigns.add` creates campaigns (DRAFT status), but `adgroups.add` may return a group ID that **does not appear** in `adgroups.get` — keywords and ads then fail with "Group not found". Workaround: in the sandbox UI **"Create test campaigns"**, or apply for **Full access** and remove `YANDEX_DIRECT_USE_SANDBOX`.
+**Sandbox limitation (June 2026):** `campaigns.add` creates campaigns (status DRAFT), but `adgroups.add` may return a group Id that **does not appear** in `adgroups.get` — keywords and ads then fail with “Группа не найдена” / “Group not found”. Workaround: in the sandbox UI **“Create test campaigns”**, or a **“Full access”** application and remove `YANDEX_DIRECT_USE_SANDBOX`.
 
-More details: [Creating an API access application](https://yandex.ru/dev/direct/doc/ru/concepts/register#create-application).
+More: [Creating an application for API access](https://yandex.ru/dev/direct/doc/ru/concepts/register#create-application).
 
 ---
 
-## Agent modes (`yandex_direct_access`)
+## Modes for the agent (`yandex_direct_access`)
 
-Before an API push the agent **asks the user** and writes to `brief.json` (see **INTAKE.md**).
+Before an API push the agent **asks the user** and writes the value to `brief.json` (see **INTAKE.md**).
 
 | `yandex_direct_access` | Agent actions |
-|------------------------|---------------|
-| **test** | Host `api-sandbox.direct.yandex.com`; ensure sandbox is enabled in UI; landings/UTM/Google — allowed |
-| **full** | Host `api.direct.yandex.com`; curl to live account (campaigns created as SUSPENDED) |
-| **none** | Provide OAuth instructions from this file; do not call API |
-| **unknown** | Ask user to check "My Applications" status in Yandex Direct account |
+|------------------------|-----------------|
+| **test** | Host `api-sandbox.direct.yandex.com`; make sure the sandbox is enabled in the UI; landings/UTM/Google — allowed |
+| **full** | Host `api.direct.yandex.com`; curl against the production account (campaigns are created SUSPENDED) |
+| **none** | Give the OAuth instructions from this file; do not call the API |
+| **unknown** | Ask the user to check the “My applications” status in the Direct account |
 
-**Do not mix:** with a test application, requests to `api.direct` will give **58**; with full access using the sandbox host — you'll hit an empty sandbox.
+**Do not mix them:** with a test application, requests to `api.direct` return **58**; with full access on the sandbox host, you end up in an empty sandbox.
+
+### Organization mode of the account
+
+A working OAuth token and a successful `clients.get` do not guarantee access to campaigns opened in the browser in organization mode.
+
+Before changing anything:
+
+1. run read-only `clients.get` and `campaigns.get`;
+2. record the client login, available roles, and the verified `Client-Login`;
+3. compare the specific campaign_id with the browser account and the `ulogin` parameter;
+4. if the API does not return a campaign, do not treat it as missing and do not try random logins;
+5. go to `DIRECT_BROWSER_AND_PACKAGES.md` or obtain officially confirmed representation.
+
+Store the token only in a local gitignored env file. Do not copy the token into evidence, commands, reports, or the skill package.
 
 ---
 
-### Step 3 — API terms of service in account (if not yet accepted)
+### Step 3 — API offer in the account (if not yet accepted)
 
-Yandex Direct → **Settings → API** → **"Accept terms of use"**.
+Yandex Direct → **Settings → API** → **“Accept the terms of use”**.
 
 Without this, **error_code 53** (AccessDenied) is common.
 
 ---
 
-### Step 4 — Get OAuth token
+### Step 4 — Get an OAuth token
 
-After **application approval**, get a token for your Client ID.
+After the **application is approved**, get a token for your Client ID.
 
-**Option A — in browser (for personal / agency account):**
+**Option A — in the browser (for a personal / agency account):**
 
-1. Substitute your Client ID in the URL (type `token` — token in address bar after redirect):
+1. Substitute your Client ID into the link (`token` type — the token is in the address bar after the redirect):
 
 ```
 https://oauth.yandex.ru/authorize?response_type=token&client_id=YOUR_CLIENT_ID
 ```
 
-2. Log in with Yandex Direct login → **Allow** access to the app.
+2. Sign in with the Direct login → **Allow** the application access.
 3. Copy the **`access_token`** value from the URL after `#` (up to `&`).
 
-**Option B — authorization code (if redirect URI is configured):**
+**Option B — a code to exchange (if a redirect URI is configured):**
 
-See [Authorization tokens](https://yandex.ru/dev/direct/doc/ru/concepts/auth-token) — `response_type=code` and server-side exchange.
+See [Authorization tokens](https://yandex.ru/dev/direct/doc/ru/concepts/auth-token) — `response_type=code` and a server-side exchange.
 
-**Agency account:** if the app acts on behalf of an agency client, additionally specify the advertiser login in env:
+**Agency account:** if the application acts on behalf of an agency client, also set the advertiser login in env:
 
 ```
-YANDEX_DIRECT_CLIENT_LOGIN=advertiser-login
+YANDEX_DIRECT_CLIENT_LOGIN=login-reklamodatelya
 ```
 
 ---
 
-### Step 5 — Save token to `.env.local`
+### Step 5 — Write the token to `.env.local`
 
 ```env
-# Yandex Direct API (user's OAuth token)
+# Yandex Direct API (OAuth token of the Direct user)
 YANDEX_DIRECT_TOKEN=AQAAAAxxxxxxxxxxxxxxxx
 # Agency only — client login:
 # YANDEX_DIRECT_CLIENT_LOGIN=client-login
 ```
 
-`.env.local` in `.gitignore` — **do not commit** the token.
+`.env.local` is in `.gitignore` — **do not commit** the token.
 
 ---
 
-### Step 6 — Verification
+### Step 6 — Check
 
-Agent verifies the token with a curl request to the API:
+The agent checks the token with a curl request to the API:
 
 ```bash
 curl -s -X POST \
@@ -201,23 +215,23 @@ curl -s -X POST \
   -d '{"method":"get","params":{"SelectionCriteria":{},"FieldNames":["Id","Name"],"Page":{"Limit":1}}}'
 ```
 
-Expected: `{"result": {"Campaigns": [...]}}`. Error 53/58 — see error table above.
+Expected: `{"result": {"Campaigns": [...]}}`. Errors 53/58 — see the error table above.
 
 ---
 
 ## Quick start (curl)
 
-Full curl commands for fetch, push, sync URL — in **[ADS.md §Fetch and §Sync](ADS.md)**.
+Full curl commands for fetch, push, and URL sync are in **[ADS.md §Fetch and §Sync](ADS.md)**.
 
-### Dry-run (show payload without sending)
+### Dry-run (show the payload without sending)
 
-Agent shows JSON payload and asks for confirmation. Only after explicit "Yes" — executes curl.
+The agent first does a read-only account check, shows the exact IDs and the JSON payload, then asks for confirmation. Only after an explicit “Yes” does it run curl.
 
-### Real push (campaign created as SUSPENDED)
+### Real push (the campaign is created SUSPENDED)
 
-See: **[ADS.md §Sync](ADS.md)** — full cycle "fetch → segment → landing → update URL".
+See: **[ADS.md §Sync](ADS.md)** — the full cycle “fetch → segment → landing → update URL”.
 
-After a successful curl, `direct.campaign_id`, `group_id`, `ad_id` are recorded in the segment.
+After a successful curl, `direct.campaign_id`, `group_id`, and `ad_id` are written to the segment.
 
 ---
 
@@ -226,13 +240,13 @@ After a successful curl, `direct.campaign_id`, `group_id`, `ad_id` are recorded 
 When building the curl payload, the agent uses these parameters from `brief.json` and `segments.json`:
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+|----------|-------------|----------|
 | `campaign.Name` | `niche \| geo` | Campaign name |
 | `campaign.StartDate` | today | YYYY-MM-DD |
-| `dailyBudget.Amount` | 1000 | Daily budget, ₽ (in micro-units ×1,000,000) |
-| `strategy.avgCpc` | 10.0 | Average CPC, ₽ |
-| `campaign.GeoTargeting` | `russia` | Alias or region ID |
-| Status | `SUSPENDED` | Campaign always created as suspended |
+| `dailyBudget.Amount` | 1000 | Daily budget, ₽ (in micro-units ×1 000 000) |
+| `strategy.avgCpc` | 10.0 | Average cost per click, ₽ |
+| `campaign.GeoTargeting` | `russia` | Region alias or ID |
+| Status | `SUSPENDED` | The campaign is always created suspended |
 
 ### Regions (aliases)
 
@@ -246,25 +260,25 @@ When building the curl payload, the agent uses these parameters from `brief.json
 
 ---
 
-## Common errors
+## Typical errors
 
 | Symptom | Cause | What to do |
-|---------|-------|------------|
+|---------|---------|-------------|
 | No `YANDEX_DIRECT_TOKEN` | Not added to `.env.local` | Instructions above, steps 1–6 |
-| HTTP 401 | Expired or invalid token | Get new token (step 4) |
-| error_code **53** | Terms of service not accepted | Step 3 |
-| error_code **58** | No permission for another account | `YANDEX_DIRECT_CLIENT_LOGIN` |
-| Application not approved | API closed for Client ID | Wait for "approved" in "My Applications" |
-| No `direct:api` permission in app | Wrong scope in Yandex ID | Step 1 — add **Yandex.Direct API usage** |
-| No `final_url` | Landing not published | `page_add` → UTM → then push |
+| HTTP 401 | Expired or invalid token | Get a new token (step 4) |
+| error_code **53** | API offer not accepted | Step 3 |
+| error_code **58** | No rights to someone else’s account | `YANDEX_DIRECT_CLIENT_LOGIN` |
+| Application not approved | API is closed for the Client ID | Wait for “approved” in “My applications” |
+| No `direct:api` permission on the application | Wrong scope in Yandex ID | Step 1 — add **Using the Yandex Direct API** |
+| No `final_url` | Landing is not published | `page_add` → UTM → then push |
 
 ---
 
-## Pipeline order
+## Order in the pipeline
 
 ```
 page_add → UTM (PIPELINE.md §6) → [show payload → permission] → curl push (SUSPENDED)
-  → user tops up account → enables manually → statistics
+  → the user tops up the account → enables it manually → statistics
 ```
 
-**Rule:** do not push without `final_url`.
+**Rule:** do not run a push without `final_url`.
