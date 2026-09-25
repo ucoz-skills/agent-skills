@@ -1,6 +1,6 @@
 ---
 name: ucoz-design-editor-skill
-version: "1.1"
+version: "1.2"
 description: "Give any uCoz site a beautiful, modern makeover — safely. Refreshes the whole look and feel: colors, typography, CSS, header/footer and global blocks, menus and forms, plus a tailored restyle for every module (blog, shop, forum, photos, users, search, subscriptions). Includes a visual design system (identity extraction, style routing, typography/spacing, color tokens, component states, icons, modern CSS/JS, motion, imagery, accessibility) so every module ends up visually consistent. Works with the platform instead of against it, so pages stay pixel-perfect and unbroken. Use for any 'redesign / restyle / make my site look better / change the design or CSS' request via ucoz-mcp."
 metadata:
   hermes:
@@ -140,6 +140,6 @@ Prefer cheapest/safest first:
 
 ## Setup
 
-Requires MCP env: `UCOZ_API_TOKEN`, `UCOZ_SITE_URL`, `UCOZ_FTP_HOST`, `UCOZ_FTP_USER`, `UCOZ_FTP_PASS`.
-`modules_tool` and most admin actions need Control Panel settings access on the API key.
+Requires connected remote MCP at `https://www.ucoz.com/mcp` (Control Panel auth), then `select_site` for the target site.
+Some admin actions need sufficient account/site permissions after authorization.
 This skill assumes `ucoz-mcp` is already connected.

@@ -1,7 +1,7 @@
 {
   "name": "ucoz",
-  "version": "1.7.0",
-  "description": "Generate uCoz landing pages, provision new or existing sites, translate and localize site content, restyle site design, create original site templates, and manage templates, menus, FTP files, and mail forms. Includes landing, provisioning, translator, design editor, and template creator skills plus ucoz-mcp server.",
+  "version": "1.8.0",
+  "description": "Generate uCoz landing pages, translate and localize site content, restyle site design, create original site templates, and manage templates, menus, and mail forms via remote MCP. Includes landing, translator, design editor, template creator, shop, and ad campaign skills plus ucoz-mcp.",
   "author": {
     "name": "uCoz",
     "url": "https://www.ucoz.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "uCoz",
     "shortDescription": "Build uCoz landing pages and manage your site from Codex",
-    "longDescription": "Generate uCoz landing pages, provision new or existing sites, translate or localize site content, restyle site design, and create original site templates with AI. Includes the Landing skill for hero sections, lead forms, SEO, and menus; the Provisioning skill for site setup, uAPI, FTP, and MCP config; the Site Translator skill for in-place translation and cross-site migration; the Design Editor skill for CSS, chrome, and module templates; the Template Creator skill for site-wide frameworks via tmaker; plus ucoz-mcp for templates, FTP uploads, mail forms, and site modules.",
+    "longDescription": "Generate uCoz landing pages, translate or localize site content, restyle site design, and create original site templates with AI. Connect remote ucoz-mcp (https://www.ucoz.com/mcp), then use landing, shop, translator, design editor, template creator, and ad campaign skills.",
     "developerName": "uCoz",
     "category": "Coding",
     "capabilities": [
@@ -35,8 +35,7 @@
     "termsOfServiceURL": "https://www.ucoz.com/terms/",
     "defaultPrompt": [
       "Build a landing page for my uCoz site with a hero section and lead form",
-      "Create a new uCoz site and connect MCP with uAPI and FTP",
-      "Provision my existing uCoz site for MCP integration",
+      "List my uCoz sites and select one for editing",
       "Update my uCoz homepage as a promo landing page with SEO and mobile menu",
       "Translate the latest news posts into English and keep the URLs unchanged",
       "Restyle my uCoz site: modern colors, typography, header and footer",

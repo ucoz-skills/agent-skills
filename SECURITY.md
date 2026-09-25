@@ -2,20 +2,17 @@
 
 ## Scope
 
-This repository contains Agent Skills and a browser-automation runner for the
-official uCoz platform (ucoz.ru / ucoz.com ).
+This repository contains official uCoz Agent Skills and IDE plugin packaging.
+Runtime access to sites goes through the official remote MCP at
+`https://www.ucoz.com/mcp` (Control Panel authorization).
 
 ## How credentials are handled
 
-- `UCOZ_EMAIL` and `UCOZ_PASSWORD` are used **only** to authenticate with the
-  official uCoz control panel. The runner validates `UCOZ_ORIGIN` against an
-  explicit allowlist before any credential is used.
-- All secrets in stdout are redacted by default (`OUTPUT_SECRETS=false`).
-- `provision-new-site.mjs` passes only explicitly allowed environment variables
-  to the child process — never the full `process.env`.
-- No credentials are sent to third-party services.
+- Client MCP configs in this repository contain only the public MCP URL.
+- Do not commit API tokens, passwords, cookies, or Control Panel session data.
+- No credentials from this repository are sent to third-party services.
 
-## Runtime dependencies
+## Reporting
 
-The browser runner installs `playwright` and `dotenv` as npm dependencies
-at setup time (one-time, local only). This is intentional and documented.
+Report security issues via [uCoz support](https://www.ucoz.com/). Do not open a
+public issue that includes secret values.

@@ -1,6 +1,6 @@
 ---
 name: ucoz-site-translator-skill
-version: "1.0"
+version: "1.1"
 description: >
   Translate and localize uCoz site content via MCP and uAPI: module materials and categories,
   design templates and global blocks, site menus, Page Editor pages, and associated images.
@@ -19,7 +19,7 @@ metadata:
 
 # uCoz Site Translator Skill
 
-Version: 1.0
+Version: 1.1
 
 ## Rule 0 — Usage accounting
 
@@ -64,7 +64,7 @@ Authorization: Bearer <API_KEY_FROM_UCOZ_MCP>
 
 If the site value from MCP already includes protocol or path, normalize it to the site host before adding `/uapi`. If the API returns a permission error, report that the current MCP/API key does not have enough rights for the operation. Do not ask for another key unless MCP context is unavailable.
 
-For cross-site copy/migration, require two clearly named and separate authenticated contexts: source and target (for example `ucoz-source` and `ucoz-target`), so tool calls cannot be confused. Read [references/SETUP.md](references/SETUP.md) for example configuration. If the client has no protected secret/configuration UI, stop and provide the required environment variable names (`UCOZ_API_TOKEN`, `UCOZ_SITE_URL`, and optional FTP variables) for the user to configure outside the conversation.
+For cross-site copy/migration, use one remote MCP connection and switch sites with `select_site` (source for reads, target for writes). See [references/SETUP.md](references/SETUP.md). Never ask for API tokens in ordinary chat.
 
 ## Scope gate before translation
 

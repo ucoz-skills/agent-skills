@@ -4,26 +4,25 @@
 
 # uCoz Agent Skills
 
-Official [Agent Skills](https://agentskills.io) for AI agents working with uCoz: landing pages, site provisioning, ad campaigns, shop optimization, site translation, design restyling, and original site templates.
+Official [Agent Skills](https://agentskills.io) for AI agents working with uCoz: landing pages, ad campaigns, shop optimization, site translation, design restyling, and original site templates.
 
-Each skill ships with the [ucoz-mcp](https://www.npmjs.com/package/ucoz-mcp) server — install the plugin once and get both instructions and tools.
+Each skill ships with the [uCoz remote MCP](https://www.ucoz.com/mcp) — install the plugin once and get both instructions and tools. Create or select a site via MCP (`create_site` / `list_sites` / `select_site`).
 
 > **Security:** Credentials are used only with the official uCoz platform.
 > See [SECURITY.md](SECURITY.md) for the full security policy.
 
 Website catalog: [ucoz.com/ai/skills](https://www.ucoz.com/ai/skills)  
-MCP documentation: [api.ucoz.net/mcp](https://api.ucoz.net/en/mcp.html)
+MCP documentation: [api.ucoz.net/mcp](https://api.ucoz.net/en/mcp.html) · Public MCP repo: [ucoz-skills/ucoz-mcp](https://github.com/ucoz-skills/ucoz-mcp)
 
 ## Available skills
 
 | Skill | Description | Version |
 |-------|-------------|---------|
 | [ucoz-landing-skill](skills/ucoz-landing-skill/SKILL.md) | Generate and edit homepage landings via MCP (visual design system + playbook) | 1.4 |
-| [ucoz-provisioning-skill](skills/ucoz-provisioning-skill/SKILL.md) | Create or connect a uCoz site and configure MCP (uAPI, FTP, modules). Requires Playwright — see [browser-runner](skills/ucoz-provisioning-skill/browser-runner/) | 1.2 |
 | [ucoz-ad-campaign-landing-skill](skills/ucoz-ad-campaign-landing-skill/SKILL.md) | Hyper-segmentation experiment matrix → per-segment landings + UTM, Yandex Direct drafts/packages, Metrica goals (Google Ads on request) | 2.0 |
 | [ucoz-shop-optimizer-skill](skills/ucoz-shop-optimizer-skill/SKILL.md) | Audit and improve uCoz Online Shop via MCP and uAPI | 0.6 |
-| [ucoz-site-translator-skill](skills/ucoz-site-translator-skill/SKILL.md) | Translate and localize uCoz content in place or copy/migrate to another site via MCP and uAPI | 1.0 |
-| [ucoz-design-editor-skill](skills/ucoz-design-editor-skill/SKILL.md) | Redesign and restyle a uCoz site via MCP: CSS, chrome, global blocks, menus, and module templates | 1.1 |
+| [ucoz-site-translator-skill](skills/ucoz-site-translator-skill/SKILL.md) | Translate and localize uCoz content in place or copy/migrate to another site via MCP and uAPI | 1.1 |
+| [ucoz-design-editor-skill](skills/ucoz-design-editor-skill/SKILL.md) | Redesign and restyle a uCoz site via MCP: CSS, chrome, global blocks, menus, and module templates | 1.2 |
 | [ucoz-template-creator-skill](skills/ucoz-template-creator-skill/SKILL.md) | Create an original site-wide uCoz template via MCP: framework, CSS, modules, informers, rating, and custom Pages | 1.2 |
 
 ## Installation
@@ -36,7 +35,7 @@ Install from GitHub — skills and MCP are configured together via [`.cursor-plu
 
 Or submit the repo at [cursor.directory/plugins/new](https://cursor.directory/plugins/new).
 
-After install, open **Settings → Tools & MCP** and set environment variables for `ucoz-mcp` (see [MCP setup](#mcp-setup)).
+After install, open **Settings → Tools & MCP** and authorize the bundled remote `ucoz-mcp` (see [MCP setup](#mcp-setup)).
 
 ### Codex (skills + MCP)
 
@@ -44,7 +43,7 @@ After install, open **Settings → Tools & MCP** and set environment variables f
 
 **Codex CLI** — run `/plugins`, select **uCoz**, and choose **Install Plugin**.
 
-Skills load from `skills/`; MCP config is read from [`.mcp.json`](.mcp.json) via [`.codex-plugin/plugin.json`](.codex-plugin/plugin.json). Set uCoz environment variables in Codex MCP settings (see [MCP setup](#mcp-setup)).
+Skills load from `skills/`; MCP config is read from [`.mcp.json`](.mcp.json) via [`.codex-plugin/plugin.json`](.codex-plugin/plugin.json). Authorize remote MCP in Codex settings (see [MCP setup](#mcp-setup)).
 
 ### Antigravity (IDE + CLI)
 
@@ -68,7 +67,7 @@ Installs skill folders to `~/.agents/skills/` (discovered by Antigravity IDE). F
 
 **Workspace-only install** — copy skill folders into `.agents/skills/` at your project root.
 
-After install, set `UCOZ_*` environment variables for MCP (see [MCP setup](#mcp-setup)). When using the plugin path, MCP is bundled from [`mcp_config.json`](mcp_config.json); otherwise merge that file into `~/.gemini/config/mcp_config.json`.
+After install, authorize the bundled remote MCP (see [MCP setup](#mcp-setup)). When using the plugin path, MCP is bundled from [`mcp_config.json`](mcp_config.json); otherwise merge that file into `~/.gemini/config/mcp_config.json`.
 
 Validate a local clone before installing:
 
@@ -90,7 +89,6 @@ hermes skills tap add ucoz-skills/agent-skills
 
 ```bash
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-landing-skill
-hermes skills install ucoz-skills/agent-skills/skills/ucoz-provisioning-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-ad-campaign-landing-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-shop-optimizer-skill
 hermes skills install ucoz-skills/agent-skills/skills/ucoz-site-translator-skill
@@ -127,7 +125,6 @@ Install a single skill:
 
 ```bash
 npx skills add ucoz-skills/agent-skills --skill ucoz-landing-skill
-npx skills add ucoz-skills/agent-skills --skill ucoz-provisioning-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-ad-campaign-landing-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-shop-optimizer-skill
 npx skills add ucoz-skills/agent-skills --skill ucoz-site-translator-skill
@@ -142,7 +139,6 @@ npx skills add ucoz-skills/agent-skills --skill ucoz-template-creator-skill
 Copy a skill folder into your agent skills directory:
 
 - `skills/ucoz-landing-skill`
-- `skills/ucoz-provisioning-skill` (includes `browser-runner/` for Playwright provisioning)
 - `skills/ucoz-ad-campaign-landing-skill`
 - `skills/ucoz-shop-optimizer-skill`
 - `skills/ucoz-site-translator-skill`
@@ -159,21 +155,11 @@ Copy a skill folder into your agent skills directory:
 
 The repo includes [`.mcp.json`](.mcp.json) — bundled automatically when you install the **Cursor**, **Codex**, **Claude Code**, or **Antigravity** plugin.
 
-MCP runs via stdio:
+Remote MCP (Control Panel auth — no API key in client config):
 
-```bash
-npx -y ucoz-mcp@latest
 ```
-
-Set these environment variables in your IDE MCP settings:
-
-| Variable | Description |
-|----------|-------------|
-| `UCOZ_API_TOKEN` | uAPI token from control panel |
-| `UCOZ_SITE_URL` | Site URL, e.g. `https://example.ucoz.net/` |
-| `UCOZ_FTP_HOST` | FTP host |
-| `UCOZ_FTP_USER` | FTP username |
-| `UCOZ_FTP_PASS` | FTP password |
+https://www.ucoz.com/mcp
+```
 
 Example MCP config (also in [`.mcp.json`](.mcp.json) and [`mcp_config.json`](mcp_config.json)):
 
@@ -181,28 +167,27 @@ Example MCP config (also in [`.mcp.json`](.mcp.json) and [`mcp_config.json`](mcp
 {
   "mcpServers": {
     "ucoz-mcp": {
-      "command": "npx",
-      "args": ["-y", "ucoz-mcp@latest"],
-      "env": {
-        "UCOZ_API_TOKEN": "your-token",
-        "UCOZ_SITE_URL": "https://your-site.ucoz.net/",
-        "UCOZ_FTP_HOST": "your-site.ucoz.net",
-        "UCOZ_FTP_USER": "your-ftp-login",
-        "UCOZ_FTP_PASS": "your-ftp-password"
-      }
+      "url": "https://www.ucoz.com/mcp"
     }
   }
 }
 ```
 
+After connecting, authorize in the Control Panel, then `list_sites` → `select_site` (or `create_site`). More connect docs: [ucoz-skills/ucoz-mcp](https://github.com/ucoz-skills/ucoz-mcp). Official Registry: `io.github.ucoz-skills/ucoz-mcp`.
+
 ### MCP tools
 
 | Tool | Purpose |
 |------|---------|
-| `templates_tool` | Page templates, menus, mail forms, backups |
-| `ftp_tool` | Upload CSS/JS/images, manage site files |
-| `modules_tool` | Install modules, quarantine/indexing |
-| `tmaker_tool` | Template frameworks: generate, validate, and publish site-wide designs |
+| `list_sites` / `select_site` / `create_site` | Account: list, select, or create a site |
+| `templates_tool` | Templates, menus, mail forms, pages, backups |
+| `tmaker_tool` | Whole-site design skeleton |
+| `content_tool` | Content modules |
+| `shop_tool` | Online shop |
+| `files_tool` | Site file manager |
+| `ftp_tool` | FTP password management only |
+| `modules_tool` | Modules, uAPI, quarantine |
+| `skills_tool` | Official agent skills |
 
 ## License
 

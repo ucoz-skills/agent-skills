@@ -1,83 +1,40 @@
 # Configure access to uCoz sites
 
-This skill never configures credentials itself. The user sets them up in the client's own MCP/secret configuration, outside the chat. The examples below show the shape of that configuration for common clients.
+Connect the official remote MCP, then select sites with MCP tools. Do not put API tokens in chat.
 
-## In-place translation (one site)
-
-Requires a single existing `ucoz-mcp` connection. If the client already has it configured, nothing else is needed.
-
-Example MCP client config entry (adjust to the actual client's config file, e.g. `claude_desktop_config.json` or a project `.mcp.json`):
+## Connect remote MCP
 
 ```json
 {
   "mcpServers": {
     "ucoz-mcp": {
-      "command": "npx",
-      "args": ["-y", "ucoz-mcp@latest"],
-      "env": {
-        "UCOZ_SITE_URL": "https://example-site.ucoz.net",
-        "UCOZ_API_TOKEN": "***"
-      }
+      "url": "https://www.ucoz.com/mcp"
     }
   }
 }
 ```
 
-The exact `command`/`args` for the official uCoz MCP server come from uCoz's own documentation (`https://api.ucoz.net/mcp.html`), not from this skill. Never paste a real token into chat; put it directly in the client's config or secret store.
+Authorize through the uCoz Control Panel when prompted. Docs: https://github.com/ucoz-skills/ucoz-mcp
+
+## In-place translation (one site)
+
+1. Ensure `ucoz-mcp` is connected and authorized.
+2. `list_sites` → `select_site` for the site to translate.
+3. Run discovery (read-only) before writes.
 
 ## Cross-site migration (two sites)
 
-Requires two separate, distinctly named connections so tool calls cannot be confused: one read-only (source), one read-write (target).
+One remote MCP connection serves the account. Switch the active site explicitly:
 
-### Option A — two MCP connections
+1. `list_sites` — note source and target `site_id` values.
+2. Before every **read** from the source: `select_site` → source id.
+3. Before every **write** to the target: `select_site` → target id.
+4. Say aloud which site is selected before destructive writes.
 
-```json
-{
-  "mcpServers": {
-    "ucoz-source": {
-      "command": "npx",
-      "args": ["-y", "ucoz-mcp@latest"],
-      "env": {
-        "UCOZ_SITE_URL": "https://source-site.ucoz.net",
-        "UCOZ_API_TOKEN": "***source-token***"
-      }
-    },
-    "ucoz-target": {
-      "command": "npx",
-      "args": ["-y", "ucoz-mcp@latest"],
-      "env": {
-        "UCOZ_SITE_URL": "https://target-site.ucoz.net",
-        "UCOZ_API_TOKEN": "***target-token***",
-        "UCOZ_FTP_HOST": "ftp.target-site.ucoz.net",
-        "UCOZ_FTP_USER": "***",
-        "UCOZ_FTP_PASS": "***"
-      }
-    }
-  }
-}
-```
+If the client cannot keep a reliable select_site workflow, stop and ask the user to confirm source/target ids before continuing.
 
-FTP variables are only needed when template/global-block static assets must move; omit them otherwise.
-
-### Option B — direct uAPI via environment variables
-
-Use this only when the client cannot run a second MCP server instance and a direct uAPI call is unavoidable (see [UAPI.md](UAPI.md)):
-
-```
-UCOZ_SITE_URL=https://target-site.ucoz.net
-UCOZ_API_TOKEN=***target-token***
-UCOZ_FTP_HOST=ftp.target-site.ucoz.net   # optional
-UCOZ_FTP_USER=***                         # optional
-UCOZ_FTP_PASS=***                         # optional
-```
-
-Set these in the client's environment/secret configuration (shell profile, `.env` loaded outside the conversation, or the client's secret manager) — never inline in a chat message.
-
-## What each token needs
-
-- `UCOZ_API_TOKEN`: the site's uAPI bearer token, scoped to the modules being translated/migrated (materials, categories, pages, templates, menus as applicable).
-- `UCOZ_FTP_*`: only for moving static template/global-block assets that live outside uAPI-managed storage.
+Static assets: use `files_tool` on the selected site (not local FTP env vars). FTP password management only: `ftp_tool`.
 
 ## Verifying the setup
 
-Ask the assistant to run a read-only discovery call (e.g. list modules or read one material) against each named connection before any write. A successful, correctly-scoped read confirms the token and site URL are wired to the right connection name.
+Run a read-only call (e.g. `modules_tool` → `active_mods` or list materials) after each `select_site` before writes.

@@ -4,14 +4,14 @@ Use this workflow to copy selected pages, templates/global blocks, menus, catego
 
 ## Establish two safe connections
 
-Require two unambiguous contexts:
+Require two unambiguous contexts on the same remote MCP account:
 
-- **source** — site URL and authenticated uCoz MCP/uAPI access; treat as read-only;
-- **target** — site URL and a separately authenticated MCP/uAPI connection; use for writes.
+- **source** — `site_id` treated as read-only;
+- **target** — `site_id` used for writes.
 
-Ask the user to configure target credentials through the client’s protected MCP/secret settings. Required values are `UCOZ_API_TOKEN` and `UCOZ_SITE_URL`; add `UCOZ_FTP_HOST`, `UCOZ_FTP_USER`, and `UCOZ_FTP_PASS` when static files or FTP-hosted template assets must move. Never request live credentials in ordinary chat, include them in reports, or store them in the skill/project.
+Call `select_site` before each phase so reads and writes cannot be confused. Use `files_tool` for static assets on the selected site. Never request live credentials in ordinary chat, include them in reports, or store them in the skill/project.
 
-Verify the site host before every write. Stop if source and target contexts cannot be distinguished reliably.
+Verify the selected site (e.g. `list_sites` / a read-only call) before every write. Stop if source and target cannot be distinguished reliably.
 
 ## Gather migration choices
 

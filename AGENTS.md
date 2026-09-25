@@ -13,7 +13,7 @@ Keep **one** `AGENTS.md` at the repository root only. Do not add `AGENTS.md` ins
 
 ## Purpose
 
-Official Agent Skills + plugin packaging for uCoz: landing pages, provisioning, ad campaigns, shop optimization, translation, design restyling, and original templates — all intended to run with the **official** `ucoz-mcp` server (`npx -y ucoz-mcp@latest`). Do not document or recommend fork/unofficial MCP servers.
+Official Agent Skills + plugin packaging for uCoz: landing pages, ad campaigns, shop optimization, translation, design restyling, and original templates — all intended to run with the **official** remote MCP (`https://www.ucoz.com/mcp`). Do not document or recommend fork/unofficial MCP servers. Site create/select is via MCP tools (`create_site` / `list_sites` / `select_site`), not a separate provisioning skill.
 
 ## Layout
 
@@ -21,7 +21,7 @@ Official Agent Skills + plugin packaging for uCoz: landing pages, provisioning, 
 skills/<skill-id>/
   SKILL.md          # required entrypoint (agentskills.io)
   references/       # optional deep playbooks (preferred over bloating SKILL.md)
-  examples/ assets/ scripts/ templates/ browser-runner/  # as needed per skill
+  examples/ assets/ scripts/ templates/  # as needed per skill
 ```
 
 Skill IDs and folder names use kebab-case and match frontmatter `name` (e.g. `ucoz-landing-skill`).
@@ -31,7 +31,7 @@ Plugin / catalog surfaces that must stay aligned when adding or renaming a skill
 - Explicit skill lists: `.cursor-plugin/plugin.json`, `skills.sh.json`
 - Mostly version/description alignment: root `plugin.json`, `.codex-plugin/plugin.json` (scans `./skills/`), `.claude-plugin/marketplace.json`
 - README “Available skills” table and install examples
-- Root MCP configs: `.mcp.json`, `mcp_config.json` (official `ucoz-mcp` only)
+- Root MCP configs: `.mcp.json`, `mcp_config.json` (official remote `https://www.ucoz.com/mcp` only)
 
 Human install/security docs: `README.md`, `SECURITY.md`. Prefer pointing agents there over copying long install text into this file.
 
