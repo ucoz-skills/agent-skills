@@ -134,7 +134,7 @@ System legal text (`$RECURRENT_CHARGE_INFO$`, `.aa-subs-checkout-note`) must not
 
 ## CSS strategy
 
-For a full subscription landing redesign: use one canonical external FTP file (e.g. `/css/style.css`) linked with `?v=` in every rewritten shell template. Do NOT maintain a competing theme in `25/8` — it overrides external design and restores system blue buttons.
+For a full subscription landing redesign: use one canonical external file uploaded via `files_tool` (e.g. `/css/style.css`) linked with `?v=` in every rewritten shell template. Do NOT maintain a competing theme in `25/8` — it overrides external design and restores system blue buttons.
 
 Never add `<style>` blocks to HTML templates. Add JavaScript only when necessary and only after confirming it does not duplicate module logic.
 

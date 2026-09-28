@@ -21,15 +21,15 @@ Landing HTML is published in `page_tmpl`, not in `page_message`.
 
 ## 2) Core principles (mandatory)
 
-1. Work only through MCP tools (`templates_tool`, `ftp_tool`, `modules_tool`) — no manual assumptions. For the home page: read via `page_list`, `page_get`; first publish via `page_update` with full `page_tmpl`; **any HTML edits to an existing landing** via `patch_template` (`module_id=2`, `template_id=1`), **not** `update_template` and **not** full `page_tmpl` rewrite via `page_update`. SEO fields (`page_meta_*`) may be updated via `page_update` without `page_tmpl` for targeted meta-only changes.
+1. Work only through MCP tools (`templates_tool`, `files_tool`, `modules_tool`) — no manual assumptions. For the home page: read via `page_list`, `page_get`; first publish via `page_update` with full `page_tmpl`; **any HTML edits to an existing landing** via `patch_template` (`module_id=2`, `template_id=1`), **not** `update_template` and **not** full `page_tmpl` rewrite via `page_update`. SEO fields (`page_meta_*`) may be updated via `page_update` without `page_tmpl` for targeted meta-only changes.
 2. Use `validate_template` only when the user explicitly asks — do not run automatically.
 3. Do not remove or break uCoz variables and system constructs.
 4. Do not remove `$POWERED_BY$`; it must appear after `</body>`.
 5. Do not use a static year in the footer; use `$YEAR$`.
 6. For menus, use only menu actions + `$NMENU_N$` variables (this playbook standardizes vertical menus).
 7. Create a contact form only if the user explicitly requested a form in the prompt; if needed — use only `mail_*` actions + `$MFORM_N$` output. Before `mail_*`, verify the mail forms module is active (`modules_tool`); if inactive — install via `module_install` yourself; do not ask the user to enable the module in the panel.
-8. Put landing styles in a separate `style.css` file and upload to `/css` on the site.
-9. Put landing scripts in a separate `script.js` file and upload to `/js` on the site.
+8. Put landing styles in a separate `style.css` file and upload to the `css` folder (URL `/css/style.css`) via `files_tool`.
+9. Put landing scripts in a separate `script.js` file and upload to the `js` folder (URL `/js/script.js`) via `files_tool`.
 10. Version CSS/JS URLs (`?v=<ASSET_VERSION>`) and bump the version on every file change.
 11. The landing must be responsive: correct behavior at least at 320/375/768/1024+ px.
 12. Add Open Graph and Twitter Card meta tags in `<head>`.
@@ -39,7 +39,7 @@ Landing HTML is published in `page_tmpl`, not in `page_message`.
 16. Keep text in readable UTF-8 in HTML; do not encode Cyrillic (or other text) as HTML entities like `&#1057;...` unless technically required.
 17. After adding a mail form, override the default uCoz success modal window styles to match the landing. The window uses a 9-slice border model — reset `background-image` on all 9 frame parts (`.xw-tl`, `.xw-tr`, `.xw-tc`, `.xw-ml`, `.xw-mr`, `.xw-mc`, `.xw-bl`, `.xw-br`, `.xw-bc`), and override `.xw-shadow`, `.xw-sps`, `.xw-hdr`, `.xw-hdr-text`, `.xw-body`, `.myWinCont`, `.myWinCont b`, `.myWinFooter`, `.xt-close`, `.xt-close2`, `.xw-blank`, `.xw-disabled`. See step 4.1, item 7 for the full table.
 18. On mobile (≤768 px), hide the navigation menu and replace it with a burger button. Toggle logic goes in `script.js`, styles in `style.css`, button markup in the template HTML.
-19. Logo and favicon must be visually identical. Generate the favicon programmatically from the SVG logo used in the landing header. Upload to FTP as `/favicon.ico`, link in `<head>` with `<link rel="icon">`. On FTP errors, first obtain/create credentials via `ftp_tool` (`ftp_password_get` → `ftp_password_set` / `ftp_password_change` if needed); only if MCP cannot issue a password (missing API key permissions) — save `favicon.ico` locally and notify the user.
+19. Logo and favicon must be visually identical. Generate the favicon programmatically from the SVG logo used in the landing header. Upload to the site root as `favicon.ico` via `files_tool(action="upload")` with `content_base64`, link in `<head>` with `<link rel="icon">`. If the upload fails — save `favicon.ico` locally and notify the user.
 20. For `patch_template`: copy `code_search` **byte-for-byte** from `read_template` (module_id=2, template_id=1) — spaces, tabs, and line breaks matter; the fragment must match exactly once. `code_paste=""` deletes the fragment. Auto-backup runs before `patch_template` and `update_template`.
 21. Before writing any CSS/HTML (Step 4), read `references/VISUAL.md` and follow its style selection, layout/grid, section layout recipes, typography/spacing floor, color tokens, component states, icon rule, CSS/JS toolbox, motion, imagery, social proof, copy/voice, and accessibility rules. This applies even when the user gave brand colors/fonts in Step 0 — `VISUAL.md` still governs the typography floor, token structure, icon source, and technique tiers on top of the brand input. Never fall back to one universal palette/typeface pairing, one container width, or one section layout shape for every brief regardless of niche.
 
@@ -104,31 +104,11 @@ modules_tool(action="modules_list")
 
 4. **Do not ask** the user to manually activate the mail forms module in the panel — do it via `modules_tool`.
 
-5. `modules_tool`, `module_install`, and `ftp_password_*` require an API key with **Control Panel settings access**. On authorization errors — tell the user to reissue a key with that permission.
+5. `modules_tool`, `module_install`, and `ftp_password_*` require the signed-in account to be the site owner or have site administrator rights. On permission errors — tell the user to sign in with the site owner/administrator account.
 
-### Step 2.1. Prepare FTP access (before steps 4 / 4.1 / 4.2)
+### Step 2.1. FTP password (only on user request / for the legacy NPM MCP)
 
-If `ftp_tool` returns an authorization error or no password is set in the MCP config:
-
-1. Get connection settings:
-```text
-ftp_tool(action="ftp_password_get")
-```
-
-2. If no password is set yet (`ftp_password_set=0` in the response) — set one:
-```text
-ftp_tool(action="ftp_password_set", ftp_password="<6–15 chars: Latin letters, digits, _ and ->")
-```
-
-3. If a password exists but is unknown/not working — change it:
-```text
-ftp_tool(action="ftp_password_change", ftp_password="<new password>")
-```
-or reset: `ftp_tool(action="ftp_password_reset")` → then `ftp_password_set`.
-
-4. After successful `ftp_password_set` / `ftp_password_change`, the response contains the password in plain text — **save it immediately** and use it for subsequent FTP operations.
-
-5. Only if `ftp_password_*` is unavailable due to API key permissions — save files locally and notify the user about manual upload.
+Uploading files via `files_tool` does not need an FTP password. Manage the password only if the user asks (e.g. for an external FTP client) or the legacy NPM MCP is connected: `ftp_tool(action="ftp_password_get")` — connection settings; `ftp_password_set` (if `ftp_password_set=0` in the response), `ftp_password_change`, or `ftp_password_reset` → `ftp_password_set` — set/change the password (6–15 chars: Latin letters, digits, `_` and `-`). The `ftp_password_set` / `ftp_password_change` response contains the password in plain text — save it immediately.
 
 ### Step 3. Menus (strictly via API)
 
@@ -206,55 +186,59 @@ Forbidden:
 - styling only your own wrapper class while ignoring the system's generated list/item classes (bullets and broken layout will leak through),
 - picking `$NMENU_N$` vs `$SMENU_N$` by guesswork instead of the intended visual orientation from `VISUAL.md`.
 
-### Step 4. Styles only in `style.css` + FTP upload
+### Step 4. Styles only in `style.css` + upload via `files_tool`
 
 Before writing a single rule, read `references/VISUAL.md` (style catalog, typography/spacing floor, color token contract, icon rule, CSS toolbox). `style.css` must open with the `:root` token block from `VISUAL.md` §3.1 (adapted to the chosen/brand colors) — component rules read those variables, they do not invent hex values inline. CSS nesting never exceeds 3 levels; any selector overriding uCoz system markup (`.xw-*`, `$NMENU_N$`-generated classes) stays outside `@layer` (see `VISUAL.md` §5, platform rule).
 
-Run step 2.1 before FTP operations if needed.
-
 1. Generate/update `style.css` locally.
-2. Check for `/css` folder:
+2. Check for `css` folder:
 ```text
-ftp_tool(action="list", path="/")
+files_tool(action="list", path="")
 ```
-3. If `/css` is missing — create:
+3. If `css` is missing — create:
 ```text
-ftp_tool(action="mkdir", path="/css")
+files_tool(action="mkdir", path="css")
 ```
 4. Upload the file:
 ```text
-ftp_tool(action="write", path="/css/style.css", content="<full CSS>")
+files_tool(action="upload", path="css", files=[{filename: "style.css", content: "<full CSS>"}])
 ```
-or
+or write the file content directly:
 ```text
-ftp_tool(action="upload", local_path="<local path to style.css>", remote_path="/css/style.css")
+files_tool(action="content_put", path="css/style.css", content="<full CSS>", create=true)
 ```
+Check the `state` of every file in the `upload` response — a per-file error does not fail the request. If a text file already exists, update it with `content_put`.
+If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
+
 5. Link in the template with versioning (via `patch_template` if landing is already published; on first publish — include in `page_tmpl`):
 ```html
 <link rel="stylesheet" href="/css/style.css?v=<ASSET_VERSION>">
 ```
 
-### Step 4.1. JS only in `script.js` + FTP upload
+### Step 4.1. JS only in `script.js` + upload via `files_tool`
 
 `script.js` stays one plain script (no `type="module"`, no bundler, no external framework/CDN). Follow the JS baseline tiers in `references/VISUAL.md` §7: defensive syntax (`?.`, `??`, optional chaining around every `querySelector`), `IntersectionObserver` as the fallback for scroll reveals, `requestAnimationFrame` to throttle scroll/resize/mousemove handlers. **Never use `fetch`/`FormData` to intercept `$MFORM_<ID>$` submission** — the platform already handles it natively and shows the `_uWnd` success modal (styled in item 7 below); `fetch` is only for genuinely custom, non-system widgets.
 
 1. Generate/update `script.js` locally.
-2. Check for `/js` folder:
+2. Check for `js` folder:
 ```text
-ftp_tool(action="list", path="/")
+files_tool(action="list", path="")
 ```
-3. If `/js` is missing — create:
+3. If `js` is missing — create:
 ```text
-ftp_tool(action="mkdir", path="/js")
+files_tool(action="mkdir", path="js")
 ```
 4. Upload the file:
 ```text
-ftp_tool(action="write", path="/js/script.js", content="<full JS>")
+files_tool(action="upload", path="js", files=[{filename: "script.js", content: "<full JS>"}])
 ```
-or
+or write the file content directly:
 ```text
-ftp_tool(action="upload", local_path="<local path to script.js>", remote_path="/js/script.js")
+files_tool(action="content_put", path="js/script.js", content="<full JS>", create=true)
 ```
+Check the `state` of every file in the `upload` response — a per-file error does not fail the request. If a text file already exists, update it with `content_put`.
+If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
+
 5. Link before `</body>` with versioning (via `patch_template` if landing is already published):
 ```html
 <script src="/js/script.js?v=<ASSET_VERSION>"></script>
@@ -342,16 +326,19 @@ $ico.Write($pngBytes, 0, $pngBytes.Length)
 $ico.Close()
 ```
 
-3. Upload to site root via FTP:
-```text
-ftp_tool(action="upload", local_path="<workspace_path>/favicon.ico", remote_path="/favicon.ico")
-```
-or
-```text
-ftp_tool(action="write", path="/favicon.ico", content="<binary>")
+3. Read the file bytes and encode them as base64:
+```powershell
+$b64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes("<workspace_path>\favicon.ico"))
 ```
 
-4. Add link tag in template `<head>` (right after `<meta charset>`):
+4. Upload to site root via `files_tool`:
+```text
+files_tool(action="upload", path="", files=[{filename: "favicon.ico", content_base64: "<base64>"}])
+```
+Check the `state` of every file in the `upload` response — a per-file error does not fail the request.
+If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
+
+5. Add link tag in template `<head>` (right after `<meta charset>`):
 ```html
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 ```
@@ -359,7 +346,7 @@ If the landing is already published — insert via `patch_template` (module_id=2
 
 **Rules:**
 - Favicon colors, shape, and motif must match the header SVG logo.
-- Run step 2.1 before upload if FTP is unavailable.
+- If the upload fails — save `favicon.ico` locally and tell the user (manual upload via the uCoz control panel file manager).
 - Do not use emoji or the browser default favicon — only the generated file.
 
 ---
@@ -579,7 +566,7 @@ modules_tool(action="quarantine_unlock")
 **Rules:**
 - **Do not unlock** quarantine without user consent for indexing.
 - Do not ask the user to unlock quarantine manually in the panel — use `modules_tool`.
-- `quarantine_status` / `quarantine_unlock` require an API key with **Control Panel settings access**.
+- `quarantine_status` / `quarantine_unlock` require the signed-in account to be the site owner or have site administrator rights.
 
 ---
 
@@ -588,16 +575,16 @@ modules_tool(action="quarantine_unlock")
 The agent must verify and explicitly confirm:
 - [ ] Home page (`page_id=1`) read via `page_list` and `page_get`.
 - [ ] If form needed: mail forms module checked via `modules_list`; if `active: false`, installed via `module_install` (no manual panel steps).
-- [ ] FTP access verified; if no password — obtained/created via `ftp_password_get` / `ftp_password_set` (or `ftp_password_change`).
+- [ ] Site files uploaded via `files_tool` (or, for the legacy NPM MCP, via `ftp_tool`); on upload failure — saved locally and the user notified.
 - [ ] **First publish:** `page_update` with `page_owntmpl=1`, full `page_tmpl` and `page_meta_*`; `page_message` — title only.
 - [ ] **Post-generation edits:** HTML changed via `patch_template` (module_id=2, template_id=1); `update_template` and full `page_tmpl` rewrite not used.
 - [ ] Menu created/updated via `menu_*`; template has `$NMENU_N$`.
 - [ ] All menu items have `URL` filled (anchor links for landings).
 - [ ] Burger menu implemented: button (SVG) in HTML, toggle in `script.js`, styles in `style.css`.
 - [ ] At 320/375 px desktop nav hidden, burger works, menu closes on item click.
-- [ ] `style.css` created and uploaded to `/css/style.css`.
+- [ ] `style.css` created and uploaded via `files_tool` to `css/style.css`.
 - [ ] Template links `/css/style.css?v=<ASSET_VERSION>`.
-- [ ] `script.js` created and uploaded to `/js/script.js`.
+- [ ] `script.js` created and uploaded via `files_tool` to `js/script.js`.
 - [ ] Template links `/js/script.js?v=<ASSET_VERSION>` (before `</body>`).
 - [ ] Mail form created via `mail_create_form` or existing form reused — output as `$MFORM_N$`.
 - [ ] For existing form: all fields checked via `mail_list_fields`; extra fields (incl. type 7 captcha if not requested) removed via `mail_delete_field`.
@@ -615,7 +602,7 @@ The agent must verify and explicitly confirm:
 - [ ] Relevant Schema.org microdata added.
 - [ ] Responsiveness verified at 320/375/768/1024+ px.
 - [ ] No emoji icons in UI; icons via SVG.
-- [ ] Favicon generated from SVG logo (colors and shape match); `favicon.ico` uploaded to site root (or saved locally only if `ftp_password_*` unavailable).
+- [ ] Favicon generated from SVG logo (colors and shape match); `favicon.ico` uploaded to site root via `files_tool` (or saved locally if the upload failed).
 - [ ] `<link rel="icon" type="image/x-icon" href="/favicon.ico">` in `<head>` (via `patch_template` or in `page_tmpl` on first publish).
 - [ ] After publish/edits, `id` and `url` checked; `page_get` if needed.
 - [ ] **Final step:** indexing need confirmed; if user agreed, `quarantine_status` checked and `quarantine_unlock` run when `locked=true`.
@@ -647,16 +634,15 @@ The agent must verify and explicitly confirm:
 2) templates_tool(action="page_get", page_id=1)
 3) templates_tool(action="list_modules")
 4) modules_tool(action="modules_list")   // if form needed — check/install mail forms module
-5) ftp_tool(action="ftp_password_get")   // on FTP error — ftp_password_set / ftp_password_change
-6) templates_tool(action="menu_list")
-7) templates_tool(action="menu_create"/"menu_update"/"menu_update_items", ...)
-8) ftp_tool(action="list", path="/")
-9) ftp_tool(action="mkdir", path="/css")   // if needed
-10) ftp_tool(action="write", path="/css/style.css", content="...")
-11) ftp_tool(action="mkdir", path="/js")   // if needed
-12) ftp_tool(action="write", path="/js/script.js", content="...")
-12.1) Shell: PowerShell → generate favicon.ico from logo
-12.2) ftp_tool(action="upload", local_path="<path>/favicon.ico", remote_path="/favicon.ico")
+5) templates_tool(action="menu_list")
+6) templates_tool(action="menu_create"/"menu_update"/"menu_update_items", ...)
+7) files_tool(action="list", path="")
+8) files_tool(action="mkdir", path="css")   // if needed
+9) files_tool(action="upload", path="css", files=[{filename: "style.css", content: "..."}])
+10) files_tool(action="mkdir", path="js")   // if needed
+11) files_tool(action="upload", path="js", files=[{filename: "script.js", content: "..."}])
+12) Shell: PowerShell → generate favicon.ico from logo and encode its bytes as base64
+12.1) files_tool(action="upload", path="", files=[{filename: "favicon.ico", content_base64: "<base64>"}])
 13) modules_tool(action="module_install", module_code="mail")   // only if module inactive and form needed
 14) templates_tool(action="mail_create_form", mail_name="...", mail_emails="...", mail_rez="...")
 15) templates_tool(action="mail_add_field", mail_form_id=..., ...)
@@ -714,7 +700,7 @@ If home page has `owntmpl=0` at step 1, enable personal template via `page_updat
 - Do not leave default uCoz success modal styling without landing overrides. Full override selectors: `.xw-shadow`, `.xw-tl`, `.xw-tr`, `.xw-tc`, `.xw-ml`, `.xw-mr`, `.xw-mc`, `.xw-bl`, `.xw-br`, `.xw-bc`, `.xw-sps`, `.xw-blank`, `.xw-hdr`, `.xw-hdr-text`, `.xw-body`, `.myWinCont`, `.myWinCont b`, `.myWinFooter`, `.xt-close`, `.xt-close2`, `.xw-disabled` — all must match landing visuals. Resetting `background-image` on 9-slice elements is mandatory.
 - Do not leave Open Graph with placeholders or without `og:image`.
 - Do not use emoji as UI icons; use SVG.
-- Do not publish without a favicon: `favicon.ico` must be generated and uploaded (or saved locally only if `ftp_password_*` unavailable due to API key permissions).
+- Do not publish without a favicon: `favicon.ico` must be generated and uploaded via `files_tool` (or saved locally only if the upload failed).
 - Do not make a favicon that does not visually match the header logo (colors, shape, or motif).
 - Do not unlock quarantine (`quarantine_unlock`) without user consent for search engine indexing.
 - Do not reuse the same palette/typeface pairing across unrelated briefs regardless of niche — pick a named style from `VISUAL.md` §1.2 and state it.
@@ -738,7 +724,7 @@ If home page has `owntmpl=0` at step 1, enable personal template via `page_updat
 ## 7) User report format after completion
 
 At the end, provide a brief technical report:
-1. Actions called (in order), including `page_list`, `page_get`, `patch_template` / `page_update`, `modules_tool`, `ftp_password_*`.
+1. Actions called (in order), including `page_list`, `page_get`, `patch_template` / `page_update`, `modules_tool`, `files_tool`.
 2. `page_get` result for home (`page_id=1`, URL, SEO fields).
 3. Mail forms module status (if form needed): whether installed via `module_install`.
 4. Created/updated menu ID.
@@ -747,8 +733,8 @@ At the end, provide a brief technical report:
 7. JS upload path (`/js/script.js`).
 8. SEO, Open Graph/Twitter, and schema blocks added.
 9. Responsiveness confirmation (320/375/768/1024+).
-10. FTP status: password obtained via `ftp_password_*` or files saved locally.
-11. Favicon status: uploaded to FTP (`/favicon.ico`) or saved locally.
+10. File upload status: uploaded via `files_tool` or saved locally.
+11. Favicon status: uploaded via `files_tool` (`/favicon.ico`) or saved locally.
 12. Quarantine and indexing status: whether user was asked; quarantine unlocked via `quarantine_unlock` or site left non-indexable.
 13. Template validation result (if requested).
 14. Chosen visual style (name from `VISUAL.md` §1.2) and where the token contract lives (`style.css` `:root`).

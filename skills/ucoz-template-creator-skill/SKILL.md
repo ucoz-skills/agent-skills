@@ -11,6 +11,12 @@ metadata:
 
 Create an original, production-ready uCoz website template as one framework plus one complete CSS table. Treat publication as a site-wide migration: it overwrites every generated template.
 
+## Connection
+
+- uCoz MCP connects at `https://www.ucoz.com/mcp` — the agent config needs only the URL, no tokens or Node.js.
+- On first connection the agent opens a sign-in window: the user signs in to their uCoz account and clicks “Allow”.
+- Then `list_sites` → `select_site(site_id)`; all tools work on the selected site.
+
 ## Route the request first
 
 - Full design, new framework, global structure, `new_informer`, framework `global_x`, `popup`, `config`, or PDA design → use this skill and `tmaker_tool`.
@@ -48,6 +54,8 @@ Clarify only missing decisions that materially change the result:
 - content character and desired visual direction;
 - desktop (`pda=0`) or PDA (`pda=1`);
 - whether existing brand assets must be preserved.
+
+Upload new logos and images with `files_tool` (`upload` with `content_base64`, or `upload_url`); if the legacy NPM MCP without `files_tool` is connected, use `ftp_tool`.
 
 Select a direction from `DESIGN-DIRECTIONS.md` (use niche → direction routing when the brief has no brand input), **state the chosen direction before writing any CSS**, then adapt it to the content. Do not default every site to dark gradients, glass cards, centered heroes, identical pills, teal accents, or Inter. After selecting the direction, write non-negotiables and must-not-look-like anti-references per `VISUAL.md` before writing any CSS in `3/3`. Typography, spacing, tokens, icons, and the CSS toolbox in `VISUAL.md` override soft vibe notes in `DESIGN-DIRECTIONS.md` when they conflict.
 

@@ -148,8 +148,9 @@ Both `patch_template` and `update_template` create a backup automatically before
 | Save blocked with backup-limit message | 20/20 backups exist | Confirm with user, `delete_backup`, then retry |
 | Variable renders literally as `$SOME_VAR$` on the live page | Variable doesn't exist for that module/template | Re-check with `get_variables` |
 | `module_uninstall` fails | Protected module (Users, SEO, etc.) | Not removable — inform the user, do not retry |
-| `modules_tool` / `ftp_password_*` fails with a permissions error | API key lacks **Control Panel settings access** | User must reissue the key with that scope enabled |
-| FTP action fails to connect | Wrong/stale FTP credentials | Confirm current credentials; `ftp_password_get` shows connection settings |
+| `modules_tool` / `ftp_password_*` fails with a permissions error | The signed-in account has no site administrator rights, or another site is selected | Check `select_site`; sign in with the site owner's account |
+| `files_tool` action fails | Path with a leading slash or invalid characters; disk quota exceeded | Use paths without a leading slash (`css/style.css`); check `quota` |
+| FTP action fails to connect (legacy NPM MCP) | Wrong/stale FTP credentials | Confirm current credentials; `ftp_password_get` shows connection settings |
 | Menu renders but links look broken / styling is off | A menu item has an empty URL | Check `menu_get`; ensure every item has a non-empty URL |
 | Email is missing a field or references a deleted one | Mail template not synced after field changes | `mail_get_template` → update HTML → `mail_save_template` |
 | `patch_template` on module 3/3 reports success but change is invisible | Checking the wrong URL (`/.s/src/css/2301.css` is a static asset, never reflects edits) | Fetch the actual `/_st/*.css` bundle from a live page's `<head>` and search it for your change |

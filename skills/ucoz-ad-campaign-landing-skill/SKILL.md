@@ -17,7 +17,7 @@ After the skill's main work completes successfully, record usage:
 skills_tool(action="register_usage", skill_id="ucoz-ad-campaign-landing-skill")
 ```
 
-If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site and token come from the active `ucoz-mcp` connection.
+If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site comes from the active `ucoz-mcp` connection (the one chosen via `select_site`).
 
 ## Fixed principles
 
@@ -45,13 +45,19 @@ If the usage API is unavailable or returns an error, show a brief warning and co
 - Result handoff format: references/OUTPUT.md.
 - Use Google Ads only on an explicit request; then read references/GOOGLE_ADS.md.
 
+## Connection
+
+- uCoz MCP connects at `https://www.ucoz.com/mcp` — the agent config needs only the URL, no tokens or Node.js.
+- On first connection the agent opens a sign-in window: the user signs in to their uCoz account and clicks “Allow”.
+- Then `list_sites` → `select_site(site_id)`; all tools work on the selected site.
+
 ## Workflow
 
 ### 0. Audit before changes
 
 Record:
 
-- site, domain, existing pages, and the uCoz MCP connection;
+- site, domain, existing pages, and the uCoz MCP connection (signed in, the target site chosen via `select_site`);
 - brand materials, current CSS/JS, and pages that must not be overwritten;
 - the Yandex Metrica counter, available goals, and volumes for an explicitly stated window;
 - the Yandex Direct account and organizational mode, existing campaigns, and package strategies;

@@ -308,7 +308,7 @@ $GLOBAL_BFOOTER$
 ```
 
 Setting the grid on plain `#layout` breaks system pages where uCoz also inserts `$GLOBAL_CLEFTER$`.
-After any CSS change upload the file via FTP and bump the `?v=` query string in both `1/AHEADER`
+After any CSS change upload the file via `files_tool` and bump the `?v=` query string in both `1/AHEADER`
 and the direct CSS link in `4/5`.
 
 ### CLEFTER — sidebar navigation rules
@@ -990,7 +990,7 @@ inside the note.
 Platform rules: [references/FORUM.md](references/FORUM.md).
 
 Glass redesign for Forum (`module_id=8`) is **CSS-only**: keep `8/2`–`8/5` markup and especially
-`8/3` `#frM53` IDs intact. Prefer `body.module-forum` rules in `3/3` or an FTP asset; a scoped
+`8/3` `#frM53` IDs intact. Prefer `body.module-forum` rules in `3/3` or an external file uploaded via `files_tool`; a scoped
 `<style id="forum-glass-apple">` in shell `8/1` is an acceptable recovery path when `patch_template`
 on `3/3` silently fails to persist.
 

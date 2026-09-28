@@ -55,13 +55,13 @@ Follow [ARCHITECTURE.md](ARCHITECTURE.md). These popups appear on **any** page (
 
 | Priority | Place | When |
 |---|---|---|
-| 1 | One **FTP** stylesheet (e.g. `/css/uwnd.css`) linked from `1/AHEADER` or every full-page shell `<head>` | Preferred for redesigns; survives when `3/3` patches fail to persist |
+| 1 | One external stylesheet uploaded via **`files_tool`** (e.g. `/css/uwnd.css`) linked from `1/AHEADER` or every full-page shell `<head>` | Preferred for redesigns; survives when `3/3` patches fail to persist |
 | 2 | Site CSS `module 3 / template 3` | Default when `3/3` saves reliably — always re-`read_template` after save |
 | 3 | Temporary `<style id="uwnd-…">` in `1/AHEADER` | **Recovery only** |
 
 Forum shell `8/1` inline CSS is the wrong long-term home for `_uWnd` rules (forum-only pages would miss mail-form success modals, etc.).
 
-Bump `?v=` on the FTP `<link>` after every upload.
+Bump `?v=` on the external stylesheet `<link>` after every upload.
 
 ---
 
@@ -116,8 +116,8 @@ Examples: forum “subscribed / unsubscribed”, “authorization required”, v
 
 ## Hard rules
 
-1. **Site-wide CSS path** — FTP or `3/3`, not forum-only shells, for anything that also affects mail / shop / index.
-2. **Verify persistence** — after `3/3` `patch_template`, re-`read_template`; if empty, fall back to FTP.
+1. **Site-wide CSS path** — external file via `files_tool` or `3/3`, not forum-only shells, for anything that also affects mail / shop / index.
+2. **Verify persistence** — after `3/3` `patch_template`, re-`read_template`; if empty, fall back to an external file via `files_tool`.
 3. **9-slice** — for full modals, zero `background-image` on the nine frame parts or the stock frame stays.
 4. **Close buttons** — both `.xt-close` and `.xt-close2`; default art is CSS background.
 5. **No CP restyle** — skip `.cp-modal` / `.cp-alert`.
@@ -129,14 +129,14 @@ Examples: forum “subscribed / unsubscribed”, “authorization required”, v
 
 ## Checklist (any redesign that shows `_uWnd`)
 
-- [ ] CSS lives in FTP shared file or verified `3/3` (not only a module shell)
+- [ ] CSS lives in a shared external file (uploaded via `files_tool`) or verified `3/3` (not only a module shell)
 - [ ] Full modal: 9-slice images zeroed (`.xw-tl` … `.xw-bc`)
 - [ ] `.xw-sps` hidden; `.xw-hdr` / body / footer / `.myWinCont` / `.myWinCont b` styled
 - [ ] `.xt-close` + `.xt-close2` restyled without stock sprites
 - [ ] Toasts (`.uwnd-toast`) checked on a live action (subscribe, alert, …)
 - [ ] Mail form submit shows a branded success window
 - [ ] `.cp-modal` / `.cp-alert` unchanged
-- [ ] FTP `?v=` bumped after upload
+- [ ] External stylesheet `?v=` bumped after upload
 
 ---
 

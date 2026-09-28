@@ -1,40 +1,37 @@
 # Configure access to uCoz sites
 
-Connect the official remote MCP, then select sites with MCP tools. Do not put API tokens in chat.
+The skill never requests or configures credentials. Access comes from the user signing in to their uCoz account through uCoz MCP.
 
-## Connect remote MCP
+## Connection
+
+uCoz MCP connects at `https://www.ucoz.com/mcp` — the client config needs only the URL, no tokens:
 
 ```json
-{
-  "mcpServers": {
-    "ucoz-mcp": {
-      "url": "https://www.ucoz.com/mcp"
-    }
-  }
-}
+{"mcpServers":{"ucoz-mcp":{"url":"https://www.ucoz.com/mcp"}}}
 ```
 
-Authorize through the uCoz Control Panel when prompted. Docs: https://github.com/ucoz-skills/ucoz-mcp
+On first connection the agent opens a sign-in window: the user signs in to their uCoz account and clicks “Allow”. Then `list_sites` → `select_site(site_id)`; all site tools work on the selected site. One connection sees every site in the account.
+
+Operations that need administrator rights (templates, menus, pages, modules) work only if the signed-in account owns the site or has administrator rights on it.
 
 ## In-place translation (one site)
 
-1. Ensure `ucoz-mcp` is connected and authorized.
-2. `list_sites` → `select_site` for the site to translate.
-3. Run discovery (read-only) before writes.
+A single `select_site(site_id)` for the site being translated is enough.
 
 ## Cross-site migration (two sites)
 
-One remote MCP connection serves the account. Switch the active site explicitly:
+Both sites must be in the same uCoz account. If they are not, the user runs the stages sequentially: read the source, then sign in to the target account and write.
 
-1. `list_sites` — note source and target `site_id` values.
-2. Before every **read** from the source: `select_site` → source id.
-3. Before every **write** to the target: `select_site` → target id.
-4. Say aloud which site is selected before destructive writes.
+1. `select_site(source)` → read and inventory; the source is read-only.
+2. `select_site(target)` → write.
+3. Before every write, check the host in the tool response against the target site; stop on any mismatch.
 
-If the client cannot keep a reliable select_site workflow, stop and ask the user to confirm source/target ids before continuing.
+Static template/global-block files move through `files_tool` on the selected site. Text files: from the source `files_tool(action="content_get", path="<file path>")`, then after `select_site(target)` — `files_tool(action="content_put", path="<file path>", content=..., create=true)` (create the parent folder with `mkdir` if needed). Binary files: on the target `files_tool(action="upload_url", path="<folder>", url="<public URL of the source file>")` or `upload` with `content_base64`.
 
-Static assets: use `files_tool` on the selected site (not local FTP env vars). FTP password management only: `ftp_tool`.
+## Verification
 
-## Verifying the setup
+Before any write, make a read-only call on each site (for example `modules_tool.active_mods` or reading one material through `content_tool`) and check the host in the response against the expected site.
 
-Run a read-only call (e.g. `modules_tool` → `active_mods` or list materials) after each `select_site` before writes.
+## Legacy NPM MCP (fallback)
+
+If a local NPM MCP is connected, it works with one site per connection: migration needs two named connections (source and target). Files go through `ftp_tool` (`list`/`read`/`write`). The user configures credentials in the client config outside the chat.

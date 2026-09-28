@@ -2,16 +2,16 @@
 
 Use this workflow to copy selected pages, templates/global blocks, menus, categories, or module materials from a source uCoz site to a different target uCoz site, optionally translating during transfer.
 
-## Establish two safe connections
+## Establish two unambiguous contexts
 
-Require two unambiguous contexts on the same remote MCP account:
+Use one uCoz MCP connection and two unambiguous contexts:
 
-- **source** — `site_id` treated as read-only;
-- **target** — `site_id` used for writes.
+- **source** — `select_site(source)`; treat as read-only;
+- **target** — `select_site(target)`; use for writes.
 
-Call `select_site` before each phase so reads and writes cannot be confused. Use `files_tool` for static assets on the selected site. Never request live credentials in ordinary chat, include them in reports, or store them in the skill/project.
+Both sites must be in the same uCoz account (otherwise the stages run sequentially with a re-sign-in, see [SETUP.md](SETUP.md)). Static files and template assets move through `files_tool` on the selected site. Never request credentials in chat, include them in reports, or store them in the skill/project.
 
-Verify the selected site (e.g. `list_sites` / a read-only call) before every write. Stop if source and target cannot be distinguished reliably.
+Verify the site host (the host in the tool response) before every write. Stop if source and target contexts cannot be distinguished reliably.
 
 ## Gather migration choices
 
@@ -40,7 +40,7 @@ Identify internal source URLs in HTML and menu trees. Rewrite only those that ha
 
 ## Order operations
 
-1. Verify target modules and uAPI permissions.
+1. Verify target modules and the account's rights on the target site.
 2. Create/map categories, page parents, and required global blocks.
 3. Process and upload media; record target URLs/file slots.
 4. Create materials/pages with translated fields, source format controls, target relationship IDs, and selected publication state.
@@ -64,7 +64,7 @@ Create parent pages before children. Preserve HTML and map internal links/media.
 
 ### Templates and global blocks
 
-Inventory target template IDs with `list_modules`; do not assume source IDs exist on the target. Validate complete target HTML before saving. Create a backup before updating an existing target template/block. For missing global blocks, create through the target MCP when supported, then update insertion references only after the target block ID is known.
+Inventory target template IDs with `list_modules`; do not assume source IDs exist on the target. Validate complete target HTML before saving. Create a backup before updating an existing target template/block. For missing global blocks, create them after `select_site(target)` (`gblock_create`) when supported, then update insertion references only after the target block ID is known.
 
 ### Menus
 

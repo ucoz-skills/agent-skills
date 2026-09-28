@@ -187,7 +187,7 @@ Also:
 
 Forum restyles usually lose to `3/3` / theme rules. Practical approach:
 
-1. Put a dense `body.module-forum … !important` block in shell `8/1` (or a dedicated FTP CSS linked only from `8/1`) so it wins on forum pages.
+1. Put a dense `body.module-forum … !important` block in shell `8/1` (or a dedicated external CSS file uploaded via `files_tool`, linked only from `8/1`) so it wins on forum pages.
 2. After each save: fetch `/forum` **and** a topic URL like `/forum/3-1-1` — index and thread chrome differ.
 3. If `patch_template` on `3/3` reports success but does not persist, use `update_template` on `8/1` (full shell) rather than retrying blindly.
 
@@ -197,7 +197,7 @@ Full page shells that include `</body>` **must** contain `$POWERED_BY$` (after `
 
 ## Styling strategy
 
-1. Prefer **CSS-only** redesign in `3/3` under `body.module-forum`, or one FTP asset linked from `8/1`.
+1. Prefer **CSS-only** redesign in `3/3` under `body.module-forum`, or one external file uploaded via `files_tool`, linked from `8/1`.
 2. If `patch_template` on `3/3` reports success but `read_template` shows no change, recover with `update_template` on `3/3`, or temporarily put a scoped `<style id="forum-…">` in `8/1` (forum-only shell) and migrate later.
 3. Change fragment HTML (`8/2`, `8/4`, `8/5`) only when structure must change — keep variables and conditionals.
 4. Never “clean up” `8/3` IDs for aesthetics.

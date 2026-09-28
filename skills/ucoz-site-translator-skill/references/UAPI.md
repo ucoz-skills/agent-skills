@@ -1,23 +1,27 @@
 # uCoz uAPI routes for localization
 
-Use this reference only for direct material/category operations or when an MCP action is unavailable. Confirm request fields against the linked current OpenAPI file before every write.
+Use this reference as a description of uAPI fields and formats for materials/categories, pages, templates, menus, and the shop. Confirm request fields against the linked current OpenAPI file before every write.
 
 ## Connection
+
+In the new uCoz MCP these methods are called through tools on the selected site (`select_site`): `content_tool` for materials and categories, `templates_tool` for pages, templates, menus, and forms, `shop_tool` for shop products and categories, `files_tool` for files. The MCP server issues the uAPI key and does not give it to the agent, so direct HTTP is not possible.
+
+Legacy NPM MCP only (direct HTTP with the key from the connection):
 
 - Base URL: `https://{configured-site-host}/uapi`
 - Header: `Authorization: Bearer {configured-uAPI-token}`
 - Success envelope: `{ "success": ... }`
 - Error envelope: `{ "error": { "code": "...", "msg": "..." } }`
 
-Obtain the host and token from the secure active MCP/client configuration. Do not emit them. The MCP server is the preferred path for templates, menus, pages, forms, and FTP.
+Do not emit the host or key. MCP tools are the preferred path for templates, menus, pages, forms, and files (`files_tool`).
 
 ## Discovery and search
 
 - Site search: `GET /search?query={q}`
 - Module search: `GET /search?query={q}&module={module_code}`
-- Module material list: `GET /{module}`
-- One material: use the module OpenAPI contract; common modules accept `GET /{module}?id={id}`
-- Category list: `GET /{module}/category`
+- Module material list: `GET /{module}` → `content_tool(action="list", module)`
+- One material: use the module OpenAPI contract; common modules accept `GET /{module}?id={id}` → `content_tool(action="get", module, id)`
+- Category list: `GET /{module}/category` → `content_tool(action="category_list", module)`
 
 Use the pagination parameter names declared by the specific OpenAPI schema. Do not assume `per_page` for every module.
 
@@ -44,8 +48,8 @@ Before presenting scope, inspect all fields returned by GET and the update reque
 
 Common updates:
 
-- Material: `PUT /{module}?id={id}`
-- Category: `PUT /{module}/category?id={id}`
+- Material: `PUT /{module}?id={id}` → `content_tool(action="update", module, id, …)`; creation — `content_tool(action="add", module, …)`
+- Category: `PUT /{module}/category?id={id}` → `content_tool(action="category_update", module, id, …)`; creation — `category_add`
 
 These are patterns, not permission to invent parameters. Inspect the module OpenAPI schema and send only accepted fields.
 
@@ -68,15 +72,15 @@ Treat `hgu_title`, `ownurl`, and module equivalents as optional localization fie
 
 Prefer the equivalent `templates_tool` actions.
 
-- Pages: `GET /pages`, `GET /pages/{id}`, `PUT /pages` with `page_id`
-- Templates: `GET /templates`, `GET /templates/{module_id}/{template_id}`, `PUT /templates/{module_id}/{template_id}`
-- Menus: `GET /menus`, `GET /menus/{id}`, `PUT /menus/{id}`, `PUT /menus/{id}/items`
+- Pages: `GET /pages`, `GET /pages/{id}`, `PUT /pages` with `page_id` → `page_list`, `page_get`, `page_update`
+- Templates: `GET /templates`, `GET /templates/{module_id}/{template_id}`, `PUT /templates/{module_id}/{template_id}` → `list_modules`, `read_template`, `patch_template`/`update_template`
+- Menus: `GET /menus`, `GET /menus/{id}`, `PUT /menus/{id}`, `PUT /menus/{id}/items` → `menu_list`, `menu_get`, `menu_update`, `menu_update_items`
 
 Schemas: `https://api.ucoz.net/pages-openapi.yaml`, `https://api.ucoz.net/templates-openapi.yaml`, `https://api.ucoz.net/menus-openapi.yaml`.
 
 ## Online shop
 
-Read categories with `GET /shop/request?page=categories`. Consult the shop OpenAPI for product discovery and all edit operations; do not assume a legacy route that is absent from the current schema.
+In the new MCP, shop products and categories are edited through `shop_tool` (`category_list`/`category_update`). Read categories with `GET /shop/request?page=categories`. Consult the shop OpenAPI for product discovery and all edit operations; do not assume a legacy route that is absent from the current schema.
 
 Protect price, currency, stock, SKU/article, product type, visibility, variations, order data, delivery, and payment settings. Translate only approved category/product prose and SEO fields.
 
@@ -85,6 +89,6 @@ Protect price, currency, stock, SKU/article, product type, visibility, variation
 - Compact index: `https://api.ucoz.net/llms.txt`
 - Full index: `https://api.ucoz.net/llms-full.txt`
 - API home: `https://api.ucoz.net/`
-- MCP actions: `https://api.ucoz.net/mcp.html`
+- uCoz MCP: `https://www.ucoz.com/ai/mcp`
 - Errors: `https://api.ucoz.net/errors.html`
 

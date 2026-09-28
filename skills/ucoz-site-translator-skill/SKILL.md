@@ -8,8 +8,8 @@ description: >
 author: uCoz
 license: MIT
 requires:
-  - official ucoz-mcp for templates, menus, pages, backups, validation, and FTP
-  - uAPI access with permissions for the modules being translated or migrated
+  - official ucoz-mcp for templates, menus, pages, backups, validation, and site files
+  - uCoz account with owner or administrator rights on the sites being translated or migrated
 metadata:
   hermes:
     tags: [ucoz, mcp, uapi, translation, localization, migration, templates, seo]
@@ -21,15 +21,15 @@ metadata:
 
 Version: 1.1
 
-## Rule 0 — Usage accounting
+## Usage accounting
 
-After the skill's main work completes successfully, record usage:
+After successfully completing the skill's main work, record the usage:
 
 ```text
 skills_tool(action="register_usage", skill_id="ucoz-site-translator-skill")
 ```
 
-If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site and token come from the active `ucoz-mcp` connection.
+If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID or site URL — the site is taken from the active `ucoz-mcp` connection (selected with `select_site`).
 
 ## Purpose
 
@@ -41,30 +41,14 @@ The skill focuses on real translation work: module materials and categories, des
 
 This skill is designed to be used together with `ucoz-mcp`.
 
-Before making direct uAPI requests:
+1. Connect to `ucoz-mcp` (`https://www.ucoz.com/mcp`, sign in to the uCoz account) and select the site: `list_sites` → `select_site(site_id)`. All tools work on the selected site.
+2. Work through MCP tools: `content_tool` for module materials and categories; `templates_tool` for templates, global blocks, menus, and Page Editor pages; `shop_tool` for shop products and categories; `files_tool` for site files; `modules_tool` for module discovery.
+3. Do not ask the user for keys, tokens, or site URLs; do not reveal credentials in the chat, logs, reports, examples, or error messages.
+4. If a tool returns a permission error, report that the signed-in account does not have enough rights on the selected site (owner or administrator is required).
 
-1. Connect to the active `ucoz-mcp` session.
-2. Take the target site/domain from the MCP connection context.
-3. Take the API key/token from the same MCP connection context.
-4. Use that same site and same API key for direct uAPI calls.
-5. Do not ask the user to paste the API key if MCP is already connected.
-6. Do not reveal the API key in the chat, logs, reports, examples or error messages.
+Direct HTTP uAPI calls are not possible in the new MCP: the MCP server issues the uAPI key and does not give it to the agent. Only with the legacy NPM MCP, where the key is available from the connection, is a direct request to `https://{SITE_FROM_UCOZ_MCP}/uapi` with the `Authorization: Bearer <API_KEY_FROM_UCOZ_MCP>` header acceptable (normalize the site value to the host before adding `/uapi`).
 
-Direct API request base:
-
-```text
-https://{SITE_FROM_UCOZ_MCP}/uapi
-```
-
-Authorization header:
-
-```http
-Authorization: Bearer <API_KEY_FROM_UCOZ_MCP>
-```
-
-If the site value from MCP already includes protocol or path, normalize it to the site host before adding `/uapi`. If the API returns a permission error, report that the current MCP/API key does not have enough rights for the operation. Do not ask for another key unless MCP context is unavailable.
-
-For cross-site copy/migration, use one remote MCP connection and switch sites with `select_site` (source for reads, target for writes). See [references/SETUP.md](references/SETUP.md). Never ask for API tokens in ordinary chat.
+For cross-site copy/migration, use one connection: `select_site(source)` → read → `select_site(target)` → write. Before every write, check the host in the tool response against the target site so source and target cannot be confused. See [references/SETUP.md](references/SETUP.md) for details.
 
 ## Scope gate before translation
 
@@ -109,7 +93,7 @@ Do not use this skill for building a full new site from scratch, for generic cop
 
 ## Core principles
 
-1. Use `ucoz-mcp` as the connection source: site and API key come from MCP.
+1. Use `ucoz-mcp` as the connection source: the site is selected with `select_site`.
 2. Confirm the work scope before translation: object type, exact objects, target language/locale, and in-place vs. copy/migration mode.
 3. Never start translating or migrating across an entire site by default.
 4. Inventory first, translate second, write third.
@@ -120,7 +104,7 @@ Do not use this skill for building a full new site from scratch, for generic cop
 9. Preserve uCoz variables (`$TITLE$`, `$MESSAGE$`, every `$...$` token), template control syntax (`<?if?>`/`<?else?>`/`<?endif?>`), and `$POWERED_BY$` byte-for-byte.
 10. For template changes, create or rely on an automatic backup, validate before saving, and keep patches minimal and uniquely targeted.
 11. Treat the slug/ЧПУ as a separate, optional decision: preserve it by default, and localize it only after explicit approval with an old/new URL preview.
-12. Use direct uAPI for module materials/categories or operations not exposed by MCP; use MCP for templates, menus, pages, backups, validation, module discovery, and FTP.
+12. Use `content_tool` for module materials/categories and `shop_tool` for shop products and categories; use MCP for templates, menus, pages, backups, validation, module discovery, and site files (`files_tool`).
 13. Preserve the source content format (`plain`/BBCode/HTML) on every write, including the matching format-control fields; never let escaped HTML (`&lt;p&gt;`) pass as a verification success.
 14. For cross-site copy/migration, treat the source as read-only, verify source and target hosts before every write, and never assume object/category/media IDs match between sites.
 15. Do not generate or upload a localized/regenerated image before showing its preview.
@@ -131,9 +115,10 @@ Do not use this skill for building a full new site from scratch, for generic cop
 
 Use uCoz MCP tools when available:
 
-- active site / connection context from `ucoz-mcp` (and a second named connection for cross-site work);
-- API key/token from the same `ucoz-mcp` connection context;
+- `list_sites` / `select_site` — select the active site (for cross-site work, the source and the target in turn);
 - `modules_tool.active_mods`;
+- `content_tool.list` / `get` / `fields` / `add` / `update` / `category_list` / `category_add` / `category_update`;
+- `shop_tool` — shop products and categories;
 - `templates_tool.list_modules`;
 - `templates_tool.read_template`;
 - `templates_tool.code_search`;
@@ -147,21 +132,17 @@ Use uCoz MCP tools when available:
 - `templates_tool.page_list`;
 - `templates_tool.page_get`;
 - `templates_tool.page_update`;
-- `ftp_tool.list`;
-- `ftp_tool.read`;
-- `ftp_tool.write`;
-- `skills_tool.register_usage` after successful work.
+- `files_tool.list` / `content_get` / `content_put` / `upload` / `upload_url` / `mkdir`.
 
-Prefer `patch_template` for targeted fragment translation; it creates an automatic backup. Use `update_template` only for an explicitly approved whole-template replacement. Use `ftp_tool` only when moving static template/global-block assets that live outside uAPI-managed storage.
+Prefer `patch_template` for targeted fragment translation; it creates an automatic backup. Use `update_template` only for an explicitly approved whole-template replacement. Use `files_tool` only when moving static template/global-block assets that live outside site modules. If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
 
 ## Built-in uCoz uAPI knowledge
 
-The skill already knows the uAPI structure described below. More detail is in [references/UAPI.md](references/UAPI.md).
+The skill already knows the uAPI structure described below. In the new MCP these methods are called through tools (`content_tool`, `templates_tool`, `shop_tool`, `files_tool`), and the routes below describe fields and formats. More detail is in [references/UAPI.md](references/UAPI.md).
 
 ### Request format
 
-- Base URL: `https://{SITE_FROM_UCOZ_MCP}/uapi`.
-- Auth: `Authorization: Bearer <API_KEY_FROM_UCOZ_MCP>`.
+- Direct HTTP (legacy NPM MCP only): base URL `https://{SITE_FROM_UCOZ_MCP}/uapi`, auth `Authorization: Bearer <API_KEY_FROM_UCOZ_MCP>`.
 - Success envelope: `{ "success": ... }`; error envelope: `{ "error": { "code": "...", "msg": "..." } }`.
 - Confirm exact request fields against the linked current module OpenAPI file before every write; never round-trip an entire GET response into PUT.
 
@@ -169,8 +150,8 @@ The skill already knows the uAPI structure described below. More detail is in [r
 
 - Site search: `GET /search?query={q}`.
 - Module search: `GET /search?query={q}&module={module_code}`.
-- Module material list: `GET /{module}`; one material via the module's documented detail route.
-- Category list: `GET /{module}/category`.
+- Module material list: `GET /{module}` → `content_tool(action="list", module)`; one material via the module's documented detail route → `content_tool(action="get", module, id)`.
+- Category list: `GET /{module}/category` → `content_tool(action="category_list", module)`.
 
 ### Common content modules
 
@@ -189,7 +170,7 @@ The skill already knows the uAPI structure described below. More detail is in [r
 | Forum | `forum` |
 | Shop | `shop` |
 
-Common editable prose includes `title`, `name`, `description`, `message`, `brief`, `dscr`, `html_dscr`, and requested `meta_*` fields; actual names differ by module. Updates typically use `PUT /{module}?id={id}` for materials and `PUT /{module}/category?id={id}` for categories — these are patterns, not permission to invent parameters.
+Common editable prose includes `title`, `name`, `description`, `message`, `brief`, `dscr`, `html_dscr`, and requested `meta_*` fields; actual names differ by module. Updates typically use `PUT /{module}?id={id}` for materials (`content_tool(action="update", module, id, …)`) and `PUT /{module}/category?id={id}` for categories (`content_tool(action="category_update", module, id, …)`) — these are patterns, not permission to invent parameters. In `content_tool`, the main fields are passed as parameters (`title`, `description`, `message`, `description_type`/`message_type`, `meta_title`/`meta_description`/`meta_keywords`, `other1`…`other5`, `tags`, `ownurl`), and other module keys go through `fields`; get the module's field set with `content_tool(action="fields", module)`.
 
 ### Content format is part of the data
 
@@ -201,21 +182,21 @@ Treat `hgu_title`, `ownurl`, and module equivalents as optional localization fie
 
 ### Pages, templates, and menus
 
-Prefer the equivalent `templates_tool` actions over direct uAPI. Direct routes exist for pages, templates, and menus when MCP does not expose a needed operation — consult [references/UAPI.md](references/UAPI.md) before forming a direct request.
+Use the equivalent `templates_tool` actions (`read_template`/`patch_template`, `menu_*`, `page_*`, `gblock_create`). Direct routes for pages, templates, and menus are described in [references/UAPI.md](references/UAPI.md) as a field reference; a direct HTTP request is acceptable only with the legacy NPM MCP.
 
 ### Online shop
 
-Read categories with `GET /shop/request?page=categories`. Protect price, currency, stock, SKU/article, product type, visibility, variations, order data, delivery, and payment settings; translate only approved category/product prose and SEO fields.
+Work with products through `shop_tool`. Shop categories — `shop_tool(action="category_list")` / `category_update` (in uAPI: `GET /shop/request?page=categories`). Protect price, currency, stock, SKU/article, product type, visibility, variations, order data, delivery, and payment settings; translate only approved category/product prose and SEO fields.
 
 ## Workflow
 
 ### 1. Initialize connection
 
-1. Connect to `ucoz-mcp` (and to a second named connection for cross-site copy/migration).
-2. Read the active site/domain and API key from the MCP connection context(s).
-3. Build the API base: `https://{site}/uapi`.
-4. Use the same API key in `Authorization: Bearer ...` for direct uAPI requests.
-5. Use MCP tools for templates, menus, pages, backups, validation, and FTP.
+1. Connect to uCoz MCP and select the site with `select_site` (for cross-site copy/migration, the source and the target in turn).
+2. Check the active site host in the tool response against the expected one.
+3. Use `content_tool` for materials and categories, and `shop_tool` for shop products and categories.
+4. Direct uAPI requests with `Authorization: Bearer ...` are for the legacy NPM MCP only.
+5. Use MCP tools for templates, menus, pages, backups, validation, and site files (`files_tool`).
 
 ### 2. Gather the request
 
@@ -235,7 +216,7 @@ Use the smallest useful read operation:
 
 | Scope | Discovery path |
 |---|---|
-| Materials | `modules_tool: active_mods`, then uAPI list/get/search |
+| Materials | `modules_tool: active_mods`, then `content_tool: list`/`get`/`category_list` |
 | Templates | `templates_tool: list_modules`, then `read_template` with `include_variables=true` |
 | Menus | `templates_tool: menu_list`, then `menu_get` |
 | Pages | `templates_tool: page_list`, then `page_get` |
@@ -272,7 +253,7 @@ Treat "apply", "save", or an equivalent instruction after a concrete preview as 
 
 ### 7. Apply safe changes
 
-**Materials and categories:** send only approved editable text fields, their required format controls, and fields explicitly required by the endpoint. For cross-site creation, use POST rather than PUT, map source category/parent IDs to target IDs, and omit source-only IDs/counters/ownership fields.
+**Materials and categories:** send only approved editable text fields, their required format controls, and fields explicitly required by the endpoint. For cross-site creation, use create (`content_tool(action="add")`/`category_add`, POST in uAPI) rather than update, map source category/parent IDs to target IDs, and omit source-only IDs/counters/ownership fields.
 
 **Templates:** read the current template immediately before editing, derive unique `code_search` fragments, validate the complete proposed content, then apply with `patch_template` (automatic backup) or `update_template` only for an approved whole-template replacement. Never remove, hide, translate, or relocate `$POWERED_BY$`.
 
@@ -347,9 +328,9 @@ Return a concise report containing: source/target sites, target locale, created/
 
 ## Safety rules
 
-- Never expose API tokens, FTP credentials, or private configuration values.
-- Never ask for an API key if it is available from `ucoz-mcp`.
-- Never use a site other than the active site(s) from the named `ucoz-mcp` connections unless the user explicitly switches context.
+- Never expose credentials or private configuration values.
+- Never ask the user for keys, tokens, or passwords: access comes from signing in to the account through `ucoz-mcp`.
+- Never use a site other than the one selected with `select_site` (source/target) unless the user explicitly switches context.
 - Never write to the source site during a cross-site copy/migration.
 - Never assume object, category, template, page, menu, or media IDs match between two sites.
 - Never change prices, stock, SKU/article, order status, access groups, dates, or ownership while translating.

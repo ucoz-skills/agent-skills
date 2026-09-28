@@ -3,7 +3,7 @@
 
 Version: **1.1** (ships with Landing Skill **v1.4**)
 
-This file is the **visual contract** for landing pages built via `PLAYBOOK.md`. `PLAYBOOK.md` owns the MCP mechanics (`page_update`, `patch_template`, FTP, menus, forms, SEO). This file owns what the CSS/HTML actually looks like: style selection, typography and spacing, color tokens, icons, the modern CSS/JS toolbox, motion, and accessibility.
+This file is the **visual contract** for landing pages built via `PLAYBOOK.md`. `PLAYBOOK.md` owns the MCP mechanics (`page_update`, `patch_template`, file uploads (`files_tool`), menus, forms, SEO). This file owns what the CSS/HTML actually looks like: style selection, typography and spacing, color tokens, icons, the modern CSS/JS toolbox, motion, and accessibility.
 
 **Read this file before Step 4 of `PLAYBOOK.md`** (the first line of CSS). Everything here is mandatory unless explicitly marked "situational" or "only on request."
 
@@ -348,7 +348,7 @@ Without the wrapper, `.reveal` should simply render in its final state — never
 
 ## 7) JS baseline for `script.js`
 
-`script.js` stays a single file, plain script (no `<script type="module">`, no bundler) — it's uploaded whole via FTP, not diffed like the HTML template, so file size isn't the constraint; keeping it a single global-scope-safe IIFE is what matters for predictable behavior alongside uCoz's own inline scripts.
+`script.js` stays a single file, plain script (no `<script type="module">`, no bundler) — it's uploaded whole via `files_tool`, not diffed like the HTML template, so file size isn't the constraint; keeping it a single global-scope-safe IIFE is what matters for predictable behavior alongside uCoz's own inline scripts.
 
 ### 7.1 Mandatory baseline style
 

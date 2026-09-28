@@ -2,7 +2,7 @@
 
 Version: **1.1** (generation rules from Landing Skill v1.4, embedded in Ad Campaign Landing Skill **v2**)
 
-This file is the **visual contract** for segment landing pages built via `LANDING_PLAYBOOK.md`. `LANDING_PLAYBOOK.md` owns the MCP mechanics (`page_add`, FTP, menus, forms, SEO). This file owns what the HTML/CSS actually looks like: style selection, typography and spacing, color tokens, icons, the modern CSS/JS toolbox, motion, and accessibility.
+This file is the **visual contract** for segment landing pages built via `LANDING_PLAYBOOK.md`. `LANDING_PLAYBOOK.md` owns the MCP mechanics (`page_add`, file uploads (`files_tool`), menus, forms, SEO). This file owns what the HTML/CSS actually looks like: style selection, typography and spacing, color tokens, icons, the modern CSS/JS toolbox, motion, and accessibility.
 
 **Read this file before Step 4 of `LANDING_PLAYBOOK.md`** (the first line of CSS). Everything here is mandatory unless explicitly marked "situational" or "only on request."
 
@@ -361,7 +361,7 @@ Without the wrapper, `.reveal` should simply render in its final state — never
 
 ## 7) JS baseline for `script.js`
 
-`script.js` stays a single file, plain script (no `<script type="module">`, no bundler) — it's uploaded whole via FTP, not diffed like the HTML template, so file size isn't the constraint; keeping it a single global-scope-safe IIFE is what matters for predictable behavior alongside uCoz's own inline scripts.
+`script.js` stays a single file, plain script (no `<script type="module">`, no bundler) — it's uploaded whole via `files_tool`, not diffed like the HTML template, so file size isn't the constraint; keeping it a single global-scope-safe IIFE is what matters for predictable behavior alongside uCoz's own inline scripts.
 
 ### 7.1 Mandatory baseline style
 

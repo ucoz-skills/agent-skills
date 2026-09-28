@@ -138,7 +138,7 @@ Styles belong in `module 3/3`, not in page templates or global blocks.
 
 Prefer still trying `patch_template` on `3/3` first. If it does not persist (re-`read_template` empty), recovery options:
 
-1. One FTP CSS file linked from the relevant shell / `AHEADER` (best recovery for site-wide rules)
+1. One external CSS file uploaded via `files_tool`, linked from the relevant shell / `AHEADER` (best recovery for site-wide rules)
 2. Temporary `<style>` in `1/AHEADER` (after `</header>` in the block body — AHEADER is not `<head>`; avoid FOUC by keeping the block tiny)
 
 Do **not** treat AHEADER `<style>` as the normal home for CSS. Default remains scenario B.

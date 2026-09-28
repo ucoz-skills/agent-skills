@@ -1,24 +1,32 @@
 # Tools Reference
 
-## FTP Tool
+## Files Tool
 
-`ftp_tool` covers two unrelated capabilities: raw FTP file operations, and FTP password management via uAPI. Use it for files that live outside the template system (images, PDFs, custom CSS/JS assets, fonts). For template HTML/CSS, use `templates_tool` instead.
-
-### File operations
+`files_tool` works with site files that live outside the template system (images, PDFs, custom CSS/JS assets, fonts). For template HTML/CSS, use `templates_tool` instead.
 
 | Action | Notes |
 |---|---|
-| `list` | List files/folders at a remote path |
-| `read` | Read a remote file |
-| `write` | Write text content to a remote file |
-| `mkdir` | Create a remote directory |
-| `delete` | Delete a remote file/folder. **Confirm with the user first** — irreversible |
-| `rename` | Rename or move a remote file/folder |
-| `upload` | Upload a local file to an FTP path |
+| `list` | List files/folders at a path |
+| `info` | File/folder details |
+| `content_get` | Read a text file |
+| `content_put` | Write text content to a file; `create: true` to create it (the parent folder must exist) |
+| `upload` | Upload files: `files: [{filename, content}]` for text or `[{filename, content_base64}]` for binary |
+| `upload_url` | Upload a file from an external `url` (optional `name`) |
+| `mkdir` | Create a folder |
+| `rename` | Rename a file/folder |
+| `move` | Move a file/folder |
+| `delete` | Delete a file/folder. **Confirm with the user first** — irreversible; pass `confirm: true` only after confirmation |
+| `quota` | Disk quota usage |
+
+Paths have no leading or trailing slash: root = `""`, folder `css`, file `css/style.css` (served as `/css/style.css` — keep the slash in HTML links). Binary files (favicon, images, fonts) — via `upload` with `content_base64` or `upload_url`.
+
+## FTP Tool
+
+In the current MCP, `ftp_tool` only manages the FTP password (e.g. for an external FTP client). In the legacy NPM MCP it also performs FTP file operations (`list`, `read`, `write`, `mkdir`, `delete`, `rename`, `upload`; paths with a leading slash, e.g. `/css/style.css`) — use them only if `files_tool` is unavailable.
 
 ### FTP password management
 
-Requires an API key with **Control Panel settings access** enabled.
+Requires the signed-in account to be the site owner or have site administrator rights.
 
 | Action | Notes |
 |---|---|
@@ -29,23 +37,23 @@ Requires an API key with **Control Panel settings access** enabled.
 
 After a successful `ftp_password_set` or `ftp_password_change`, the response contains the new password in plain text. **Relay it to the user immediately** — it will not be shown again.
 
-### When to use FTP vs. `templates_tool`
+### When to use `files_tool` vs. `templates_tool`
 
 | Need | Tool |
 |---|---|
 | Edit page/global-block HTML | `templates_tool` |
 | Edit the CSS template (module 3) | `templates_tool` |
-| Upload a logo, favicon, banner image | `ftp_tool` (`upload`), then reference its path from a template |
-| Upload a standalone CSS/JS asset file | `ftp_tool` (`upload`) |
-| Browse/organize the file structure | `ftp_tool` (`list`, `mkdir`, `rename`, `delete`) |
+| Upload a logo, favicon, banner image | `files_tool` (`upload` with `content_base64` or `upload_url`), then reference its path from a template |
+| Upload a standalone CSS/JS asset file | `files_tool` (`upload` / `content_put`) |
+| Browse/organize the file structure | `files_tool` (`list`, `mkdir`, `rename`, `move`, `delete`, `quota`) |
 | Rotate/reset the FTP password | `ftp_tool` (`ftp_password_*`) |
 
 ### Canonical external CSS for a large landing/feature redesign
 
-When a single-module or page landing has substantial custom styling (hero, pricing, responsive layout, etc.), serve one external stylesheet from FTP instead of scattering rules across template CSS fields.
+When a single-module or page landing has substantial custom styling (hero, pricing, responsive layout, etc.), serve one external stylesheet uploaded via `files_tool` instead of scattering rules across template CSS fields.
 
-1. Create an asset directory if needed (e.g. `/assets`).
-2. Write one versioned stylesheet (e.g. `/assets/feature.css`) with `ftp_tool`.
+1. Create an asset directory if needed (`files_tool` `mkdir`, path `assets`).
+2. Write one versioned stylesheet with `files_tool` (`content_put` or `upload`, path `assets/feature.css`; linked as `/assets/feature.css`).
 3. Add one `<link rel="stylesheet">` for that exact asset to every full-page template for the module. Keep the system theme stylesheet link intact.
 4. Scope rules with the page/module body class. Do not use `@import`, inline `<style>`, or extra feature stylesheet links.
 5. Verify the public page emits the asset exactly once and that it returns the expected unique CSS marker.
@@ -56,7 +64,7 @@ Use the site-wide CSS template (`module 3/3`) only for small corrections that mu
 
 ## Modules Tool
 
-`modules_tool` manages site modules and admin functions. Most actions require an API key with **Control Panel settings access**. The exception is `active_mods`, which does not.
+`modules_tool` manages site modules and admin functions. Most actions require the signed-in account to be the site owner or have site administrator rights. The exception is `active_mods`, which does not.
 
 ### Actions
 

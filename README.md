@@ -12,7 +12,7 @@ Each skill ships with the [uCoz remote MCP](https://www.ucoz.com/mcp) — instal
 > See [SECURITY.md](SECURITY.md) for the full security policy.
 
 Website catalog: [ucoz.com/ai/skills](https://www.ucoz.com/ai/skills)  
-MCP documentation: [api.ucoz.net/mcp](https://api.ucoz.net/en/mcp.html) · Public MCP repo: [ucoz-skills/ucoz-mcp](https://github.com/ucoz-skills/ucoz-mcp)
+MCP documentation: [ucoz.com/ai/mcp](https://www.ucoz.com/ai/mcp) · Public MCP repo: [ucoz-skills/ucoz-mcp](https://github.com/ucoz-skills/ucoz-mcp)
 
 ## Available skills
 
@@ -173,7 +173,7 @@ Example MCP config (also in [`.mcp.json`](.mcp.json) and [`mcp_config.json`](mcp
 }
 ```
 
-After connecting, authorize in the Control Panel, then `list_sites` → `select_site` (or `create_site`). More connect docs: [ucoz-skills/ucoz-mcp](https://github.com/ucoz-skills/ucoz-mcp). Official Registry: `io.github.ucoz-skills/ucoz-mcp`.
+On first connection, sign in to your uCoz account and click **Allow**, then `list_sites` → `select_site` (or `create_site`). More connect docs: [ucoz-skills/ucoz-mcp](https://github.com/ucoz-skills/ucoz-mcp). Official Registry: `io.github.ucoz-skills/ucoz-mcp`.
 
 ### MCP tools
 
@@ -185,9 +185,11 @@ After connecting, authorize in the Control Panel, then `list_sites` → `select_
 | `content_tool` | Content modules |
 | `shop_tool` | Online shop |
 | `files_tool` | Site file manager |
-| `ftp_tool` | FTP password management only |
+| `ftp_tool` | FTP password (`ftp_password_*`); in the legacy NPM MCP — also file operations over FTP |
 | `modules_tool` | Modules, uAPI, quarantine |
 | `skills_tool` | Official agent skills |
+
+The landing, ad-campaign, design-editor, template-creator, and site-translator skills use `files_tool` for site files on the remote MCP. If the legacy NPM MCP is connected (no `files_tool`), they fall back to `ftp_tool` file operations.
 
 ## License
 

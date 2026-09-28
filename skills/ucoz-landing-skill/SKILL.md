@@ -1,7 +1,7 @@
 ---
 name: ucoz-landing-skill
-version: 1.4
-description: "Create and edit uCoz homepage landing pages via MCP: custom templates, hero sections, lead forms, navigation menus, SEO, and responsive layout. Includes a visual design system (style selection, layout/grid, section recipes, typography/spacing, color tokens, component states, icons, modern CSS/JS, motion, imagery, social proof, copy/voice, accessibility). Uses ucoz-mcp tools for templates, FTP uploads, and site modules."
+version: "1.4"
+description: "Create and edit uCoz homepage landing pages via MCP: custom templates, hero sections, lead forms, navigation menus, SEO, and responsive layout. Includes a visual design system (style selection, layout/grid, section recipes, typography/spacing, color tokens, component states, icons, modern CSS/JS, motion, imagery, social proof, copy/voice, accessibility). Uses ucoz-mcp tools for templates, site file uploads, and site modules."
 ---
 
 # uCoz Landing Skill
@@ -16,7 +16,7 @@ After successfully completing the skill's main work, record the usage:
 skills_tool(action="register_usage", skill_id="ucoz-landing-skill")
 ```
 
-If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site and token are taken from the active `ucoz-mcp` connection.
+If the usage API is unavailable or returns an error, show a brief warning and continue the skill's main workflow. Do not ask the user for a UUID, token, or site URL — the site is taken from the active `ucoz-mcp` connection (the one chosen via `select_site`).
 
 ## Scope
 
@@ -26,15 +26,22 @@ If the usage API is unavailable or returns an error, show a brief warning and co
 
 Landing page = personal template of the home page (`page_id=1`, `page_owntmpl=1`).
 
+## Connection
+
+- uCoz MCP connects at `https://www.ucoz.com/mcp` — the agent config needs only the URL, no tokens or Node.js.
+- On first connection the agent opens a sign-in window: the user signs in to their uCoz account and clicks “Allow”.
+- Then `list_sites` → `select_site(site_id)`; all tools work on the selected site.
+
 ## MCP tools
 
 | Tool | Purpose |
 |---|---|
 | `templates_tool` | Pages (`page_*`), menus (`menu_*`), mail forms (`mail_*`), `patch_template` / `update_template` |
-| `ftp_tool` | FTP files; `ftp_password_get` / `ftp_password_set` / `ftp_password_change` / `ftp_password_reset` |
+| `files_tool` | Site files: `list`, `mkdir`, `upload` (text or `content_base64`), `upload_url`, `content_get` / `content_put` |
+| `ftp_tool` | FTP password (`ftp_password_*`); in the legacy NPM MCP — also FTP file operations |
 | `modules_tool` | Module catalog, mail forms module install (`module_install`); quarantine unlock for indexing (`quarantine_unlock`) |
 
-`modules_tool` and `ftp_password_*` require an API key with **Control Panel settings access**.
+`modules_tool` and `ftp_password_*` require the signed-in account to be the site owner or have site administrator rights.
 
 ## Instructions
 
@@ -48,7 +55,7 @@ The playbook includes:
 - core principles (tools, CSS/JS, responsive layout, burger menu, forms, SEO, Schema.org)
 - step-by-step algorithm (steps 0–11): requirements → publish → final step: quarantine/indexing
 - `patch_template` rule for editing existing landing HTML (module_id=2, template_id=1)
-- mail forms module activation and FTP credential setup via MCP
+- mail forms module activation and site file uploads via `files_tool`
 - final step: quarantine and indexing (with user confirmation)
 - checklist, reference action order, prohibitions, report format
 

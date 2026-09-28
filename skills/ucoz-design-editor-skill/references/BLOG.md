@@ -168,7 +168,7 @@ Articles is a **dashboard module** — do not confuse it with Blog (`7`):
 - Guests on `10/1` and `10/3` render a public access block (between `$GLOBAL_AHEADER$` and `$GLOBAL_BFOOTER$`) without the dashboard shell.
 - `$BODY$` and `$PAGE_SELECTOR$` must be preserved in list templates. Do NOT output `$PAGE_SELECTOR1$` (creates a duplicate system pagination).
 - Do NOT output `$SORTING_MENU$` in `10/3`.
-- CSS lives only in an external FTP file (`/css/style.css`); after changes, bump `?v=` on all `10/1`–`10/6` shells.
+- CSS lives only in an external file uploaded via `files_tool` (`/css/style.css`); after changes, bump `?v=` on all `10/1`–`10/6` shells.
 - In `10/8` (form fields): do NOT delete or rename native `$..._FL$` fields, submit/cancel buttons, or embedded uCoz scripts.
 
 Preserve `$BODY$`, paging, filters, moderation, and every native form field. Do not confuse articles (`10`) with blog (`7`) — different templates, variables, and output format.

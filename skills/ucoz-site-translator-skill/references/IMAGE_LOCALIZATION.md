@@ -45,8 +45,9 @@ Read the current target OpenAPI schema before uploading:
 - common content modules: `cover` and enabled `file1`…`fileN` slots via `multipart/form-data`;
 - Page Editor pages: enabled `fileN` slots via `multipart/form-data`;
 - shop products/categories: dedicated shop image add/edit operations, not generic `fileN` assumptions;
-- template/global-block static assets: target FTP upload, then patch the copied HTML/CSS to the new target path.
+- In the new MCP, `content_tool`/`shop_tool` accept only file paths on the MCP server (`cover_path`, `image_path`); if that is not possible, upload the image with `files_tool` and reference it in HTML, or tell the user.
+- template/global-block static assets: upload to the target through `files_tool` (`upload` with `content_base64` or `upload_url`), then patch the copied HTML/CSS to the new target path.
 
 Preserve the source slot/order when supported. Use collision-safe target filenames, retain appropriate compression, and preserve dimensions/aspect ratio unless the target schema or user requires a change.
 
-After upload, re-read the target object or FTP path and verify the target URL, slot/order, dimensions, format, `alt`/`title`, and rendered reference. Record the source→target media mapping.
+After upload, re-read the target object or `files_tool` path (`info`/`list`) and verify the target URL, slot/order, dimensions, format, `alt`/`title`, and rendered reference. Record the source→target media mapping.
