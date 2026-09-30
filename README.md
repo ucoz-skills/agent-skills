@@ -186,6 +186,7 @@ On first connection, sign in to your uCoz account and click **Allow**, then `lis
 | `shop_tool` | Online shop |
 | `files_tool` | Site file manager |
 | `ftp_tool` | FTP password (`ftp_password_*`); in the legacy NPM MCP — also file operations over FTP |
+| `apps_tool` | Scripts environment: PHP, Node.js, and Python apps, MySQL, cron, backups |
 | `modules_tool` | Modules, uAPI, quarantine |
 | `skills_tool` | Official agent skills |
 
