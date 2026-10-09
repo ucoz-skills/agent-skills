@@ -1,7 +1,7 @@
 {
   "name": "ucoz",
-  "description": "Generate uCoz landing pages, ad campaign landings, shop optimization, translate and localize site content, restyle site design, and create original site templates via remote MCP. Includes landing, ad campaign, shop, translator, design editor, and template creator skills plus ucoz-mcp.",
-  "version": "1.8.0",
+  "description": "Generate uCoz landing pages, ad campaign landings, shop optimization, translate and localize site content, restyle site design, create original site templates, and build server-side scripts (PHP, Node.js, Python, MySQL, cron) via remote MCP. Includes landing, ad campaign, shop, translator, design editor, template creator, and server scripts skills plus ucoz-mcp.",
+  "version": "1.9.0",
   "author": {
     "name": "uCoz",
     "url": "https://www.ucoz.com"
@@ -17,7 +17,8 @@
     "./skills/ucoz-shop-optimizer-skill",
     "./skills/ucoz-site-translator-skill",
     "./skills/ucoz-design-editor-skill",
-    "./skills/ucoz-template-creator-skill"
+    "./skills/ucoz-template-creator-skill",
+    "./skills/ucoz-server-scripts-skill"
   ],
   "logo": "assets/logo.svg"
 }

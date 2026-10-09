@@ -4,14 +4,15 @@
   "groupings": [
     {
       "title": "uCoz",
-      "description": "Official uCoz agent skills for landing pages, ad campaigns, shop optimization, site translation, design restyling, and original site templates.",
+      "description": "Official uCoz agent skills for landing pages, ad campaigns, shop optimization, site translation, design restyling, original site templates, and server-side scripts.",
       "skills": [
         "ucoz-landing-skill",
         "ucoz-ad-campaign-landing-skill",
         "ucoz-shop-optimizer-skill",
         "ucoz-site-translator-skill",
         "ucoz-design-editor-skill",
-        "ucoz-template-creator-skill"
+        "ucoz-template-creator-skill",
+        "ucoz-server-scripts-skill"
       ]
     }
   ]

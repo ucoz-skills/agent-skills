@@ -1,0 +1,17 @@
+# domains/{domain}/public_html/{name}/.htaccess
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # private code and dotfiles
+  RewriteRule ^lib/ - [F,L]
+  RewriteRule (^|/)\.(?!well-known/) - [F,L]
+  # clean routes: everything that is not a real file goes to index.php
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+<FilesMatch "\.(log|sql|json|jsonl|bak|ini|sh|md|lock)$|\.bak-">
+  Require all denied
+</FilesMatch>

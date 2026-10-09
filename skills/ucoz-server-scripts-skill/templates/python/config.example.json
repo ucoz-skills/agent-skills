@@ -1,0 +1,4 @@
+{
+  "origins": ["https://{site}"],
+  "cron_key": "<random 32 hex: X-Cron-Key for /api/cron; >= 16 chars or the route stays closed>"
+}

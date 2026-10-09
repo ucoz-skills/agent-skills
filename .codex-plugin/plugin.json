@@ -1,7 +1,7 @@
 {
   "name": "ucoz",
-  "version": "1.8.0",
-  "description": "Generate uCoz landing pages, translate and localize site content, restyle site design, create original site templates, and manage templates, menus, and mail forms via remote MCP. Includes landing, translator, design editor, template creator, shop, and ad campaign skills plus ucoz-mcp.",
+  "version": "1.9.0",
+  "description": "Generate uCoz landing pages, translate and localize site content, restyle site design, create original site templates, build server-side scripts, and manage templates, menus, and mail forms via remote MCP. Includes landing, translator, design editor, template creator, shop, ad campaign, and server scripts skills plus ucoz-mcp.",
   "author": {
     "name": "uCoz",
     "url": "https://www.ucoz.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "uCoz",
     "shortDescription": "Build uCoz landing pages and manage your site from Codex",
-    "longDescription": "Generate uCoz landing pages, translate or localize site content, restyle site design, and create original site templates with AI. Connect remote ucoz-mcp (https://www.ucoz.com/mcp), then use landing, shop, translator, design editor, template creator, and ad campaign skills.",
+    "longDescription": "Generate uCoz landing pages, translate or localize site content, restyle site design, and create original site templates with AI. Connect remote ucoz-mcp (https://www.ucoz.com/mcp), then use landing, shop, translator, design editor, template creator, ad campaign, and server scripts skills.",
     "developerName": "uCoz",
     "category": "Coding",
     "capabilities": [
@@ -39,7 +39,8 @@
       "Update my uCoz homepage as a promo landing page with SEO and mobile menu",
       "Translate the latest news posts into English and keep the URLs unchanged",
       "Restyle my uCoz site: modern colors, typography, header and footer",
-      "Create an original uCoz site template from scratch and publish it site-wide"
+      "Create an original uCoz site template from scratch and publish it site-wide",
+      "Add a lead form to my uCoz site that stores submissions in MySQL and notifies me in Telegram"
     ],
     "brandColor": "#7B2FE3",
     "composerIcon": "./assets/logo.svg",

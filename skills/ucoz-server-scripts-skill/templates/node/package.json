@@ -1,0 +1,9 @@
+{
+  "name": "ucoz-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "app.js",
+  "engines": { "node": ">=20" },
+  "dependencies": {}
+}

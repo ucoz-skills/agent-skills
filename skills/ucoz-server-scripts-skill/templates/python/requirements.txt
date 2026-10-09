@@ -1,0 +1,4 @@
+# Pin exact versions. Leave empty if the standard library is enough.
+# python_install_modules does not work through MCP: install with a one-off cron job running the app's
+# virtualenv pip (references/PYTHON.md §5), then delete the job. Verified: PyMySQL==1.1.1, requests==2.32.3.
+# PyMySQL==1.1.1
