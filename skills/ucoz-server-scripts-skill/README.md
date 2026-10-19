@@ -1,7 +1,7 @@
 # uCoz Server Scripts Skill
 
 Version 1.1. Agent skill for building and running backend code for a uCoz site in its **Server Scripts**
-environment through the official `ucoz-mcp` **`apps_tool`**.
+environment (Серверные скрипты) through the official `ucoz-mcp` **`apps_read` / `apps_write` / `apps_delete`**.
 
 It covers PHP endpoints, Node.js and Python apps under Passenger, MySQL, cron, visitor identity
 (`ucoz_user()`), calling the site uAPI, security, deploy/rollback, testing, and troubleshooting. Each
@@ -24,7 +24,7 @@ ucoz-server-scripts-skill/
 ├─ SKILL.md                 entry point: mental model, session protocol, non-negotiables, gates, router
 ├─ references/
 │  ├─ ENVIRONMENT.md        what the environment is, URL mapping, versions, limits, timeouts
-│  ├─ APPS_TOOL.md          every apps_tool action: params, gates, verified marks, quirks
+│  ├─ APPS_TOOL.md          every apps_read / apps_write / apps_delete action: params, gates, verified marks, quirks
 │  ├─ PHP.md · NODE.md · PYTHON.md
 │  ├─ MYSQL.md · CRON.md · IDENTITY.md · UAPI.md
 │  ├─ ARCHITECTURE.md · SECURITY.md · DEPLOY.md · TESTING.md · TROUBLESHOOTING.md
@@ -58,8 +58,8 @@ ucoz-server-scripts-skill/
 
 ## Requirements
 
-- Official uCoz MCP (`https://www.ucoz.com/mcp`) with `apps_tool`.
-- Server Scripts available for the site (`apps_tool status → available: true`).
+- Official uCoz MCP (`https://www.ucoz.com/mcp`) with `apps_read` / `apps_write` / `apps_delete`.
+- Server Scripts available for the site (`apps_read` / `apps_write` / `apps_delete` status → available: true`).
 
 ## Install
 
@@ -73,7 +73,7 @@ Or copy this folder into your agent's skills directory (e.g. `~/.claude/skills/u
 
 Incorporates field notes from the community skill
 [AndreyBgdnv/Ucoz-Server-Scripts-Skill](https://github.com/AndreyBgdnv/Ucoz-Server-Scripts-Skill) (MIT),
-updated for the MCP `apps_tool` workflow and verified against the current platform.
+updated for the MCP `apps_read` / `apps_write` / `apps_delete` workflow and verified against the current platform.
 
 ## License
 

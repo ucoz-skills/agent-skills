@@ -2,58 +2,63 @@
 
 ## Files Tool
 
-`files_tool` works with site files that live outside the template system (images, PDFs, custom CSS/JS assets, fonts). For template HTML/CSS, use `templates_tool` instead.
+`files_read` / `files_write` works with site files that live outside the template system (images, PDFs, custom CSS/JS assets, fonts). For template HTML/CSS, use `templates_read` / `templates_write` instead.
 
-| Action | Notes |
-|---|---|
-| `list` | List files/folders at a path |
-| `info` | File/folder details |
-| `content_get` | Read a text file |
-| `content_put` | Write text content to a file; `create: true` to create it (the parent folder must exist) |
-| `upload` | Upload files: `files: [{filename, content}]` for text or `[{filename, content_base64}]` for binary |
-| `upload_url` | Upload a file from an external `url` (optional `name`) |
-| `mkdir` | Create a folder |
-| `rename` | Rename a file/folder |
-| `move` | Move a file/folder |
-| `delete` | Delete a file/folder. **Confirm with the user first** — irreversible; pass `confirm: true` only after confirmation |
-| `quota` | Disk quota usage |
+| Action | Tool | Notes |
+|---|---|---|
+| `list` | `files_read` | List files/folders at a path |
+| `info` | `files_read` | File/folder details |
+| `content_get` | `files_read` | Read a text file |
+| `quota` | `files_read` | Disk quota usage |
+| `upload_direct` | `files_write` | Intermediate step only. Does not store the file and does not attach it. See below |
+| `upload` | `files_write` | Stores files in a folder. After `upload_direct`, pass `upload_id` or `upload_ids` (at most 20) |
+| `upload_url` | `files_write` | One file from a public `http(s)` URL (optional `name`). Not `upload_direct` |
+| `content_put` | `files_write` | Write text; `create: true` creates the file (the parent folder must exist) |
+| `mkdir` | `files_write` | Create a folder |
+| `rename` | `files_write` | Rename a file/folder |
+| `move` | `files_write` | Move a file/folder |
+| `delete` | `files_delete` | **Confirm with the user first.** Pass `confirm: true` only after that |
 
-Paths have no leading or trailing slash: root = `""`, folder `css`, file `css/style.css` (served as `/css/style.css` — keep the slash in HTML links). Binary files (favicon, images, fonts) — via `upload` with `content_base64` or `upload_url`.
+Paths have no leading or trailing slash: root = `""`, folder `css`, file `css/style.css` (served as `/css/style.css` — keep the slash in HTML links).
 
-## FTP Tool
+### Binary files, including a batch
 
-In the current MCP, `ftp_tool` only manages the FTP password (e.g. for an external FTP client). In the legacy NPM MCP it also performs FTP file operations (`list`, `read`, `write`, `mkdir`, `delete`, `rename`, `upload`; paths with a leading slash, e.g. `/css/style.css`) — use them only if `files_tool` is unavailable.
+`upload_direct` does not put the file in the file manager and does not attach it to a material or a product. Binding is the next call.
 
-### FTP password management
+1. `files_write(action="upload_direct", filename="<name.ext>", size=<exact byte length>)`. `size` is from 1 to 16777216.
+2. The reply contains `upload_url` and `upload_id`. The reservation lasts 900 seconds.
+3. POST the raw bytes to `upload_url` with `Content-Type: application/octet-stream`. The body length must equal `size`. That reply is `ok`, `upload_id`, `filename`, `size`.
+4. Do that for every file, then pass the ids in one call:
+   - File manager: `files_write(action="upload", path="<folder>", upload_ids="<id1>,<id2>,...")`. At most 20. This call stores the files.
+   - Material images: `content_write` `add` or `update` with `image_upload_ids` (comma-separated, at most 50). The cover is a separate parameter, `cover_upload_id`.
+   - Product photos: `shop_write(action="img_add", id=<product id>, image_upload_ids="<id1>,<id2>,...")`.
 
-Requires the signed-in account to be the site owner or have site administrator rights.
+Do not send `*_base64` in that attach call. Base64 wins over `*_upload_id`, and a long base64 body is truncated before anything is stored. `content_base64` on `upload` is only for a tiny file that is already in context.
 
-| Action | Notes |
-|---|---|
-| `ftp_password_get` | Returns connection settings without the password |
-| `ftp_password_set` | Sets the password for the first time (only works when none is set yet) |
-| `ftp_password_change` | Changes the existing password. **Confirm with user first** — invalidates current password immediately |
-| `ftp_password_reset` | Resets the password. **Confirm with user first** — invalidates current password immediately |
+Checked on blog entry 1. Three images, 194866, 167402 and 180705 bytes. Each `upload_direct` returned HTTP 200. One `content_write` `update` with `image_upload_ids`. `files` then held three images, all 1080×864. The cover went separately, `cover_upload_id`, 259102 bytes: the cover URL stayed, the bytes were new (1024×1024, Content-Length 259102), and the three `files` stayed. The entry date became 2026-10-07 10:27 after the images and 2026-10-07 10:28 after the cover.
 
-After a successful `ftp_password_set` or `ftp_password_change`, the response contains the new password in plain text. **Relay it to the user immediately** — it will not be shown again.
+Checked on product 85. Three photos, 295602, 320024 and 290687 bytes. Each `upload_direct` returned HTTP 200. One `shop_write` `img_add` with `image_upload_ids`. The reply was «Изображения добавлены». `num_photos` went from 11 to 14. The new slots were 11, 12 and 13. The main photo did not change, because the product already had one.
 
-### When to use `files_tool` vs. `templates_tool`
+`img_add` appends slots when a main photo already exists. On a product with no photos, the first image of that same call becomes the main photo. Checked 2026-10-19 on product 87 (no photos before): three images in one `img_add`, `num_photos` 3, the first became the main photo, reply «Изображения добавлены».
+
+Material and product image URLs are served as `image/webp`, so their Content-Length is the webp size, not the uploaded file size. A file-manager `upload` keeps the original bytes. A long folder name can fail with `FM_NAME_TOO_LONG`; use a short path.
+
+### When to use `files_read` / `files_write` vs. `templates_read` / `templates_write`
 
 | Need | Tool |
 |---|---|
-| Edit page/global-block HTML | `templates_tool` |
-| Edit the CSS template (module 3) | `templates_tool` |
-| Upload a logo, favicon, banner image | `files_tool` (`upload` with `content_base64` or `upload_url`), then reference its path from a template |
-| Upload a standalone CSS/JS asset file | `files_tool` (`upload` / `content_put`) |
-| Browse/organize the file structure | `files_tool` (`list`, `mkdir`, `rename`, `move`, `delete`, `quota`) |
-| Rotate/reset the FTP password | `ftp_tool` (`ftp_password_*`) |
+| Edit page/global-block HTML | `templates_read` / `templates_write` |
+| Edit the CSS template (module 3) | `templates_read` / `templates_write` |
+| Upload a logo, favicon, banner image | `files_write` `upload_direct`, then `upload` with `upload_id` / `upload_ids` (or `upload_url` for a public URL). Then reference the path from a template |
+| Upload a standalone CSS/JS asset file | `files_write` (`upload` / `content_put`) |
+| Browse/organize the file structure | `files_read` / `files_write` / `files_delete` (`list`, `mkdir`, `rename`, `move`, `delete`, `quota`) |
 
 ### Canonical external CSS for a large landing/feature redesign
 
-When a single-module or page landing has substantial custom styling (hero, pricing, responsive layout, etc.), serve one external stylesheet uploaded via `files_tool` instead of scattering rules across template CSS fields.
+When a single-module or page landing has substantial custom styling (hero, pricing, responsive layout, etc.), serve one external stylesheet uploaded via `files_read` / `files_write` instead of scattering rules across template CSS fields.
 
-1. Create an asset directory if needed (`files_tool` `mkdir`, path `assets`).
-2. Write one versioned stylesheet with `files_tool` (`content_put` or `upload`, path `assets/feature.css`; linked as `/assets/feature.css`).
+1. Create an asset directory if needed (`files_write` `mkdir`, path `assets`).
+2. Write one versioned stylesheet with `files_write` (`content_put` or `upload`, path `assets/feature.css`; linked as `/assets/feature.css`).
 3. Add one `<link rel="stylesheet">` for that exact asset to every full-page template for the module. Keep the system theme stylesheet link intact.
 4. Scope rules with the page/module body class. Do not use `@import`, inline `<style>`, or extra feature stylesheet links.
 5. Verify the public page emits the asset exactly once and that it returns the expected unique CSS marker.
@@ -64,7 +69,7 @@ Use the site-wide CSS template (`module 3/3`) only for small corrections that mu
 
 ## Modules Tool
 
-`modules_tool` manages site modules and admin functions. Most actions require the signed-in account to be the site owner or have site administrator rights. The exception is `active_mods`, which does not.
+`modules_read` manages site modules and admin functions. Most actions require the signed-in account to be the site owner or have site administrator rights. The exception is `active_mods`, which does not.
 
 ### Actions
 
@@ -209,7 +214,7 @@ Fetch category URLs from `/uapi/shop/request?page=categories` — each category 
 
 ## Pages
 
-Site pages are managed through `templates_tool` `page_*` actions.
+Site pages are managed through `templates_read` / `templates_write` `page_*` actions.
 
 ### Actions
 
@@ -256,8 +261,7 @@ Site pages are managed through `templates_tool` `page_*` actions.
 ### Minimal contract for a personal-template page
 
 ```
-templates_tool(
-  action="page_add",
+templates_write(action="page_add",
   page_name="Title",
   page_message="Title",
   page_owntmpl=1,

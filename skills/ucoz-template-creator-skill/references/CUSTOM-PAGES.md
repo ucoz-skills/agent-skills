@@ -6,7 +6,7 @@ Use this workflow when a user asks for a personal or campaign page, About, Conta
 
 ## Page workflow
 
-1. Call `templates_tool(action="page_list")` and reuse an existing page when appropriate.
+1. Call `templates_read(action="page_list")` and reuse an existing page when appropriate.
 2. Call `page_get` before changing an existing page. Preserve its ID, URL, parent, access, pending state, and unrelated settings.
 3. Create with `page_add`, or update with `page_update`. Use `page_owntmpl=1` and a complete `page_tmpl` only when that page genuinely needs its own layout.
 4. Reuse the active design system: the same frame width, type scale, color tokens, buttons, forms, dividers, focus states, and semantic SVG icons.

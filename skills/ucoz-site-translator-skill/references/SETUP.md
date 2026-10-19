@@ -26,12 +26,12 @@ Both sites must be in the same uCoz account. If they are not, the user runs the 
 2. `select_site(target)` → write.
 3. Before every write, check the host in the tool response against the target site; stop on any mismatch.
 
-Static template/global-block files move through `files_tool` on the selected site. Text files: from the source `files_tool(action="content_get", path="<file path>")`, then after `select_site(target)` — `files_tool(action="content_put", path="<file path>", content=..., create=true)` (create the parent folder with `mkdir` if needed). Binary files: on the target `files_tool(action="upload_url", path="<folder>", url="<public URL of the source file>")` or `upload` with `content_base64`.
+Static template/global-block files move through `files_read` / `files_write` on the selected site. Text files: from the source `files_read(action="content_get", path="<file path>")`, then after `select_site(target)` — `files_write(action="content_put", path="<file path>", content=..., create=true)` (create the parent folder with `mkdir` if needed). Binary files: `files_write` `upload_direct` for each file (`filename`, exact `size`, raw POST to `upload_url`), then one `files_write(action="upload", path="<folder>", upload_ids="...")` (at most 20). `upload_url` is only when the source file is already at a public http(s) address.
 
 ## Verification
 
-Before any write, make a read-only call on each site (for example `modules_tool.active_mods` or reading one material through `content_tool`) and check the host in the response against the expected site.
+Before any write, make a read-only call on each site (for example `modules_read.active_mods` or reading one material through `content_read` / `content_write`) and check the host in the response against the expected site.
 
-## Legacy NPM MCP (fallback)
+## File tool fallback
 
-If a local NPM MCP is connected, it works with one site per connection: migration needs two named connections (source and target). Files go through `ftp_tool` (`list`/`read`/`write`). The user configures credentials in the client config outside the chat.
+Static template and global-block files go through `files_write`.

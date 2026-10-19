@@ -23,8 +23,8 @@ This guide defines how the skill should generate product and category visuals sa
 6. Prefer white background and clean ecommerce composition for main catalog images.
 7. If the user asks for a unified style, keep lighting, camera angle and background consistent across the batch.
 8. Always provide metadata: prompt, alt, filename and placement recommendation.
-9. Upload and bind generated image files through documented Online Shop API image operations.
-10. Do not use FTP upload or “manual Control Panel upload” as the normal product-image fallback.
+9. Upload and bind generated image files with `files_write` `upload_direct`, then `shop_write` `img_add` or `category_image`. Do not take a uAPI key.
+10. Do not use a manual Control Panel upload as the normal product-image fallback.
 
 ## Input data to collect
 
@@ -60,13 +60,15 @@ If there is not enough information to produce a reliable exact-looking product i
 - say that it is a concept illustration or generic ecommerce visual;
 - avoid showing non-existent controls, labels or package details.
 
-## API upload and binding workflow
+## Upload and binding workflow
 
 1. Generate the file locally.
-2. For product images, use documented Online Shop API image operations such as `file_add_*`, replacement by image number/slot, and deletion through `img` / `del_all` when approved.
-3. For category images, use `POST /shop/edit_cat?mode=img` with documented `cat_img` / `del` parameters.
-4. Do not use `del_imgN` flags as a generic product-image mechanism.
-5. If no confirmed product-image operation exists or the token lacks permission, report the API blocker. Do not use FTP upload or manual Control Panel upload as the main answer.
+2. `files_write` `upload_direct` with `filename` and the exact size in bytes (1..16777216). POST the raw body to `upload_url` as `application/octet-stream`. The file is not attached yet.
+3. Several product photos: one `shop_write` `img_add` with comma-separated `image_upload_ids`. Do not send `image_base64`. Existing photos are not replaced. If the product already has a main photo, slots are appended and that photo stays. If it has no photos, the first image becomes the main photo.
+4. Replace an existing slot only after approval: `shop_write` `img_edit`, `img` (`0` = main), `confirm: true`, one `image_upload_id`. Delete with `shop_delete` `img_del` and `confirm: true`; `img` is required unless `del_all=1`.
+5. Category image: `shop_write` `category_image` with one `image_upload_id` (jpg, png, or gif). Remove it with `shop_delete` `category_image_delete` and `confirm: true`.
+6. Do not use `del_imgN` flags as a generic product-image mechanism. Do not POST multipart to `/shop/editgoods` or `/uapi`.
+7. If a shop tool cannot do the operation, report that blocker. Do not use a manual Control Panel upload as the main answer. Do not take a uAPI key.
 
 ## Example prompt shapes
 

@@ -1,404 +1,144 @@
-# uCoz Shop Optimizer — Built-in Online Shop API Reference
+# uCoz Shop Optimizer — MCP action reference
 
-This file replaces a separate OpenAPI schema. The agent must know the capabilities listed below and use them directly without searching for `shop-openapi.yaml`.
+This file replaces the old HTTP cookbook. Call the shop only through the current uCoz MCP tools on the site selected with `select_site`. Do not call `https://{host}/uapi`. Do not send `Authorization: Bearer`. Do not take or ask for a uAPI key: the current MCP does not provide one.
 
-## Site connection and authorization
+OpenAPI field names correspond to these tool parameters.
 
-1. First connect to `ucoz-mcp` and read from its current context:
-   - the site/domain MCP is working with;
-   - the API key/token MCP already uses for that site.
-2. Do not ask the user to manually paste an API key if `ucoz-mcp` is already connected.
-3. Do not expose the API key in responses, logs, plans or reports.
-4. For direct shop API requests, use the same site and the same API key:
+Do not look for `shop-openapi.yaml`.
 
-```http
-Authorization: Bearer <API_KEY_FROM_UCOZ_MCP>
-```
+## Site
 
-Base URL:
+1. `list_sites`.
+2. `select_site(site_id)`.
 
-```text
-https://{SITE_FROM_UCOZ_MCP}/uapi
-```
+Every `shop_read`, `shop_write`, and `shop_delete` call uses that selected site. There is no base URL and no bearer token.
 
-If MCP returns a full URL, normalize it to the site host and append `/uapi`. If the API returns a permission error, do not ask for the key again — report that the current key/user lacks rights for the operation.
+If a shop tool returns a permission error, say that the current account cannot do that operation. Do not ask for another key.
 
-## General request rules
+## Confirm
 
-- `GET` methods pass parameters in the query string.
-- Most shop `POST`/`PUT` methods use `application/x-www-form-urlencoded`.
-- Product images use `multipart/form-data`.
-- Do not use FTP for product image upload. The shop has dedicated image API operations.
-- Do not use `del_img1`, `del_img2`, … as the general product-image deletion mechanism. For the shop, use `img` and `del_all` in dedicated image operations.
+Pass `confirm: true` only after the user approves that change.
 
-## Categories
+- Every `shop_delete` action requires `confirm: true`.
+- `shop_write` requires `confirm: true` for `img_edit`, `variation_gen`, `checkout_submit`, `balance_change`, and `balance_set`.
+- `shop_delete` `basket_delete` requires `confirm: true` when clearing the whole basket (no `id`). Deleting one line by `id` does not.
+- `templates_delete`, including `restore_backup`, requires `confirm: true`.
 
-### Get categories
+## Read — `shop_read`
 
-```http
-GET /shop/request?page=categories
-```
-
-Parameters:
-
-| Parameter | Required | Description |
-|---|---:|---|
-| `page=categories` | yes | fixed request type |
-| `parent_id` | no | parent category ID |
-| `get_globals` | no | `0/1`, get shop global categories |
-
-Use to build the category tree, select scope, find categories without descriptions and check structure.
-
-### Add / edit / show / hide category / manage category image
-
-```http
-POST /shop/edit_cat
-Content-Type: application/x-www-form-urlencoded
-```
-
-Main parameter — `mode`:
-
-| `mode` | Action |
-|---|---|
-| `add` | add category |
-| `edit` | edit category |
-| `show` | show category |
-| `hide` | hide category |
-| `img` | add/replace/delete category image |
-
-Fields:
-
-| Field | Purpose |
-|---|---|
-| `id` | category ID, required for `edit`, `img`, `show`, `hide` |
-| `name` | category name, required for `add` |
-| `pid` | parent category ID |
-| `global_cat` | global product group category ID |
-| `dscr` | category description |
-| `meta_title` | category page HTML title |
-| `meta_dscr` | category page meta description |
-| `url` | category SEO-friendly URL |
-| `pos` | category position |
-| `cat_img` | image file path for `mode=img` |
-| `view_groups` | groups allowed to view the category |
-| `add_groups` | groups allowed to add materials |
-| `exclude_from_discount` | exclude category from discounts |
-| `del` | delete category image for `mode=img`; ignored if `cat_img` is passed |
-
-Protected fields by default: visibility, access groups, parent category, discounts and category image.
-
-## Products
-
-### Get all products list
-
-```http
-GET /shop/request?page=allgoods
-```
-
-Actual URL:
-
-```text
-/uapi/shop/request?page=allgoods
-```
-
-Parameters:
-
-| Parameter | Description |
-|---|---|
-| `pnum` | page number, default `1` |
-| `sort` | sort field: `id`, `art`, `brand`, `name`, `price`, `warr`, `weight`, `added_time`, `modified_time`, `num_com`, `rating`, `ordered`, `views`, `solds`, `other#` |
-| `order` | `asc` or `desc` |
-| `f_name` | name filter, Base64 value |
-| `f_brand` | brand filter, Base64 |
-| `f_art` | SKU/article filter, Base64 |
-| `f_price` | price filter, Base64, format `MIN|MAX|CURRENCY_CODE` |
-| `f_stock` | stock filter, Base64 |
-| `f_status` | status filter, Base64 |
-| `f_warr` | warranty filter, Base64 |
-| `f_weight` | weight filter, Base64 |
-
-Use this method only after scope is selected. Do not start optimizing all products by default.
-
-### Get product card
-
-```http
-GET /shop/request?page=viewgoods&id={id}
-```
-
-Parameters:
-
-| Parameter | Required | Description |
-|---|---:|---|
-| `page=viewgoods` | yes | fixed request type |
-| `id` | yes | product ID |
-| `cnt` | no | quantity for total price calculation |
-| `goods_id` | no | product ID for wishlist |
-| `clear=1` | no | clear wishlist |
-
-Use before editing a product, replacing an image or preparing preview.
-
-### Add product
-
-```http
-POST /shop/addgoods
-Content-Type: application/x-www-form-urlencoded
-```
-
-Required fields:
-
-| Field | Value |
-|---|---|
-| `method` | `submit` |
-| `cat_id` | main category ID |
-| `name` | product name |
-
-Additional fields:
-
-| Field | Description | Protection |
+| Action | Role | Parameters |
 |---|---|---|
-| `cats_add` | additional categories, format `[ID1, ID2, ID3,...]` | change only on request |
-| `ch_addcat` | `0/1`, required when `cats_add` is set | change only on request |
-| `brief` | short description | safe text field |
-| `dscr` | full description | safe text field |
-| `html_dscr` | `0/1`, allow HTML in `dscr` | confirm if HTML mode changes |
-| `type` | `0` physical, `1` file, `2` electronic code, `3` service | protected |
-| `price` | price | protected |
-| `price_in` | purchase price | protected |
-| `price_old` | old price | protected |
-| `stock` | stock or expected date | protected |
-| `art` | SKU/article | protected |
-| `hide` | `0/1`, whether product is hidden | protected |
+| `category_list` | list categories | optional `parent_id` or `pid`, `get_globals` (`1` includes global categories) |
+| `list` | product list | optional `view` (`allgoods` default, `wishlist`, `usergoods`), `user_id`, `pnum`, `page`, `sort`, `order`, `f_name`, `f_brand`, `f_art`, `f_price`, `f_stock`, `f_status`, `f_warr`, `f_weight` |
+| `get` | one product card | `id` required; optional `cnt`, `goods_id` |
+| `variations_list` | variations of a product | `id` |
+| `variation_get` | one variation | `id`, `variation_crc` |
+| `variation_dict_list` | one variation dictionary | `id` |
+| `stock_get` | stock by option sets | `id` |
+| `basket_get` | basket | optional `user_id` |
+| `checkout_get` | checkout form | optional `promo_code`, `custom_delivery_tax` |
+| `invoices_list` | orders | optional `page`, `user_id`, `hide`, `status`, `group_courier`, `payment_id`, `delivery_id`, `ids`, `id`, `inv_sum`, `cdate`, `date` |
+| `order_get` | one order | order hash in `order` or `id` |
+| `comments_list` | product comments | `id` |
+| `currencies` | currencies and rates | none |
+| `balance_get` | user balance | optional `user_id` |
 
-For draft product creation, suggest `hide=1` by default unless the user asks to publish immediately.
+`list` filters are plain strings. `sort` may be `id`, `art`, `brand`, `name`, `price`, `warr`, `weight`, `added_time`, `modified_time`, `num_com`, `rating`, `ordered`, `views`, `solds`, `other#`. `order` on a list is `asc` or `desc`. `f_price` is `MIN|MAX|CURRENCY`.
 
-### Edit product
+Use `list` only after the scope is chosen. Do not start by optimizing every product.
 
-```http
-POST /shop/editgoods
-Content-Type: application/x-www-form-urlencoded
-```
+Read `get` before editing a product, replacing an image, or building a preview.
 
-Required fields:
+## Write — `shop_write`
 
-| Field | Value |
-|---|---|
-| `method` | `submit` |
-| `id` | product ID to edit |
-| `cat_id` | product category ID |
-| `name` | product name |
+### Categories
 
-Edit fields:
+There is no category-delete action. Do not invent one.
 
-| Field | Description | Protection |
+| Action | Role | Parameters |
 |---|---|---|
-| `brand` | manufacturer | change only with confirmation |
-| `brief` | short description | safe text field |
-| `dscr` | full description | safe text field |
-| `undisc` | exclude product from discounts | protected |
-| `price` | price | protected |
-| `price_in` | purchase price | protected |
-| `price_old` | old price | protected |
-| `unit` | unit of measure | change only with confirmation |
-| `weight` | weight | protected |
-| `art` | SKU/article | protected |
-| `stock` | stock/expected date | protected |
-| `warr` | warranty | protected |
-| `type` | product type: `0/1/2/3` | protected |
-| `tags` | comma-separated tags | may change per task |
-| `url` | product SEO-friendly URL | protected, change only after preview |
-| `meta_title` | product HTML title | safe after preview |
-| `meta_dscr` | product meta description | safe after preview |
-| `cats_add` | additional categories | protected |
-| `ch_addcat` | additional categories flag | protected |
-| `hide` | hide/show product | protected |
+| `category_add` | create a category | `name`; optional `pid` / `parent_id`, `global_cat`, `dscr`, `meta_title`, `meta_dscr`, `url`, `pos`, `view_groups`, `add_groups`, `exclude_from_discount` |
+| `category_update` | edit a category | `id` required; same text and structure fields as add |
+| `category_show` | show a category | `id` |
+| `category_hide` | hide a category | `id` |
+| `category_image` | set the category image | `id`, one `image_upload_id` |
 
-Before editing, always read the current card via `viewgoods` so required fields are not overwritten.
+`name` is required for a new category. Protected unless the user asked: visibility, access groups, parent, position, discount exclusion, and the category image.
 
-### Delete product
+Category image file must be jpg, png, or gif. `.jpeg` is renamed to jpg. Upload the bytes first (`files_write` `upload_direct`), then bind with `category_image`. See `references/MEDIA_WORKFLOW.md`.
 
-```http
-POST /shop/editgoods/delete
-Content-Type: application/x-www-form-urlencoded
-```
+### Products
 
-Fields:
-
-| Field | Value |
-|---|---|
-| `method` | delete mode |
-| `id` | product ID |
-
-Deletion is irreversible. Perform only after explicit confirmation with the product ID.
-
-### Hide / show product
-
-```http
-POST /shop/editgoods/hide
-Content-Type: application/x-www-form-urlencoded
-```
-
-Fields:
-
-| Field | Description |
-|---|---|
-| `id` | product ID |
-| `hide` | `1` hide, `0` show; if omitted — toggle current state |
-
-Changing product visibility is a protected operation.
-
-### Save product counters
-
-```http
-POST /shop/editgoods/cnt_save
-Content-Type: application/x-www-form-urlencoded
-```
-
-Fields: `id`, `views`, `solds`, `ordered`, `rate_num`, `rate_sum`, `stock_q`.
-
-This is an operational/statistics operation. Do not use it for normal SEO optimization.
-
-## Product images
-
-### Add product images
-
-```http
-POST /shop/editgoods/img_add
-Content-Type: multipart/form-data
-```
-
-Fields:
-
-| Field | Required | Description |
-|---|---:|---|
-| `id` | yes | product ID |
-| `file_add_cnt` | no | number of uploaded files |
-| `file_add_1` | yes for first file | image file 1 |
-| `file_add_2` | no | image file 2 |
-| `file_add_N` | no | subsequent images by number |
-
-Rule: adding images is safer than replacing, but still requires preview if the product already has images.
-
-### Replace product image
-
-```http
-POST /shop/editgoods/img_edit
-Content-Type: multipart/form-data
-```
-
-Fields:
-
-| Field | Required | Description |
-|---|---:|---|
-| `id` | yes | product ID |
-| `img` | yes | image number/index to replace |
-| `file` or `file_<img>` | yes | new image file; field name must match API behavior for the selected `img` |
-
-Replacing an existing image requires explicit confirmation with the image number.
-
-### Delete product image
-
-```http
-POST /shop/editgoods/img_del
-Content-Type: application/x-www-form-urlencoded
-```
-
-Fields:
-
-| Field | Required | Description |
-|---|---:|---|
-| `id` | yes | product ID |
-| `img` | no | image number to delete |
-| `del_all` | no | delete all product images |
-| `files_sequence` | no | image sequence when deleting one image in edit mode |
-
-Deleting one image requires confirmation. `del_all=1` requires separate explicit confirmation and listing of the affected product.
-
-## Product variations
-
-### Get variation
-
-```http
-GET /shop/editgoods/variation?id={id}&variation_crc={variation_crc}
-```
-
-### Update variation
-
-```http
-PUT /shop/editgoods/variation
-Content-Type: application/x-www-form-urlencoded
-```
-
-Fields: `id`, `variation_crc`, `art`, `stock`, `price`, `price_old`, `weight`.
-
-Variations are protected by default because they affect prices, stock, weight and SKU/article.
-
-### List variations
-
-```http
-GET /shop/editgoods/variations?id={id}
-```
-
-## Stock by options
-
-| Method | Purpose |
-|---|---|
-| `GET /shop/editgoods/stock_get?id={id}` | get stock option sets |
-| `GET /shop/editgoods/stock_get_genall?id={id}` | generate all stock option sets |
-| `POST /shop/editgoods/stock_get_add` | add option set, fields `id`, `opt_sel` |
-| `POST /shop/editgoods/stock_get_save` | save stock/SKU by sets, field `id`, dynamic `stock_<id>`, `art_<id>`, `crc_<id>` |
-| `POST /shop/editgoods/stock_get_removeselected` | remove selected sets, fields `id`, `ids` |
-| `POST /shop/editgoods/stock_get_removeall` | remove all sets, field `id` |
-
-All stock operations are protected and run only on explicit request.
-
-## Cart
-
-| Method | Action | Fields/parameters |
+| Action | Role | Parameters |
 |---|---|---|
-| `GET /shop/basket/` | get cart | `user_id` optional, admin only |
-| `POST /shop/basket/` | add item | form: `mode`, `id`, `cnt`, `opt`, `now` |
-| `PUT /shop/basket/` | update quantity | form: `mode`, `id`, `cnt`, `opt`, `now` |
-| `DELETE /shop/basket/` | remove item or clear cart | form: `id`; if `id` is omitted, cart is cleared |
+| `add` | create a product | `cat_id` is required by the shop; `name`, `price`, `brief`, `dscr`, `html_dscr`, `art`, `brand`, `stock`, `url`, `meta_title`, `meta_dscr`, `tags`. Also accepted: `price_in`, `price_old`, `type`, `cats_add`, `ch_addcat`, `unit`, `weight`, `warr`, `undisc` |
+| `update` | edit a product | `id` required; same fields as `add` |
+| `hide` | hide or show | `id`, `hide` (`1` hide, `0` show) |
+| `cnt_save` | counters | `id`, `views`, `solds`, `ordered`, `rate_num`, `rate_sum`, `stock_q` |
 
-Use cart operations mainly for diagnostics. Clearing the cart — only on explicit request.
+`html_dscr` `1` means `dscr` is HTML. `ch_addcat` `1` is required when `cats_add` is set. `cats_add` is extra category ids, `[ID1, ID2, ...]`.
 
-## Checkout
+Product types: `0` physical, `1` file download, `2` electronic code, `3` service.
 
-| Method | Action | Fields/parameters |
+Protected unless the user asked: `price`, `price_in`, `price_old`, `stock`, `art`, `type`, `hide`, `cats_add`, `ch_addcat`, `brand`, `unit`, `weight`, `warr`, `undisc`, variations, and stock-by-options.
+
+`cnt_save` is an operational counter write. Do not use it for normal SEO.
+
+To create a hidden draft, `shop_write` `add`, then `shop_write` `hide` with `hide` `1` when the user asked not to publish.
+
+### Product images
+
+Do not send `image_base64` on the bind call. Do not POST multipart to `/shop/editgoods` or `/uapi`. Do not use `del_img1`, `del_img2`, and the rest of `del_imgN`.
+
+| Action | Tool | Parameters |
 |---|---|---|
-| `GET /shop/checkout/` | get checkout data | query: `promo_code`, `custom_delivery_tax` |
-| `PUT /shop/checkout/` | recalc/edit pending order | form: `mode`, `cnt_REC_ID`, `del_REC_ID` |
-| `POST /shop/checkout/` | submit order | form: `payment_id`, `delivery_id`, `promo_code`, `custom_delivery_tax`, `field_N` |
+| `img_add` | `shop_write` | `id`, `image_upload_ids` (comma-separated string). Several photos are one call |
+| `img_edit` | `shop_write` | `id`, `img` (`0` = main), `confirm: true`, one `image_upload_id`. The slot must already exist |
+| `img_del` | `shop_delete` | `id`, `confirm: true`. `img` is required unless `del_all=1`. Optional `files_sequence` when deleting one image |
 
-Do not submit a real order without explicit confirmation and test conditions.
+`img_add` appends slots and leaves the main photo when the product already has one. Checked on product 85: sizes 295602, 320024, 290687; each `upload_direct` HTTP 200; reply «Изображения добавлены»; `num_photos` 11→14; new slots 11, 12, 13; main photo unchanged.
 
-## Orders
+If the product has no photos, the first image of that `img_add` becomes the main photo. Checked 2026-10-19 on product 87 (betatest-0007, new product): three photos in one `img_add`, `num_photos` 3, first became the main photo, reply «Изображения добавлены».
 
-### Order list
+The public product image URL is webp. `Content-Length` on that URL is the webp size, not the uploaded file size. Dimensions in the shop reply are the stored image.
 
-```http
-GET /shop/invoices/
-```
+Replacing or deleting an existing photo needs explicit approval. `del_all=1` needs its own confirmation.
 
-Filters:
+### Variations and stock
 
-| Parameter | Description |
-|---|---|
-| `page` | page number |
-| `user` | user ID, admin filter |
-| `hide` | order group: `0` active, `1` archive, `2` trash |
-| `status` | order status |
-| `inv_sum` | sum range `sum1|sum2` |
-| `courier` | courier |
-| `cdate` | delivery period `date1|date2` |
-| `payment` | payment method ID |
-| `delivery` | delivery method ID |
-| `id` | order ID(s), comma-separated |
-| `date` | created date range `date1|date2` |
+| Action | Tool | Parameters |
+|---|---|---|
+| `variation_update` | `shop_write` | `id`, `variation_crc`; optional `art`, `stock`, `price`, `price_old`, `weight` |
+| `variation_dict_save` | `shop_write` | optional `id`, `name`, `values` (comma-separated, for example `S,M,L`) |
+| `variation_load` | `shop_write` | `id` |
+| `variation_gen` | `shop_write` | `id`, `confirm: true`; `var_*` keys go in `fields` |
+| `variation_edit_save` | `shop_write` | `id`; `var_*` keys go in `fields` |
+| `variation_dict_delete` | `shop_delete` | `id`, `confirm: true` |
+| `stock_genall` | `shop_write` | `id` |
+| `stock_add` | `shop_write` | `id`, `opt_sel` |
+| `stock_save` | `shop_write` | `id`; dynamic `stock_`, `art_`, and `crc_` keys go in `fields` |
+| `stock_remove` | `shop_delete` | `id`, `ids`, `confirm: true` |
+| `stock_remove_all` | `shop_delete` | `id`, `confirm: true` |
 
-Statuses:
+These operations are protected. Run them only when the user asked.
 
-| ID | Status |
+### Basket and checkout
+
+| Action | Tool | Parameters |
+|---|---|---|
+| `basket_add` | `shop_write` | `id`; optional `cnt`, `opt`, `now` (`1` = buy now) |
+| `basket_update` | `shop_write` | `id`; optional `cnt`, `opt`, `now` |
+| `basket_delete` | `shop_delete` | `id` removes one line. No `id` clears the basket and then `confirm: true` is required |
+| `checkout_update` | `shop_write` | `mode` is `recalc` or `change`. Extra keys such as `cnt_REC_ID`, `del_REC_ID`, and `field_N` go in `fields` |
+| `checkout_submit` | `shop_write` | `confirm: true`; optional `payment_id`, `delivery_id`, `promo_code`, `custom_delivery_tax`; `field_N` in `fields` |
+
+Use the basket and checkout for diagnosis. Do not submit a real order without explicit confirmation.
+
+### Orders
+
+Order group `hide`: `0` active, `1` archive, `2` trash.
+
+| Status | Meaning |
 |---:|---|
 | `0` | New |
 | `1` | Paying |
@@ -413,61 +153,41 @@ Statuses:
 | `10` | Payment processing |
 | `11` | Prepayment received |
 
-### Group, courier, status, payment
-
-| Method | Action | Fields |
+| Action | Tool | Parameters |
 |---|---|---|
-| `PUT /shop/invoices/hide` | assign order group | `ids`, `hide` |
-| `PUT /shop/invoices/setCourier` | assign courier | `ids`, `group_courier` |
-| `PUT /shop/invoices/status` | set status | `ids`, `status` |
-| `PUT /shop/invoices/change` | change payment method and restart payment | `order`, `payment_id` |
+| `invoice_hide` | `shop_write` | `ids` or `id`, `hide` |
+| `invoice_courier` | `shop_write` | `group_courier`; `ids` or `id` |
+| `invoice_status` | `shop_write` | `status`; `ids` or `id` |
+| `invoice_payment` | `shop_write` | `payment_id`; order hash in `order` or `id` |
+| `order_update` | `shop_write` | `order`; optional `status`, `note`; goods and `field_N` keys in `fields` |
+| `order_add_goods` | `shop_write` | `order`; extra goods keys in `fields` |
+| `order_delivery_tax` | `shop_write` | `order`, `custom_delivery_tax` |
 
-All these operations are protected and require explicit confirmation.
+Default for orders is read-only reporting. Status, courier, payment, delivery cost, items, fields, notes, and group changes need explicit approval.
 
-### Order by hash and order changes
+### Currency, comments, balance, wishlist
 
-| Method | Action |
-|---|---|
-| `GET /shop/order/?order={hash}` | get order by hash |
-| `POST /shop/order/` | add product to existing order |
-| `PUT /shop/order/` | change items, fields, status or note |
-| `PUT /shop/order/delivery_tax` | change order delivery cost |
-
-`PUT /shop/order/` uses fields: `order`, `mode`, `cnt_REC_ID`, `del_REC_ID`, `field_N`, `status`, `note`. `mode` values: `goods`, `fields`, `status`, `note`.
-
-Changing an order is a protected operation.
-
-## Currencies
-
-### Get currencies
-
-```http
-GET /shop/getshopdata/?page=currencies_list
-```
-
-### Update currency rate
-
-```http
-POST /shop/setcurrrate
-Content-Type: application/x-www-form-urlencoded
-```
-
-Fields:
-
-| Field | Description |
-|---|---|
-| `curr_code` | currency code from shop settings |
-| `curr_rate` | non-zero currency rate |
-
-Currency changes — only with explicit confirmation.
-
-## Product comments
-
-| Method | Action | Fields/parameters |
+| Action | Tool | Parameters |
 |---|---|---|
-| `GET /shop/comments?id={id}` | get material comments | `id` |
-| `POST /shop/comments` | add comment | `entry_id`, `message`, `pros`, `cons`, `parent_id`, `user_id`, `subscribe_to_replies` |
-| `PUT /shop/comments?id={comment_id}` | edit comment | `message`, `pros`, `cons` |
-| `DELETE /shop/comments?id={comment_id}` | delete comment | comment `id` |
+| `set_currency_rate` | `shop_write` | `curr_code`, `curr_rate` (non-zero). Explicit approval required |
+| `comments_add` | `shop_write` | `message`; product id in `entry_id` or `id`; optional `pros`, `cons`, `parent_id`, `user_id`, `subscribe_to_replies` |
+| `comments_update` | `shop_write` | `id`; optional `message`, `pros`, `cons` |
+| `comments_delete` | `shop_delete` | `id`, `confirm: true` |
+| `balance_change` | `shop_write` | `user_id`, `amount` (non-zero signed change), `confirm: true`. A note can go in `fields.comment` |
+| `balance_set` | `shop_write` | `user_id`, `amount` (new balance, zero or more), `confirm: true` |
+| `wishlist_clear` | `shop_delete` | `confirm: true` |
 
-Comment moderation is a separate operation; do not mix it with product SEO optimization.
+Do not mix comment moderation or balance changes into an SEO edit.
+
+## Templates and ordinary files
+
+Templates stay on `templates_read`, `templates_write`, and `templates_delete`. `templates_delete`, including `restore_backup`, needs `confirm: true`.
+
+
+File-manager files (not product photos) are a separate `files_write` `upload` with `path` and `upload_ids` (at most 20). Those keep the original bytes.
+
+## Images — upload then bind
+
+1. `files_write` action `upload_direct` with `filename` and exact `size` in bytes (`1`..`16777216`). Reply: `upload_url`, `upload_id`, `expires_in` 900. The file is not attached yet.
+2. POST the raw file body to `upload_url`, `Content-Type: application/octet-stream`, body length equals `size`. That reply: `ok`, `upload_id`, `filename`, `size`, `sha256`.
+3. Bind with the next shop call, as in the tables above.

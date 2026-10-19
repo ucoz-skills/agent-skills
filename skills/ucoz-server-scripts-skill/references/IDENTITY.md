@@ -1,13 +1,13 @@
 # Visitor identity: `ucoz_user()` and the visitor key
 
-Sources: uCoz Help Center, "Server Scripts on uCoz → Built-in uCoz functions"
-(https://www.ucoz.ru/help/tools/servernye-skripty-na-ucoz, in Russian), plus the platform helper sources and
+Sources: uCoz Help Center, "Серверные скрипты на uCoz → Встроенные функции uCoz"
+(https://www.ucoz.ru/help/tools/servernye-skripty-na-ucoz), plus the platform helper sources and
 live tests on a Server Scripts account (October 2026). Everything below marked **(verified)** was
 observed live.
 
 ## 1. How it works
 
-1. The site has a **visitor key** (32 bytes), managed with `apps_tool visitor_key_*` (Control Panel:
+1. The site has a **visitor key** (32 bytes), managed with `apps_write` / `apps_delete` `visitor_key_*` (Control Panel:
    Server Scripts → data encryption key). The platform stores it in
    `~/.ucoz/conf/ucoz.conf` as `UCOZ_SITEUSER_ENCRYPT_KEY=<base64url>` **(verified)**. Never read, edit,
    or print this file — use the `visitor_key_*` actions.
@@ -87,7 +87,7 @@ Example from the Help Center:
 | `user` | string | Login |
 | `full_name` | string | Display name |
 | `email` | string | E-mail (personal data) |
-| `gid` | int | User group id (in the example, 4 is the admin of that site — **always verify group ids with `users_tool groups`**) |
+| `gid` | int | User group id (in the example, 4 is the admin of that site — **always verify group ids with `users_read` / `users_write` groups`**) |
 | `gender` | int | Gender code |
 | `country` | int | Country code |
 | `birthday`, `phone` | string | Often empty (personal data) |
@@ -99,7 +99,7 @@ Example from the Help Center:
 and `ucoz_user()` returns exactly these 12 keys (the 11 documented + `exp`) with identical types in all
 three runtimes. Node takes `req`, Python takes the raw WSGI `environ`. A missing field is `null`/`None`. Types: `id`, `gid`, `gender`, `country`, `reg_date`, `verify`,
 `exp` are integers. `user`, `email`, `full_name`, `phone`, `birthday` are strings, and empty ones come as `""`.
-`ucoz_user('email')` returns a string, and an unknown field returns `null`. `id`/`gid` match `users_tool`
+`ucoz_user('email')` returns a string, and an unknown field returns `null`. `id`/`gid` match `users_read` / `users_write`
 (`uid`, `group.id`).
 
 **Also verified (logged-in member):**
@@ -117,8 +117,8 @@ Treat types defensively (`(int)$u['id']`, `Number(u.id)`): the payload is JSON p
 ## 5. Enable it
 
 ```text
-apps_tool visitor_key_get        → read only `present` (the response also contains the key — never echo it)
-apps_tool visitor_key_create     → only if present=false, after the user approves
+apps_read / apps_write / apps_delete visitor_key_get        → read only `present` (the response also contains the key — never echo it)
+apps_read / apps_write / apps_delete visitor_key_create     → only if present=false, after the user approves
 ```
 
 `visitor_key_rotate` / `visitor_key_delete` are **C**. Rotation makes headers that are already in flight
@@ -147,7 +147,7 @@ function current_user(): ?array {
 
 - Keep only what the feature needs (`id`, maybe `login`, `gid`). Do not store e-mail, phone, or birthday
   unless the feature requires it and the owner agreed.
-- Authorize staff by `gid` from `users_tool groups` on the same site, stored in config (`staff_gids`).
+- Authorize staff by `gid` from `users_read` / `users_write` groups` on the same site, stored in config (`staff_gids`).
 - For local development, gate a `dev_uid` override behind a secret and remove it before finishing.
 
 ## 8. Typical uses

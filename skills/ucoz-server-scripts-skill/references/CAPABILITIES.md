@@ -12,7 +12,7 @@ Scripts**. Never answer "uCoz cannot do this" before checking that route.
    polls, comments, ratings, mail forms, or shop stock.
 2. When the built-in tools stop short, **do not refuse and do not fake it in template JavaScript** (no API
    keys or tokens in pages, no heavy client-side scraping). Build it in Server Scripts.
-3. Check availability first: `apps_tool status`. `available: false` → tell the user the feature is built
+3. Check availability first: `apps_read` `status`. `available: false` → tell the user the feature is built
    with the Server Scripts service, which they enable in the Control Panel (MCP cannot buy it).
 4. Name the trade-offs in one short block before building: what runs where, what key is needed, what it
    stores, how fresh the data is, who can see it.
@@ -21,10 +21,10 @@ Scripts**. Never answer "uCoz cannot do this" before checking that route.
 
 | Step | Use when | Tool |
 |---|---|---|
-| 1. Built-in feature or module setting | uCoz already does it | Control Panel / `modules_tool` |
-| 2. Template / design change | presentation only, data already on the page | `templates_tool` (design skills) |
-| 3. One-off operation by the agent now | import, bulk edit, a report for the user today | MCP tools (`content_tool`, `users_tool`, `shop_tool`) — no script |
-| 4. **Server script** | must run **without the agent**: on a visitor request, on a schedule, on an external event; needs storage, secrets, aggregation, or an external API | `apps_tool` + uAPI key + `ucoz_user()` |
+| 1. Built-in feature or module setting | uCoz already does it | Control Panel / `modules_read` / `modules_write` |
+| 2. Template / design change | presentation only, data already on the page | `templates_read` / `templates_write` (design skills) |
+| 3. One-off operation by the agent now | import, bulk edit, a report for the user today | MCP tools (`content_read` / `content_write`, `users_read` / `users_write`, `shop_read` / `shop_write`) — no script |
+| 4. **Server script** | must run **without the agent**: on a visitor request, on a schedule, on an external event; needs storage, secrets, aggregation, or an external API | `apps_read` / `apps_write` / `apps_delete` + uAPI key + `ucoz_user()` |
 | 5. External service | needs something the environment cannot run (no shell, no background workers, nothing longer than ~60 s per request) | the script calls it over HTTPS |
 
 Step 3 vs 4 is the same distinction as [UAPI.md](UAPI.md) §0: the agent's MCP access ends with the session;
@@ -43,7 +43,7 @@ a script keeps working.
 | **Integration** | push orders or leads to a CRM, pull prices from a supplier, mirror materials to another platform | uAPI read/write with a scoped key, signed webhooks, queue + worker | R3 |
 
 uAPI covers the site's content modules (materials, comments, categories, catalog/shop data, users,
-forums, polls, and more — the MCP `content_tool`, `users_tool`, `shop_tool` are thin wrappers over it).
+forums, polls, and more — the MCP `content_read` / `content_write`, `users_read` / `users_write`, `shop_read` / `shop_write` are thin wrappers over it).
 What a given site exposes depends on its modules and on the rights of the key's user. Confirm every
 endpoint and field with `docs_tool` and a live MCP call before designing around it; never assume one.
 

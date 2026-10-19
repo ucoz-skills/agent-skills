@@ -23,7 +23,7 @@ because nothing is wired to the site yet.
   3000 is used locally; on the server Passenger takes over `listen()`), or serve `application` with
   `wsgiref.simple_server` and `APP_NAME` set. Request `/health`, the main route, a bad input, a wrong key.
   `require('ucoz')` / `import ucoz` are absent locally: the templates treat that as a guest.
-- **Logic on real data:** take a small real sample through MCP (`content_tool action=list per_page=5`,
+- **Logic on real data:** take a small real sample through MCP (`content_read` action=list per_page=5`,
   never more than ~200 KB per call) and run the processing code on it locally. In a live site
   search this found three bugs before the first deploy.
 - **No secrets locally:** use placeholders; real keys exist only in the server-side secrets file.

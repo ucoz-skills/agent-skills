@@ -27,7 +27,7 @@ limits) can differ, so read the live values with the listed action instead of ha
 An account may have more than one domain (`usage.domains.limit`, observed 2). Always take `{domain}` from
 `session`; never guess it.
 
-## 3. Directory layout (home-relative, as `apps_tool` sees it)
+## 3. Directory layout (home-relative, as `apps_read` / `apps_write` / `apps_delete` sees it)
 
 ```text
 domains/{domain}/

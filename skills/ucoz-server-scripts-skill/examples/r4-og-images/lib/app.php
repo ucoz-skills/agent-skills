@@ -16,7 +16,7 @@
  * URLs:  GET /apps/{name}/api/setup              header X-Admin-Key → downloads fonts once, reports GD
  *        GET /apps/{name}/<material path>.jpg    → image/jpeg
  *
- * Template (inside <head> of the module's material page, e.g. Blog → entry page and comments;
+ * Template (inside <head> of the module's material page, e.g. Blog → «Страница материала и комментариев к нему»;
  * the title variable there is $ENTRY_NAME$, the page path is $REQUEST_URI$):
  *   <meta property="og:type" content="article">
  *   <meta property="og:title" content="$ENTRY_NAME$">

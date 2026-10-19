@@ -39,7 +39,7 @@ Recursively copy every object and array in the original order. Replace only appr
 
 ### Plain materials and pages
 
-Send only approved translated fields, their matching format controls, and endpoint-required fields. Preserve unknown fields by omission, not by guessing. If an endpoint requires a current value, read and resend it unchanged. Follow [CONTENT_FIELDS_AND_FORMATS.md](CONTENT_FIELDS_AND_FORMATS.md) for `plain`, BBCode, HTML, and line-break preservation.
+Send only approved translated fields, their matching format controls, and fields the tool requires. Preserve unknown fields by omission, not by guessing. If the tool requires a current value, read and resend it unchanged. Follow [CONTENT_FIELDS_AND_FORMATS.md](CONTENT_FIELDS_AND_FORMATS.md) for `plain`, BBCode, HTML, and line-break preservation.
 
 
 ## Quality checks

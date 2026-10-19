@@ -9,7 +9,7 @@ Use one uCoz MCP connection and two unambiguous contexts:
 - **source** — `select_site(source)`; treat as read-only;
 - **target** — `select_site(target)`; use for writes.
 
-Both sites must be in the same uCoz account (otherwise the stages run sequentially with a re-sign-in, see [SETUP.md](SETUP.md)). Static files and template assets move through `files_tool` on the selected site. Never request credentials in chat, include them in reports, or store them in the skill/project.
+Both sites must be in the same uCoz account (otherwise the stages run sequentially with a re-sign-in, see [SETUP.md](SETUP.md)). Static files and template assets move through `files_write` on the selected site. Never request credentials in chat, include them in reports, or store them in the skill/project.
 
 Verify the site host (the host in the tool response) before every write. Stop if source and target contexts cannot be distinguished reliably.
 
@@ -54,7 +54,7 @@ Stop the batch on the first write/verification mismatch. Keep already completed 
 
 ### Materials and categories
 
-Read the current OpenAPI schema for both sites. Use source GET for inventory and target POST for creation. Send only target-accepted creation fields, explicit content-format controls, mapped category IDs, and approved media. Omit source ID, counters, ratings, comments, generated URLs, and response-only fields.
+Read the current OpenAPI schema for both sites as field documentation; call MCP tools and do not request those URLs. Inventory the source with `content_read` (`list` / `get` / `category_list`) and create on the target with `content_write` (`add` / `category_add`). The forum uses `forum_read` / `forum_write`. Send only target-accepted creation fields, explicit content-format controls, mapped category IDs, and approved media. Omit source ID, counters, ratings, comments, generated URLs, and response-only fields.
 
 Create target categories first when approved. If a category is not migrated, require an explicit existing target category mapping.
 

@@ -1,6 +1,6 @@
 ---
-name: ucoz-design-editor-skill
-version: "1.2"
+name: uCoz Design Editor Skill
+version: "1.3"
 description: "Give any uCoz site a beautiful, modern makeover — safely. Refreshes the whole look and feel: colors, typography, CSS, header/footer and global blocks, menus and forms, plus a tailored restyle for every module (blog, shop, forum, photos, users, search, subscriptions). Includes a visual design system (identity extraction, style routing, typography/spacing, color tokens, component states, icons, modern CSS/JS, motion, imagery, accessibility) so every module ends up visually consistent. Works with the platform instead of against it, so pages stay pixel-perfect and unbroken. Use for any 'redesign / restyle / make my site look better / change the design or CSS' request via ucoz-mcp."
 metadata:
   hermes:
@@ -29,23 +29,22 @@ If the usage API is unavailable or returns an error, show a brief warning and co
 - Global blocks, menus, mail forms, site pages
 - Content modules (blog, news, articles, photo albums, site directory, …)
 - Shop, users, search, subscriptions modules
-- Site files (`files_tool`) and module install/enable
+- Site files (`files_read` / `files_write`) and module install/enable
 
 ## MCP tools
 
 | Tool | Purpose |
 |---|---|
-| `templates_tool` | Templates, backups, global blocks, menus, mail forms, pages |
-| `files_tool` | Site files: list, read, write, upload, folders, delete, quota |
-| `ftp_tool` | FTP password (`ftp_password_*`); in the legacy NPM MCP — also file operations over FTP |
-| `modules_tool` | Install/uninstall modules, quarantine |
+| `templates_read` / `templates_write` | Templates, backups, global blocks, menus, mail forms, pages |
+| `files_read` / `files_write` / `files_delete` | Site files: list, read, write, upload, folders, delete, quota |
+| `modules_uninstall` | Install/uninstall modules, quarantine |
 
 ## Safety checklist (before `patch_template` / `update_template`)
 
 - [ ] Production header only in `1/AHEADER`; production footer (single visible `$POWERED_BY$`) only in `1/BFOOTER`
 - [ ] Public full-page shells render `$GLOBAL_AHEADER$` and `$GLOBAL_BFOOTER$` — never copy header/footer into module templates
 - [ ] Navigation from menu variables (e.g. `$NMENU_1$`), not hardcoded menu HTML
-- [ ] Multi-section redesign CSS: one canonical external stylesheet via `files_tool` (or module CSS / `3/3` per [ARCHITECTURE.md](references/ARCHITECTURE.md)) — no scattered `<style>` blocks
+- [ ] Multi-section redesign CSS: one canonical external stylesheet via `files_read` / `files_write` (or module CSS / `3/3` per [ARCHITECTURE.md](references/ARCHITECTURE.md)) — no scattered `<style>` blocks
 - [ ] `read_template` first; variables only from that output or `get_variables` — never invent names
 - [ ] Partial edit → `patch_template` with byte-exact `code_search`; full rewrite → `update_template` only after user confirmation
 - [ ] Before `update_template`, `read_template` again in the same turn (do not reconstruct from memory — especially third-party scripts)
@@ -54,7 +53,7 @@ If the usage API is unavailable or returns an error, show a brief warning and co
 - [ ] Risky bulk change: check backup headroom (`list_backups`)
 - [ ] Full-page shell chrome audit after site-wide redesign: every enabled module's full HTML shells must use `/_st/…` CSS (never bare `/my.css`), matching font links, `$GLOBAL_AHEADER$`/`$GLOBAL_BFOOTER$`, theme body/layout classes, no foreign brand strings; treat Search `19/1` as high-risk orphan
 
-**Always confirm with the user first:** `update_template` on an existing template, `restore_backup`, `delete_backup`, `page_delete` / `menu_delete` / `mail_delete_form`, `module_uninstall`, `quarantine_unlock`, `files_tool` `delete`, `ftp_password_reset` / `ftp_password_change`.
+**Always confirm with the user first:** `update_template` on an existing template, `restore_backup`, `delete_backup`, `page_delete` / `menu_delete` / `mail_delete_form`, `module_uninstall`, `quarantine_unlock`, `files_delete` `delete`.
 
 Details: [EDITING.md](references/EDITING.md), [ARCHITECTURE.md](references/ARCHITECTURE.md).
 
@@ -65,7 +64,7 @@ Details: [EDITING.md](references/EDITING.md), [ARCHITECTURE.md](references/ARCHI
 | Guess variable names by analogy | Confirm via `read_template` / `get_variables` |
 | `update_template` for a small change | `patch_template` with exact `code_search` |
 | Reformat whitespace in `code_search` | Copy byte-for-byte from `read_template` |
-| Inline `<style>` in page/global-block templates | CSS template `3/3`, module CSS, or one file uploaded via `files_tool` |
+| Inline `<style>` in page/global-block templates | CSS template `3/3`, module CSS, or one file uploaded via `files_read` / `files_write` |
 | Hand-coded menu / mail form HTML | `menu_*` / `mail_*` + `$NMENU_*$` / `$MFORM_*$` |
 | Hide `$POWERED_BY$` | Keep visible in `BFOOTER` |
 | Grid on wrapper around `$BODY$` instead of `#allEntries` | See [SYSTEM-MARKUP.md](references/SYSTEM-MARKUP.md) |
@@ -85,7 +84,7 @@ Details: [EDITING.md](references/EDITING.md), [ARCHITECTURE.md](references/ARCHI
 | Where to put CSS / verify live CSS | [ARCHITECTURE.md](references/ARCHITECTURE.md) |
 | Patch vs rewrite / backups / encoding | [EDITING.md](references/EDITING.md) |
 | `$VAR$` / `<?if?>` expressions | [LANGUAGE.md](references/LANGUAGE.md) |
-| Menus, mail forms, pages, files (`files_tool`), FTP password, modules | [TOOLS.md](references/TOOLS.md) |
+| Menus, mail forms, pages, files (`files_read` / `files_write`), modules | [TOOLS.md](references/TOOLS.md) |
 | `eMessage` / `manTable` / `#allEntries` / `.goods-list` | [SYSTEM-MARKUP.md](references/SYSTEM-MARKUP.md) |
 | System `_uWnd` / `xw-*` toasts, alerts, mail success modals | [UWND.md](references/UWND.md) → [EXAMPLES.md#uwnd-glass](EXAMPLES.md#uwnd-glass) |
 | Blog / news / articles / photo / other content modules | [BLOG.md](references/BLOG.md) → [SYSTEM-MARKUP.md](references/SYSTEM-MARKUP.md) |
@@ -128,7 +127,7 @@ Prefer cheapest/safest first:
 | [ARCHITECTURE.md](references/ARCHITECTURE.md) | Template structure, CSS strategy |
 | [SYSTEM-MARKUP.md](references/SYSTEM-MARKUP.md) | System forms, `#allEntries`, shop grids |
 | [UWND.md](references/UWND.md) | `_uWnd` / `xw-*` toasts, alerts, mail success modals |
-| [TOOLS.md](references/TOOLS.md) | Files (`files_tool`), FTP password, modules, mail, menus, pages |
+| [TOOLS.md](references/TOOLS.md) | Files (`files_read` / `files_write`), modules, mail, menus, pages |
 | [GBLOCKS.md](references/GBLOCKS.md) | Global blocks |
 | [BLOG.md](references/BLOG.md) | Content-module playbook (blog + peers) |
 | [PHOTO.md](references/PHOTO.md) | Photo albums (`9`) |
@@ -145,4 +144,4 @@ Prefer cheapest/safest first:
 - On first connection the agent opens a sign-in window: the user signs in to their uCoz account and clicks “Allow”.
 - Then `list_sites` → `select_site(site_id)`; all tools work on the selected site.
 
-Admin actions (`modules_tool`, `ftp_password_*`) require the signed-in account to be the site owner or have site administrator rights.
+Admin actions (`modules_read` / `modules_write`) require the signed-in account to be the site owner or have site administrator rights.

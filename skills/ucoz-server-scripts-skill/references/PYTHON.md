@@ -6,7 +6,7 @@ Starter code: [templates/python/](../templates/python/) — `passenger_wsgi.py` 
 
 Everything below was verified live (October 2026, Passenger 6.0.26, Python 3.11) unless marked otherwise.
 
-## 1. Lifecycle via apps_tool
+## 1. Lifecycle via apps_read / apps_write / apps_delete
 
 ```text
 1. files_list     domains/{domain}/public_html → {name} must not exist (app_uri collision)

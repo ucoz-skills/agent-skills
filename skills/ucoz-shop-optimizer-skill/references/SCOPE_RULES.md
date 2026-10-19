@@ -1,6 +1,6 @@
 # Scope Rules for uCoz Shop Optimizer
 
-Before selecting scope, the agent connects to `ucoz-mcp` and uses the active site from the MCP context. If the user has not explicitly switched sites, do not choose another site or ask for a separate API key.
+Before choosing a scope, call `list_sites`, then `select_site(site_id)`. Shop tools use that selected site. If the user did not switch sites, do not pick another site and do not ask for a uAPI key. The current MCP does not provide one.
 
 ## Mandatory scope gate
 

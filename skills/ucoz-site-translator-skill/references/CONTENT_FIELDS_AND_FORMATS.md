@@ -1,23 +1,23 @@
 # Content fields and format preservation
 
-Use this procedure for every material, category, page, forum message, or shop object read through uAPI. Field names and format controls vary by module; the current OpenAPI update schema is authoritative.
+Use this procedure for every material, category, page, forum message, or shop object read through the MCP tools (`content_read`, `forum_read`, `shop_read`, `templates_read`). Field names and format controls vary by module; the current OpenAPI update schema is field documentation. Call the tools and do not request those URLs.
 
 ## Inventory all returned fields
 
-1. Read the complete object, preferring a single-object/detail endpoint.
+1. Read the complete object with the detail action (`content_read` `get`, `forum_read`, `shop_read` `get`, or `templates_read` `page_get`).
 2. Read the update operation and request schema from the module’s current `*-openapi.yaml`.
 3. For every returned property, classify it:
    - primary translatable text;
    - optional translatable text;
-   - related object requiring another endpoint;
+   - related object requiring another tool;
    - protected/technical;
    - response-only.
-4. Offer a field for translation only when it is non-empty user-visible text and the update schema accepts it or documents a dedicated update endpoint.
+4. Offer a field for translation only when it is non-empty user-visible text and the update schema accepts it or documents a dedicated update action.
 5. Show optional candidates before translation and ask whether to include them.
 
 Common optional candidates include `meta_title`, `meta_description`, `meta_keywords`, tags, `other1`…`otherN`, custom text fields, category names/descriptions, and editable image `alt`/`title`. Inspect module field metadata when a custom field’s meaning or type is unclear.
 
-Do not offer URLs, file paths, author names, state strings, counters, dates, IDs, or nested category objects merely because they contain strings. A category is a separate object and requires separate scope and endpoint.
+Do not offer URLs, file paths, author names, state strings, counters, dates, IDs, or nested category objects merely because they contain strings. A category is a separate object and requires separate scope and its own tool.
 
 ## Ask about the slug separately
 
@@ -36,7 +36,7 @@ Approval to translate a title, body, “all text”, or SEO does not include the
 Determine format separately for every rich-text field. Use evidence in this order:
 
 1. Explicit response metadata such as `description_type`, `message_type`, `includehtml_*`, `end2br_*`, `includehtml`, or `end2br`.
-2. A documented module field/type endpoint or detail response.
+2. A documented module field/type action or detail response.
 3. Raw properties such as `original_description` and `original_message`:
    - actual HTML tags/attributes → `html`;
    - BBCode tokens such as `[b]`, `[url=…]`, `[img]` → `bb`;
@@ -61,7 +61,7 @@ For modules whose schema exposes the common controls:
 - Plain text: send `*_type=plain` and preserve line-break conversion; never insert HTML merely for formatting.
 - Forum and other module-specific objects: use their own controls such as `includehtml`/`end2br`; do not invent common News fields.
 
-If the GET response omits format flags but `original_*` contains real HTML, send the documented HTML type and enable flag explicitly. This prevents uAPI defaults from escaping markup.
+If the tool response omits format flags but `original_*` contains real HTML, send the documented HTML type and enable flag explicitly. This prevents stored defaults from escaping markup.
 
 ## Verify after write
 

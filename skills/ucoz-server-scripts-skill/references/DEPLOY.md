@@ -58,5 +58,5 @@ If the user keeps the code in a local folder or repo:
 1. Inventory: files, app registration, cron jobs, database tables, wiring in templates.
 2. Show the list and get approval.
 3. `cron_delete` (**C**) → `*_destroy` (**C**) → `files_delete trash:true` (**C**) → remove template
-   wiring (`templates_tool patch_template`) → optionally `db_delete` + `db_delete_user` (**C**).
+   wiring (`templates_write patch_template`) → optionally `db_delete` + `db_delete_user` (**C**).
 4. Verify the URLs now return 404 and the site pages no longer reference them.

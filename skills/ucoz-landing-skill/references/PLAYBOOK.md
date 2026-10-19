@@ -21,15 +21,15 @@ Landing HTML is published in `page_tmpl`, not in `page_message`.
 
 ## 2) Core principles (mandatory)
 
-1. Work only through MCP tools (`templates_tool`, `files_tool`, `modules_tool`) — no manual assumptions. For the home page: read via `page_list`, `page_get`; first publish via `page_update` with full `page_tmpl`; **any HTML edits to an existing landing** via `patch_template` (`module_id=2`, `template_id=1`), **not** `update_template` and **not** full `page_tmpl` rewrite via `page_update`. SEO fields (`page_meta_*`) may be updated via `page_update` without `page_tmpl` for targeted meta-only changes.
+1. Work only through MCP tools (`templates_read` / `templates_write`, `files_read` / `files_write`, `modules_read` / `modules_write`) — no manual assumptions. For the home page: read via `page_list`, `page_get`; first publish via `page_update` with full `page_tmpl`; **any HTML edits to an existing landing** via `patch_template` (`module_id=2`, `template_id=1`), **not** `update_template` and **not** full `page_tmpl` rewrite via `page_update`. SEO fields (`page_meta_*`) may be updated via `page_update` without `page_tmpl` for targeted meta-only changes.
 2. Use `validate_template` only when the user explicitly asks — do not run automatically.
 3. Do not remove or break uCoz variables and system constructs.
 4. Do not remove `$POWERED_BY$`; it must appear after `</body>`.
 5. Do not use a static year in the footer; use `$YEAR$`.
 6. For menus, use only menu actions + `$NMENU_N$` variables (this playbook standardizes vertical menus).
-7. Create a contact form only if the user explicitly requested a form in the prompt; if needed — use only `mail_*` actions + `$MFORM_N$` output. Before `mail_*`, verify the mail forms module is active (`modules_tool`); if inactive — install via `module_install` yourself; do not ask the user to enable the module in the panel.
-8. Put landing styles in a separate `style.css` file and upload to the `css` folder (URL `/css/style.css`) via `files_tool`.
-9. Put landing scripts in a separate `script.js` file and upload to the `js` folder (URL `/js/script.js`) via `files_tool`.
+7. Create a contact form only if the user explicitly requested a form in the prompt; if needed — use only `mail_*` actions + `$MFORM_N$` output. Before `mail_*`, verify the mail forms module is active (`modules_write`); if inactive — install via `module_install` yourself; do not ask the user to enable the module in the panel.
+8. Put landing styles in a separate `style.css` file and upload to the `css` folder (URL `/css/style.css`) via `files_write`.
+9. Put landing scripts in a separate `script.js` file and upload to the `js` folder (URL `/js/script.js`) via `files_write`.
 10. Version CSS/JS URLs (`?v=<ASSET_VERSION>`) and bump the version on every file change.
 11. The landing must be responsive: correct behavior at least at 320/375/768/1024+ px.
 12. Add Open Graph and Twitter Card meta tags in `<head>`.
@@ -39,7 +39,7 @@ Landing HTML is published in `page_tmpl`, not in `page_message`.
 16. Keep text in readable UTF-8 in HTML; do not encode Cyrillic (or other text) as HTML entities like `&#1057;...` unless technically required.
 17. After adding a mail form, override the default uCoz success modal window styles to match the landing. The window uses a 9-slice border model — reset `background-image` on all 9 frame parts (`.xw-tl`, `.xw-tr`, `.xw-tc`, `.xw-ml`, `.xw-mr`, `.xw-mc`, `.xw-bl`, `.xw-br`, `.xw-bc`), and override `.xw-shadow`, `.xw-sps`, `.xw-hdr`, `.xw-hdr-text`, `.xw-body`, `.myWinCont`, `.myWinCont b`, `.myWinFooter`, `.xt-close`, `.xt-close2`, `.xw-blank`, `.xw-disabled`. See step 4.1, item 7 for the full table.
 18. On mobile (≤768 px), hide the navigation menu and replace it with a burger button. Toggle logic goes in `script.js`, styles in `style.css`, button markup in the template HTML.
-19. Logo and favicon must be visually identical. Generate the favicon programmatically from the SVG logo used in the landing header. Upload to the site root as `favicon.ico` via `files_tool(action="upload")` with `content_base64`, link in `<head>` with `<link rel="icon">`. If the upload fails — save `favicon.ico` locally and notify the user.
+19. Logo and favicon must be visually identical. Generate the favicon programmatically from the SVG logo used in the landing header. Upload to the site root as `favicon.ico` via `files_write` `upload_direct` (exact byte `size`, raw POST to `upload_url`) and then `upload` with that `upload_id`. Link in `<head>` with `<link rel="icon">`. If the upload fails — save `favicon.ico` locally and notify the user.
 20. For `patch_template`: copy `code_search` **byte-for-byte** from `read_template` (module_id=2, template_id=1) — spaces, tabs, and line breaks matter; the fragment must match exactly once. `code_paste=""` deletes the fragment. Auto-backup runs before `patch_template` and `update_template`.
 21. Before writing any CSS/HTML (Step 4), read `references/VISUAL.md` and follow its style selection, layout/grid, section layout recipes, typography/spacing floor, color tokens, component states, icon rule, CSS/JS toolbox, motion, imagery, social proof, copy/voice, and accessibility rules. This applies even when the user gave brand colors/fonts in Step 0 — `VISUAL.md` still governs the typography floor, token structure, icon source, and technique tiers on top of the brand input. Never fall back to one universal palette/typeface pairing, one container width, or one section layout shape for every brief regardless of niche.
 
@@ -68,21 +68,21 @@ Decision rule:
 - never silently reuse the same palette/typeface pairing across unrelated briefs;
 - write the non-negotiables + must-not-look-like lists for the chosen style (`VISUAL.md` §1.6) before generating any CSS — this is what keeps the build from drifting toward generic mid-way through Step 4.
 
-### Step 1. Check the home page via `templates_tool(action="page_list")`
+### Step 1. Check the home page via `templates_read(action="page_list")`
 
 1. Get the page list and identify the home page (`page_id=1`):
 ```text
-templates_tool(action="page_list", page_page=1, page_per_page=100)
+templates_read(action="page_list", page_page=1, page_per_page=100)
 ```
 
 2. Read the current home page state:
 ```text
-templates_tool(action="page_get", page_id=1)
+templates_read(action="page_get", page_id=1)
 ```
 
 3. If the home page already has `owntmpl=1` — read the current personal template from the `tmpl` field in `page_get` and continue editing.
 
-4. If `owntmpl=0` or no personal template yet — do not ask the user to enable "personal page template" in the panel. Enable and fill it on the final `templates_tool(action="page_update")` (step 10): `page_owntmpl=1`, `page_tmpl` with landing HTML, `page_message` with title only, plus `page_meta_title`, `page_meta_description`, `page_meta_keywords`.
+4. If `owntmpl=0` or no personal template yet — do not ask the user to enable "personal page template" in the panel. Enable and fill it on the final `templates_write(action="page_update")` (step 10): `page_owntmpl=1`, `page_tmpl` with landing HTML, `page_message` with title only, plus `page_meta_title`, `page_meta_description`, `page_meta_keywords`.
 
 5. For a personal template: landing HTML goes only in `page_tmpl`; `page_message` — page title only; `page_tmpl` must include `$POWERED_BY$`.
 
@@ -90,47 +90,43 @@ templates_tool(action="page_get", page_id=1)
 
 1. Get the template catalog (recommended):
 ```text
-templates_tool(action="list_modules")
+templates_read(action="list_modules")
 ```
 
 2. Check site modules:
 ```text
-modules_tool(action="modules_list")
+modules_read(action="modules_list")
 ```
 
 3. If a mail form is needed — find the mail forms module in the catalog (code is usually `mail`; **always verify against `modules_list`**):
-   - if `active: false` → `modules_tool(action="module_install", module_code="mail")` (use the actual code from the catalog);
-   - if `api_enabled: false` → `modules_tool(action="module_enable_uapi", module_code="mail")`.
+   - if `active: false` → `modules_write(action="module_install", module_code="mail")` (use the actual code from the catalog);
+   - if `api_enabled: false` → `modules_write(action="module_enable_uapi", module_code="mail")`.
 
-4. **Do not ask** the user to manually activate the mail forms module in the panel — do it via `modules_tool`.
+4. **Do not ask** the user to manually activate the mail forms module in the panel — do it via `modules_read` / `modules_write`.
 
-5. `modules_tool`, `module_install`, and `ftp_password_*` require the signed-in account to be the site owner or have site administrator rights. On permission errors — tell the user to sign in with the site owner/administrator account.
-
-### Step 2.1. FTP password (only on user request / for the legacy NPM MCP)
-
-Uploading files via `files_tool` does not need an FTP password. Manage the password only if the user asks (e.g. for an external FTP client) or the legacy NPM MCP is connected: `ftp_tool(action="ftp_password_get")` — connection settings; `ftp_password_set` (if `ftp_password_set=0` in the response), `ftp_password_change`, or `ftp_password_reset` → `ftp_password_set` — set/change the password (6–15 chars: Latin letters, digits, `_` and `-`). The `ftp_password_set` / `ftp_password_change` response contains the password in plain text — save it immediately.
+5. `modules_write` and `module_install` require the signed-in account to be the site owner or have site administrator rights. On permission errors — tell the user to sign in with the site owner/administrator account.
 
 ### Step 3. Menus (strictly via API)
 
 0. **Pick the right output variable for the intended layout — before touching CSS.** uCoz exposes two independent menu output variables, not one:
    - `$NMENU_<ID>$` → **vertical** menu output.
    - `$SMENU_<ID>$` → **horizontal** menu output.
-   The `layout` param on `menu_create` only sets the default preview orientation inside the uCoz control panel — it does **not** decide what markup you get in the template. The variable prefix you place in the HTML is what decides. Most `VISUAL.md` §2 header/hero recipes need a horizontal top nav — for those, output with `$SMENU_<ID>$`. Reserve `$NMENU_<ID>$` for genuinely vertical placements (sidebar, footer link column, mobile drawer list). Confirm this variable choice with `templates_tool(action="get_guide")` if unsure — do not guess from the `layout` param alone.
+   The `layout` param on `menu_create` only sets the default preview orientation inside the uCoz control panel — it does **not** decide what markup you get in the template. The variable prefix you place in the HTML is what decides. Most `VISUAL.md` §2 header/hero recipes need a horizontal top nav — for those, output with `$SMENU_<ID>$`. Reserve `$NMENU_<ID>$` for genuinely vertical placements (sidebar, footer link column, mobile drawer list). Confirm this variable choice with `templates_read(action="get_guide")` if unsure — do not guess from the `layout` param alone.
 
 1. List menus:
 ```text
-templates_tool(action="menu_list")
+templates_read(action="menu_list")
 ```
 
 2. If the needed menu does not exist — create:
 ```text
-templates_tool(action="menu_create", title="Landing main menu", layout=1)
+templates_write(action="menu_create", title="Landing main menu", layout=1)
 ```
 `layout` sets only the control-panel preview default; see item 0 for which template variable actually controls the rendered orientation.
 
 3. Update items:
 ```text
-templates_tool(action="menu_update_items", menu_id=<ID>, items=[...])
+templates_write(action="menu_update_items", menu_id=<ID>, items=[...])
 ```
 
 Menu item requirements:
@@ -148,7 +144,7 @@ $SMENU_<ID>$
 ```
 Insert/replace the variable in an already published landing via `patch_template` (module_id=2, template_id=1).
 
-4a. **Before wiring the variable into header/footer HTML, verify the actual generated markup — never assume a flat `<li>` list.** Call `templates_tool(action="get_guide")` and/or render the page once and inspect the output. Empirically, `$NMENU_<ID>$` expands into a full block, not bare `<li>` tags:
+4a. **Before wiring the variable into header/footer HTML, verify the actual generated markup — never assume a flat `<li>` list.** Call `templates_read(action="get_guide")` and/or render the page once and inspect the output. Empirically, `$NMENU_<ID>$` expands into a full block, not bare `<li>` tags:
 ```html
 <div class="uMenuV"><ul class="uMenuRoot">
   <li class="uWithSubmenu"><a href="...">Label</a><ul></ul></li>
@@ -186,59 +182,55 @@ Forbidden:
 - styling only your own wrapper class while ignoring the system's generated list/item classes (bullets and broken layout will leak through),
 - picking `$NMENU_N$` vs `$SMENU_N$` by guesswork instead of the intended visual orientation from `VISUAL.md`.
 
-### Step 4. Styles only in `style.css` + upload via `files_tool`
+### Step 4. Styles only in `style.css` + upload via `files_write`
 
 Before writing a single rule, read `references/VISUAL.md` (style catalog, typography/spacing floor, color token contract, icon rule, CSS toolbox). `style.css` must open with the `:root` token block from `VISUAL.md` §3.1 (adapted to the chosen/brand colors) — component rules read those variables, they do not invent hex values inline. CSS nesting never exceeds 3 levels; any selector overriding uCoz system markup (`.xw-*`, `$NMENU_N$`-generated classes) stays outside `@layer` (see `VISUAL.md` §5, platform rule).
 
 1. Generate/update `style.css` locally.
 2. Check for `css` folder:
 ```text
-files_tool(action="list", path="")
+files_read(action="list", path="")
 ```
 3. If `css` is missing — create:
 ```text
-files_tool(action="mkdir", path="css")
+files_write(action="mkdir", path="css")
 ```
 4. Upload the file:
 ```text
-files_tool(action="upload", path="css", files=[{filename: "style.css", content: "<full CSS>"}])
+files_write(action="upload", path="css", files=[{filename: "style.css", content: "<full CSS>"}])
 ```
 or write the file content directly:
 ```text
-files_tool(action="content_put", path="css/style.css", content="<full CSS>", create=true)
+files_write(action="content_put", path="css/style.css", content="<full CSS>", create=true)
 ```
 Check the `state` of every file in the `upload` response — a per-file error does not fail the request. If a text file already exists, update it with `content_put`.
-If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
-
 5. Link in the template with versioning (via `patch_template` if landing is already published; on first publish — include in `page_tmpl`):
 ```html
 <link rel="stylesheet" href="/css/style.css?v=<ASSET_VERSION>">
 ```
 
-### Step 4.1. JS only in `script.js` + upload via `files_tool`
+### Step 4.1. JS only in `script.js` + upload via `files_write`
 
 `script.js` stays one plain script (no `type="module"`, no bundler, no external framework/CDN). Follow the JS baseline tiers in `references/VISUAL.md` §7: defensive syntax (`?.`, `??`, optional chaining around every `querySelector`), `IntersectionObserver` as the fallback for scroll reveals, `requestAnimationFrame` to throttle scroll/resize/mousemove handlers. **Never use `fetch`/`FormData` to intercept `$MFORM_<ID>$` submission** — the platform already handles it natively and shows the `_uWnd` success modal (styled in item 7 below); `fetch` is only for genuinely custom, non-system widgets.
 
 1. Generate/update `script.js` locally.
 2. Check for `js` folder:
 ```text
-files_tool(action="list", path="")
+files_read(action="list", path="")
 ```
 3. If `js` is missing — create:
 ```text
-files_tool(action="mkdir", path="js")
+files_write(action="mkdir", path="js")
 ```
 4. Upload the file:
 ```text
-files_tool(action="upload", path="js", files=[{filename: "script.js", content: "<full JS>"}])
+files_write(action="upload", path="js", files=[{filename: "script.js", content: "<full JS>"}])
 ```
 or write the file content directly:
 ```text
-files_tool(action="content_put", path="js/script.js", content="<full JS>", create=true)
+files_write(action="content_put", path="js/script.js", content="<full JS>", create=true)
 ```
 Check the `state` of every file in the `upload` response — a per-file error does not fail the request. If a text file already exists, update it with `content_put`.
-If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
-
 5. Link before `</body>` with versioning (via `patch_template` if landing is already published):
 ```html
 <script src="/js/script.js?v=<ASSET_VERSION>"></script>
@@ -326,19 +318,15 @@ $ico.Write($pngBytes, 0, $pngBytes.Length)
 $ico.Close()
 ```
 
-3. Read the file bytes and encode them as base64:
-```powershell
-$b64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes("<workspace_path>\favicon.ico"))
-```
-
-4. Upload to site root via `files_tool`:
+3. Take the exact byte length and upload through `upload_direct`, then store the file in the site root:
 ```text
-files_tool(action="upload", path="", files=[{filename: "favicon.ico", content_base64: "<base64>"}])
+$size = (Get-Item "<workspace_path>\favicon.ico").Length
+files_write(action="upload_direct", filename="favicon.ico", size=$size)
+# POST the raw file to upload_url, Content-Type: application/octet-stream, body length = size
+files_write(action="upload", path="", upload_id="<upload_id from upload_direct>")
 ```
 Check the `state` of every file in the `upload` response — a per-file error does not fail the request.
-If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
-
-5. Add link tag in template `<head>` (right after `<meta charset>`):
+4. Add link tag in template `<head>` (right after `<meta charset>`):
 ```html
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 ```
@@ -355,11 +343,11 @@ If the landing is already published — insert via `patch_template` (module_id=2
 
 This step runs only when the user explicitly requested a form in the prompt.
 
-0. Ensure the mail forms module is active (step 2). If `active: false` — `modules_tool(action="module_install", module_code="<code from modules_list>")`. Do not ask the user to activate the module manually.
+0. Ensure the mail forms module is active (step 2). If `active: false` — `modules_write(action="module_install", module_code="<code from modules_list>")`. Do not ask the user to activate the module manually.
 
 1. Create the form:
 ```text
-templates_tool(action="mail_create_form", mail_name="Landing form", mail_emails="...", mail_rez="...")
+templates_write(action="mail_create_form", mail_name="Landing form", mail_emails="...", mail_rez="...")
 ```
 
 Before `mail_create_form`:
@@ -375,15 +363,15 @@ Before `mail_create_form`:
 
 2. Add fields:
 ```text
-templates_tool(action="mail_add_field", mail_form_id=<ID>, mail_name="...", mail_field_type=1, mail_required=true, ...)
+templates_write(action="mail_add_field", mail_form_id=<ID>, mail_name="...", mail_field_type=1, mail_required=true, ...)
 ```
 
 3. Captcha: add type 7 only on **explicit** user request. If captcha exists in a reused form and was not requested — delete (`mail_delete_field`).
 
 4. After field changes, sync the email HTML:
 ```text
-templates_tool(action="mail_get_template", mail_form_id=<ID>)
-templates_tool(action="mail_save_template", mail_form_id=<ID>, mail_tmpl="<email HTML>")
+templates_read(action="mail_get_template", mail_form_id=<ID>)
+templates_write(action="mail_save_template", mail_form_id=<ID>, mail_tmpl="<email HTML>")
 ```
 
 5. Output in the page template only:
@@ -500,7 +488,7 @@ The home personal template is accessible two ways:
 
 Full write via Pages API:
 ```text
-templates_tool(action="page_update", page_id=1, page_owntmpl=1, page_message="<title>", page_tmpl="<full HTML>", page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
+templates_write(action="page_update", page_id=1, page_owntmpl=1, page_message="<title>", page_tmpl="<full HTML>", page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
 ```
 
 Rules:
@@ -517,21 +505,21 @@ Any HTML changes (blocks, CSS/JS links, `$MFORM_N$`, `$NMENU_N$`, favicon in `<h
 
 1. Read current code:
 ```text
-templates_tool(action="read_template", module_id=2, template_id=1)
+templates_read(action="read_template", module_id=2, template_id=1)
 ```
 
 2. Copy the exact fragment from the response (`code_search` — byte-exact match, exactly one occurrence).
 
 3. Apply the patch:
 ```text
-templates_tool(action="patch_template", module_id=2, template_id=1, code_search="<fragment from read_template>", code_paste="<new fragment>")
+templates_write(action="patch_template", module_id=2, template_id=1, code_search="<fragment from read_template>", code_paste="<new fragment>")
 ```
 
 4. For multiple unrelated edits — separate `patch_template` per unique fragment.
 
 5. SEO meta only, without HTML changes:
 ```text
-templates_tool(action="page_update", page_id=1, page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
+templates_write(action="page_update", page_id=1, page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
 ```
 
 **Forbidden** for an existing landing:
@@ -553,19 +541,19 @@ Run **after** landing publish and all edits (step 10), **before** the final user
 
 3. If the user **wants** indexing (or explicitly requested it) — check status:
 ```text
-modules_tool(action="quarantine_status")
+modules_read(action="quarantine_status")
 ```
 
 4. If response has `locked=true` (quarantine on) — unlock:
 ```text
-modules_tool(action="quarantine_unlock")
+modules_write(action="quarantine_unlock")
 ```
 
 5. If `locked=false` — quarantine already off; inform the user.
 
 **Rules:**
 - **Do not unlock** quarantine without user consent for indexing.
-- Do not ask the user to unlock quarantine manually in the panel — use `modules_tool`.
+- Do not ask the user to unlock quarantine manually in the panel — use `modules_read` / `modules_write`.
 - `quarantine_status` / `quarantine_unlock` require the signed-in account to be the site owner or have site administrator rights.
 
 ---
@@ -575,16 +563,16 @@ modules_tool(action="quarantine_unlock")
 The agent must verify and explicitly confirm:
 - [ ] Home page (`page_id=1`) read via `page_list` and `page_get`.
 - [ ] If form needed: mail forms module checked via `modules_list`; if `active: false`, installed via `module_install` (no manual panel steps).
-- [ ] Site files uploaded via `files_tool` (or, for the legacy NPM MCP, via `ftp_tool`); on upload failure — saved locally and the user notified.
+- [ ] Site files uploaded via `files_write`; on upload failure — saved locally and the user notified.
 - [ ] **First publish:** `page_update` with `page_owntmpl=1`, full `page_tmpl` and `page_meta_*`; `page_message` — title only.
 - [ ] **Post-generation edits:** HTML changed via `patch_template` (module_id=2, template_id=1); `update_template` and full `page_tmpl` rewrite not used.
 - [ ] Menu created/updated via `menu_*`; template has `$NMENU_N$`.
 - [ ] All menu items have `URL` filled (anchor links for landings).
 - [ ] Burger menu implemented: button (SVG) in HTML, toggle in `script.js`, styles in `style.css`.
 - [ ] At 320/375 px desktop nav hidden, burger works, menu closes on item click.
-- [ ] `style.css` created and uploaded via `files_tool` to `css/style.css`.
+- [ ] `style.css` created and uploaded via `files_read` / `files_write` to `css/style.css`.
 - [ ] Template links `/css/style.css?v=<ASSET_VERSION>`.
-- [ ] `script.js` created and uploaded via `files_tool` to `js/script.js`.
+- [ ] `script.js` created and uploaded via `files_read` / `files_write` to `js/script.js`.
 - [ ] Template links `/js/script.js?v=<ASSET_VERSION>` (before `</body>`).
 - [ ] Mail form created via `mail_create_form` or existing form reused — output as `$MFORM_N$`.
 - [ ] For existing form: all fields checked via `mail_list_fields`; extra fields (incl. type 7 captcha if not requested) removed via `mail_delete_field`.
@@ -602,7 +590,7 @@ The agent must verify and explicitly confirm:
 - [ ] Relevant Schema.org microdata added.
 - [ ] Responsiveness verified at 320/375/768/1024+ px.
 - [ ] No emoji icons in UI; icons via SVG.
-- [ ] Favicon generated from SVG logo (colors and shape match); `favicon.ico` uploaded to site root via `files_tool` (or saved locally if the upload failed).
+- [ ] Favicon generated from SVG logo (colors and shape match); `favicon.ico` uploaded to site root via `files_write` (or saved locally if the upload failed).
 - [ ] `<link rel="icon" type="image/x-icon" href="/favicon.ico">` in `<head>` (via `patch_template` or in `page_tmpl` on first publish).
 - [ ] After publish/edits, `id` and `url` checked; `page_get` if needed.
 - [ ] **Final step:** indexing need confirmed; if user agreed, `quarantine_status` checked and `quarantine_unlock` run when `locked=true`.
@@ -630,36 +618,36 @@ The agent must verify and explicitly confirm:
 ## 5) Minimum action call order (reference)
 
 ```text
-1) templates_tool(action="page_list", page_page=1, page_per_page=100)
-2) templates_tool(action="page_get", page_id=1)
-3) templates_tool(action="list_modules")
-4) modules_tool(action="modules_list")   // if form needed — check/install mail forms module
-5) templates_tool(action="menu_list")
-6) templates_tool(action="menu_create"/"menu_update"/"menu_update_items", ...)
-7) files_tool(action="list", path="")
-8) files_tool(action="mkdir", path="css")   // if needed
-9) files_tool(action="upload", path="css", files=[{filename: "style.css", content: "..."}])
-10) files_tool(action="mkdir", path="js")   // if needed
-11) files_tool(action="upload", path="js", files=[{filename: "script.js", content: "..."}])
-12) Shell: PowerShell → generate favicon.ico from logo and encode its bytes as base64
-12.1) files_tool(action="upload", path="", files=[{filename: "favicon.ico", content_base64: "<base64>"}])
-13) modules_tool(action="module_install", module_code="mail")   // only if module inactive and form needed
-14) templates_tool(action="mail_create_form", mail_name="...", mail_emails="...", mail_rez="...")
-15) templates_tool(action="mail_add_field", mail_form_id=..., ...)
-16) templates_tool(action="mail_get_template", mail_form_id=...)
-17) templates_tool(action="mail_save_template", mail_form_id=..., mail_tmpl="...")
+1) templates_read(action="page_list", page_page=1, page_per_page=100)
+2) templates_read(action="page_get", page_id=1)
+3) templates_read(action="list_modules")
+4) modules_read(action="modules_list")   // if form needed — check/install mail forms module
+5) templates_read(action="menu_list")
+6) templates_write(action="menu_create"/"menu_update"/"menu_update_items", ...)
+7) files_read(action="list", path="")
+8) files_write(action="mkdir", path="css")   // if needed
+9) files_write(action="upload", path="css", files=[{filename: "style.css", content: "..."}])
+10) files_write(action="mkdir", path="js")   // if needed
+11) files_write(action="upload", path="js", files=[{filename: "script.js", content: "..."}])
+12) Shell: PowerShell → generate favicon.ico from the logo and read its exact byte length
+12.1) files_write upload_direct (filename=favicon.ico, size=<bytes>), POST the raw body to upload_url, then files_write upload path="" upload_id=<id>
+13) modules_write(action="module_install", module_code="mail")   // only if module inactive and form needed
+14) templates_write(action="mail_create_form", mail_name="...", mail_emails="...", mail_rez="...")
+15) templates_write(action="mail_add_field", mail_form_id=..., ...)
+16) templates_read(action="mail_get_template", mail_form_id=...)
+17) templates_write(action="mail_save_template", mail_form_id=..., mail_tmpl="...")
 
 // Publish — depends on home page state:
 18a) FIRST publish (owntmpl=0):
-     templates_tool(action="page_update", page_id=1, page_owntmpl=1, page_message="...", page_tmpl="...", page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
+     templates_write(action="page_update", page_id=1, page_owntmpl=1, page_message="...", page_tmpl="...", page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
 18b) EDITS to existing landing:
-     templates_tool(action="read_template", module_id=2, template_id=1)
-     templates_tool(action="patch_template", module_id=2, template_id=1, code_search="...", code_paste="...")   // repeat per edit
+     templates_read(action="read_template", module_id=2, template_id=1)
+     templates_write(action="patch_template", module_id=2, template_id=1, code_search="...", code_paste="...")   // repeat per edit
 
-19) templates_tool(action="page_get", page_id=1)   // verify result
+19) templates_read(action="page_get", page_id=1)   // verify result
 20) Ask user: indexing needed in search engines?
-    → if yes: modules_tool(action="quarantine_status")
-    → if locked=true: modules_tool(action="quarantine_unlock")
+    → if yes: modules_read(action="quarantine_status")
+    → if locked=true: modules_write(action="quarantine_unlock")
 // validate_template — only on explicit user request
 ```
 
@@ -671,7 +659,7 @@ If home page has `owntmpl=0` at step 1, enable personal template via `page_updat
 
 - Do not skip reading the home page via `page_list` and `page_get` before editing.
 - Do not ask the user to manually enable the home personal template in the uCoz panel.
-- Do not ask the user to manually activate the mail forms module — use `modules_tool` (`module_install`).
+- Do not ask the user to manually activate the mail forms module — use `modules_write` (`module_install`).
 - Do not publish a landing without `page_update` with `page_owntmpl=1` on **first** publish.
 - Do not edit HTML of an **existing** landing via `update_template` or full `page_tmpl` in `page_update` — only `patch_template` (module_id=2, template_id=1).
 - Do not put template HTML in `page_message` or duplicate markup in `page_message` and `page_tmpl`.
@@ -700,7 +688,7 @@ If home page has `owntmpl=0` at step 1, enable personal template via `page_updat
 - Do not leave default uCoz success modal styling without landing overrides. Full override selectors: `.xw-shadow`, `.xw-tl`, `.xw-tr`, `.xw-tc`, `.xw-ml`, `.xw-mr`, `.xw-mc`, `.xw-bl`, `.xw-br`, `.xw-bc`, `.xw-sps`, `.xw-blank`, `.xw-hdr`, `.xw-hdr-text`, `.xw-body`, `.myWinCont`, `.myWinCont b`, `.myWinFooter`, `.xt-close`, `.xt-close2`, `.xw-disabled` — all must match landing visuals. Resetting `background-image` on 9-slice elements is mandatory.
 - Do not leave Open Graph with placeholders or without `og:image`.
 - Do not use emoji as UI icons; use SVG.
-- Do not publish without a favicon: `favicon.ico` must be generated and uploaded via `files_tool` (or saved locally only if the upload failed).
+- Do not publish without a favicon: `favicon.ico` must be generated and uploaded via `files_write` (or saved locally only if the upload failed).
 - Do not make a favicon that does not visually match the header logo (colors, shape, or motif).
 - Do not unlock quarantine (`quarantine_unlock`) without user consent for search engine indexing.
 - Do not reuse the same palette/typeface pairing across unrelated briefs regardless of niche — pick a named style from `VISUAL.md` §1.2 and state it.
@@ -724,7 +712,7 @@ If home page has `owntmpl=0` at step 1, enable personal template via `page_updat
 ## 7) User report format after completion
 
 At the end, provide a brief technical report:
-1. Actions called (in order), including `page_list`, `page_get`, `patch_template` / `page_update`, `modules_tool`, `files_tool`.
+1. Actions called (in order), including `page_list`, `page_get`, `patch_template` / `page_update`, `modules_read` / `modules_write`, `files_read` / `files_write`.
 2. `page_get` result for home (`page_id=1`, URL, SEO fields).
 3. Mail forms module status (if form needed): whether installed via `module_install`.
 4. Created/updated menu ID.
@@ -733,8 +721,8 @@ At the end, provide a brief technical report:
 7. JS upload path (`/js/script.js`).
 8. SEO, Open Graph/Twitter, and schema blocks added.
 9. Responsiveness confirmation (320/375/768/1024+).
-10. File upload status: uploaded via `files_tool` or saved locally.
-11. Favicon status: uploaded via `files_tool` (`/favicon.ico`) or saved locally.
+10. File upload status: uploaded via `files_write` or saved locally.
+11. Favicon status: uploaded via `files_read` / `files_write` (`/favicon.ico`) or saved locally.
 12. Quarantine and indexing status: whether user was asked; quarantine unlocked via `quarantine_unlock` or site left non-indexable.
 13. Template validation result (if requested).
 14. Chosen visual style (name from `VISUAL.md` §1.2) and where the token contract lives (`style.css` `:root`).

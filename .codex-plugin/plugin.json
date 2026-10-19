@@ -1,6 +1,6 @@
 {
   "name": "ucoz",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Generate uCoz landing pages, translate and localize site content, restyle site design, create original site templates, build server-side scripts, and manage templates, menus, and mail forms via remote MCP. Includes landing, translator, design editor, template creator, shop, ad campaign, and server scripts skills plus ucoz-mcp.",
   "author": {
     "name": "uCoz",

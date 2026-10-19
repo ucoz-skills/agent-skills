@@ -7,7 +7,7 @@ They do this over HTTP with the site's **uAPI**.
 
 | Who calls | Key | Where it comes from |
 |---|---|---|
-| **You, the agent**, through MCP (`content_tool`, `users_tool`, `shop_tool`, …) | Minted server-side by the MCP. You never see it. | automatic |
+| **You, the agent**, through MCP (`content_read` / `content_write`, `users_read` / `users_write`, `shop_read` / `shop_write`, …) | Minted server-side by the MCP. You never see it. | automatic |
 | **The script**, at runtime | A uAPI key issued by the site owner | The owner creates it in the site Control Panel and gives it to you, or pastes it into the secrets file themselves |
 
 You cannot hand the MCP's key to a script. Ask the user for a uAPI key only when the script really
@@ -25,7 +25,7 @@ modules the API may access → save. The key **inherits all rights of that user*
 
 | Situation | Use |
 |---|---|
-| A one-off or admin task done **now** by you (import content, fix categories, create users) | **MCP tools** (`content_tool`, `users_tool`, `shop_tool`) — no key, no script |
+| A one-off or admin task done **now** by you (import content, fix categories, create users) | **MCP tools** (`content_read` / `content_write`, `users_read` / `users_write`, `shop_read` / `shop_write`) — no key, no script |
 | Code that must read/write site data **later, on its own** — on a visitor's request, a webhook, or cron, when no agent is present | **uAPI from the script** with its own key |
 
 Examples of the second case: a cron job that posts new news to Telegram, a widget that shows a member's
@@ -35,8 +35,8 @@ search or "popular this week" widget built from catalog data.
 ## 2. Inspect real shapes with MCP first
 
 Before coding against an endpoint, call the matching MCP tool on the same site and look at the
-actual JSON (field names, nesting, encoding). For example, `content_tool action=list module=stuff per_page=2`,
-`users_tool action=get user_id=1`. Where docs and live responses disagree, **trust the live response**.
+actual JSON (field names, nesting, encoding). For example, `content_read` action=list module=stuff per_page=2`,
+`users_read` action=get user_id=1`. Where docs and live responses disagree, **trust the live response**.
 
 **Where the uAPI documentation is: `docs_tool`** (works without `select_site`). It reads the official
 OpenAPI specs `https://api.ucoz.net/{module}-openapi.yaml`; the index is `https://api.ucoz.net/llms.txt`.
@@ -47,7 +47,7 @@ OpenAPI specs `https://api.ucoz.net/{module}-openapi.yaml`; the index is `https:
 | `docs_tool action=search module=blog query=per_page limit=5` | Matching YAML fragments with line numbers — the fastest way to find a parameter or field |
 | `docs_tool action=fetch_spec module=blog` | The whole spec of one module (large; use `search` first) |
 
-Order: the schemas of the domain MCP tools (`content_tool`, `users_tool`, `shop_tool`) → `docs_tool search`
+Order: the schemas of the domain MCP tools (`content_read` / `content_write`, `users_read` / `users_write`, `shop_read` / `shop_write`) → `docs_tool search`
 for anything missing → one live call to confirm the real JSON before coding against it.
 
 ## 3. Request basics
@@ -103,7 +103,7 @@ Shapes differ between sites and modules — inspect every endpoint you use with 
 | Error | Meaning | Action |
 |---|---|---|
 | `INVALID_API_KEY` | Key revoked or wrong | Ask the owner for a new key. Update secrets. |
-| `API_ACCESS_DENY` | API for that module is disabled for the site | `modules_tool module_status` / `module_enable_uapi` — with approval. |
+| `API_ACCESS_DENY` | API for that module is disabled for the site | `modules_read module_status` / `module_enable_uapi` — with approval. |
 | `NOT_SUPPORTED_METHOD` | Wrong path or method | Check with `docs_tool` and live MCP calls. |
 | Body like `({"SCRIPTDATA":…})` | You hit the legacy uCoz PHP wrapper, not uAPI | Fix the URL: `https://{site}/uapi/…`. Old scripts using OAuth 1.0a `uAPImodule.php`: [MIGRATION.md](MIGRATION.md). |
 

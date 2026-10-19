@@ -1,6 +1,6 @@
 # uCoz Design Editor Visual System
 
-Version: **1.0** (ships with Design Editor Skill **v1.1**)
+Version: **1.0** (ships with Design Editor Skill **v1.3**)
 
 This file is the **visual contract** for redesign work done via `ucoz-mcp`. The other reference files own platform mechanics — `ARCHITECTURE.md` says *where* CSS/tokens live and how to verify they went live, `SYSTEM-MARKUP.md` says what the DOM actually looks like per module, `EDITING.md` says how to patch safely. This file owns what the redesign actually *looks like*: identity extraction, typography and spacing, color tokens, icons, the modern CSS/JS toolbox, motion, imagery, and accessibility.
 

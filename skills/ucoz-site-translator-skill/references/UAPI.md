@@ -1,27 +1,29 @@
-# uCoz uAPI routes for localization
+# uCoz field reference for localization
 
-Use this reference as a description of uAPI fields and formats for materials/categories, pages, templates, menus, and the shop. Confirm request fields against the linked current OpenAPI file before every write.
+Use this reference as field documentation for materials and categories, pages, templates, menus, and the shop. Call the MCP tools. Do not request the OpenAPI URLs or `https://{host}/uapi` yourself. Confirm field names against the linked OpenAPI file before every write.
 
 ## Connection
 
-In the new uCoz MCP these methods are called through tools on the selected site (`select_site`): `content_tool` for materials and categories, `templates_tool` for pages, templates, menus, and forms, `shop_tool` for shop products and categories, `files_tool` for files. The MCP server issues the uAPI key and does not give it to the agent, so direct HTTP is not possible.
+Calls go through MCP tools on the site selected with `select_site`. The MCP server does not give the agent a uAPI key.
 
-Legacy NPM MCP only (direct HTTP with the key from the connection):
+- Materials and categories: `content_read` / `content_write` / `content_delete` (`content_delete` needs `confirm: true`)
+- Forum: `forum_read` / `forum_write` / `forum_delete` (not `content_*`)
+- Pages, templates, menus, and forms: `templates_read` / `templates_write` / `templates_delete` (deletes and `restore_backup` need `confirm: true`)
+- Shop: `shop_read` / `shop_write` / `shop_delete` (deletes and `img_edit` need `confirm: true`)
+- Files: `files_read` / `files_write` / `files_delete` (`files_delete` needs `confirm: true`).
+- Modules: `modules_read` / `modules_write` / `modules_uninstall` (there is no `modules_delete`)
 
-- Base URL: `https://{configured-site-host}/uapi`
-- Header: `Authorization: Bearer {configured-uAPI-token}`
-- Success envelope: `{ "success": ... }`
-- Error envelope: `{ "error": { "code": "...", "msg": "..." } }`
+A tool error looks like `{ "error": { "code": "...", "msg": "..." } }`.
 
-Do not emit the host or key. MCP tools are the preferred path for templates, menus, pages, forms, and files (`files_tool`).
+Do not emit the host or a key.
 
 ## Discovery and search
 
-- Site search: `GET /search?query={q}`
-- Module search: `GET /search?query={q}&module={module_code}`
-- Module material list: `GET /{module}` → `content_tool(action="list", module)`
-- One material: use the module OpenAPI contract; common modules accept `GET /{module}?id={id}` → `content_tool(action="get", module, id)`
-- Category list: `GET /{module}/category` → `content_tool(action="category_list", module)`
+- Active modules: `modules_read` `active_mods`.
+- Module material list: `content_read(action="list", module)` (field hint: `/{module}`).
+- One material: `content_read(action="get", module, id)` (field hint: `/{module}?id={id}`). Confirm the id field against the module OpenAPI contract.
+- Category list: `content_read(action="category_list", module)` (field hint: `/{module}/category`).
+- Forum: `forum_read` / `forum_write` / `forum_delete`, not `content_*`.
 
 Use the pagination parameter names declared by the specific OpenAPI schema. Do not assume `per_page` for every module.
 
@@ -42,27 +44,30 @@ Use the pagination parameter names declared by the specific OpenAPI schema. Do n
 | Forum | `forum` | `https://api.ucoz.net/forum-openapi.yaml` |
 | Shop | `shop` | `https://api.ucoz.net/shop-openapi.yaml` |
 
+The OpenAPI links are field documentation. Call the MCP tools and do not request those URLs. The forum row uses `forum_read` / `forum_write` / `forum_delete`, not `content_*`.
+
 Common editable prose includes `title`, `name`, `description`, `message`, `brief`, `dscr`, `html_dscr`, and requested `meta_*` fields. Actual names differ by module. Preserve category IDs, status flags, dates, files, ownership, URLs, and operational fields unless the user explicitly scopes them.
 
-Before presenting scope, inspect all fields returned by GET and the update request schema. Offer every non-empty editable user-facing text property, including module-specific fields, SEO, tags, custom text fields, and editable image labels. Do not offer response-only strings, URLs, authors, states, or nested related objects as if they were fields of the material.
+Before presenting scope, inspect all fields returned by `content_read` (or `forum_read` / `shop_read` for those areas) and the update field list. Offer every non-empty editable user-facing text property, including module-specific fields, SEO, tags, custom text fields, and editable image labels. Do not offer response-only strings, URLs, authors, states, or nested related objects as if they were fields of the material.
 
 Common updates:
 
-- Material: `PUT /{module}?id={id}` → `content_tool(action="update", module, id, …)`; creation — `content_tool(action="add", module, …)`
-- Category: `PUT /{module}/category?id={id}` → `content_tool(action="category_update", module, id, …)`; creation — `category_add`
+- Material: call `content_write(action="update", module, id, …)` (field hint: `PUT /{module}?id={id}`); creation — `content_write(action="add", module, …)`
+- Category: call `content_write(action="category_update", module, id, …)` (field hint: `PUT /{module}/category?id={id}`); creation — `category_add`
+- Deletion: `content_delete` with `confirm: true`, only after the user approves that deletion
 
-These are patterns, not permission to invent parameters. Inspect the module OpenAPI schema and send only accepted fields.
+These are patterns, not permission to invent parameters. Inspect the module OpenAPI schema and send only accepted fields through the MCP tool.
 
 ## Content format is part of the data
 
-Never send a rich-text value without its documented format controls. Preserve the source format rather than allowing the API default to reinterpret it.
+Never send a rich-text value without its documented format controls. Preserve the source format rather than allowing the stored default to reinterpret it.
 
 - Common content modules use `description_type` / `message_type` with `plain`, `bb`, or `html`.
 - The same modules may expose `includehtml_desc`, `includehtml_msg`, `end2br_desc`, and `end2br_msg`.
-- Forum messages use module-specific controls such as `includehtml` and `end2br`.
+- Forum messages use module-specific controls such as `includehtml` and `end2br` on `forum_write`.
 - Other modules differ; read their current update schema instead of copying News parameters.
 
-When HTML is detected, send the corresponding `*_type=html` and documented HTML-enable flag. Preserve the line-break behavior. Omitting `message_type=html` can make uAPI store markup as escaped text (`&lt;p&gt;...`). See [CONTENT_FIELDS_AND_FORMATS.md](CONTENT_FIELDS_AND_FORMATS.md) for the complete procedure.
+When HTML is detected, send the corresponding `*_type=html` and documented HTML-enable flag. Preserve the line-break behavior. Omitting `message_type=html` can store markup as escaped text (`&lt;p&gt;...`). See [CONTENT_FIELDS_AND_FORMATS.md](CONTENT_FIELDS_AND_FORMATS.md) for the complete procedure.
 
 ## Slugs and other URL fields
 
@@ -70,25 +75,26 @@ Treat `hgu_title`, `ownurl`, and module equivalents as optional localization fie
 
 ## Pages, templates, and menus
 
-Prefer the equivalent `templates_tool` actions.
+Call `templates_read` / `templates_write`. Deletes and `restore_backup` need `confirm: true` (`templates_delete` for deletes).
 
-- Pages: `GET /pages`, `GET /pages/{id}`, `PUT /pages` with `page_id` → `page_list`, `page_get`, `page_update`
-- Templates: `GET /templates`, `GET /templates/{module_id}/{template_id}`, `PUT /templates/{module_id}/{template_id}` → `list_modules`, `read_template`, `patch_template`/`update_template`
-- Menus: `GET /menus`, `GET /menus/{id}`, `PUT /menus/{id}`, `PUT /menus/{id}/items` → `menu_list`, `menu_get`, `menu_update`, `menu_update_items`
+- Pages: `templates_read` `page_list` / `page_get`, `templates_write` `page_update` (field hints: `/pages`, `/pages/{id}`, `page_id`)
+- Templates: `templates_read` `list_modules` / `read_template`, `templates_write` `patch_template` / `update_template` (field hints: `/templates`, `/templates/{module_id}/{template_id}`)
+- Menus: `templates_read` `menu_list` / `menu_get`, `templates_write` `menu_update` / `menu_update_items` (field hints: `/menus`, `/menus/{id}`, `/menus/{id}/items`)
 
-Schemas: `https://api.ucoz.net/pages-openapi.yaml`, `https://api.ucoz.net/templates-openapi.yaml`, `https://api.ucoz.net/menus-openapi.yaml`.
+Schemas (field documentation; do not request these URLs): `https://api.ucoz.net/pages-openapi.yaml`, `https://api.ucoz.net/templates-openapi.yaml`, `https://api.ucoz.net/menus-openapi.yaml`.
 
 ## Online shop
 
-In the new MCP, shop products and categories are edited through `shop_tool` (`category_list`/`category_update`). Read categories with `GET /shop/request?page=categories`. Consult the shop OpenAPI for product discovery and all edit operations; do not assume a legacy route that is absent from the current schema.
+Call `shop_read` `category_list` / `get` / `list` and `shop_write` `category_update` / `update`. Images: `files_write` `upload_direct`, then `shop_write` `img_add` with `image_upload_ids` (a category image is `shop_write` `category_image` with one `image_upload_id`). Shop deletes and `img_edit` need `confirm: true`. Category field hint: `/shop/request?page=categories`. The shop OpenAPI is field documentation; call the MCP tools and do not request that URL yourself.
 
 Protect price, currency, stock, SKU/article, product type, visibility, variations, order data, delivery, and payment settings. Translate only approved category/product prose and SEO fields.
 
 ## Canonical documentation
+
+The links below are field documentation. Call MCP tools and do not request these URLs yourself.
 
 - Compact index: `https://api.ucoz.net/llms.txt`
 - Full index: `https://api.ucoz.net/llms-full.txt`
 - API home: `https://api.ucoz.net/`
 - uCoz MCP: `https://www.ucoz.com/ai/mcp`
 - Errors: `https://api.ucoz.net/errors.html`
-

@@ -10,7 +10,7 @@
 
 Never invent or guess a variable name by analogy with another template or module. Before using any `$VARIABLE$`, confirm it exists via:
 
-1. `get_variables` (`templates_tool` action) — lists variables available for the selected module/template.
+1. `get_variables` (`templates_read` action) — lists variables available for the selected module/template.
 2. The output of `read_template` — if the variable is already used in that template's source, it is safe to reuse.
 
 **Precedence when sources disagree:**

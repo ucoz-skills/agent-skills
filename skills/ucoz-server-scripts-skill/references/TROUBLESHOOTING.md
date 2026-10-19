@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Start with the cheapest signal: `apps_tool status` → the HTTP response of the URL → the module's
+Start with the cheapest signal: `apps_read` `status` → the HTTP response of the URL → the module's
 own log (`files_read`) → `*_list` for Node/Python.
 
 ## Environment and tool
@@ -15,7 +15,7 @@ own log (`files_read`) → `*_list` for Node/Python.
 | A write landed on another site (`host` in the response differs) | The shared site selection was changed by another client. Stop, tell the user, undo on the wrong site, `select_site` back, continue. |
 | `files_move` / `files_extract` → "confirm is required" | Both need `confirm: true` after approval. |
 | Files written but the URL 404s | Wrong `{domain}` folder (built from `status.domain` instead of `session.selected_domain`), or a path outside `public_html`. `files_list` the folder and compare. |
-| A path like `/home/u…/domains/…` is rejected | `apps_tool` paths are home-relative. Drop `/home/{username}/` (except in `cron_create command` and `app_root`). |
+| A path like `/home/u…/domains/…` is rejected | `apps_read` / `apps_write` / `apps_delete` paths are home-relative. Drop `/home/{username}/` (except in `cron_create command` and `app_root`). |
 | `files_patch` fails | `old_string` not found or not unique. `files_read`, copy the exact fragment, and add surrounding lines to make it unique. |
 | `files_read` returns a URL instead of content | Large or binary file — the URL is **public**. Do not share it. Read smaller text files instead. |
 | A response is enormous (`php_get`) | Expected (~100 KB). Summarize only the fields you need. |
@@ -84,8 +84,8 @@ own log (`files_read`) → `*_list` for Node/Python.
 | Symptom | Cause / fix |
 |---|---|
 | `INVALID_API_KEY` | Key revoked/wrong. The owner issues a new one → secrets. |
-| `API_ACCESS_DENY` | uAPI disabled for that module. `modules_tool module_enable_uapi` with approval. |
-| Field names differ from docs | Trust live responses. Inspect with `content_tool`/`users_tool`/`shop_tool` first. |
+| `API_ACCESS_DENY` | uAPI disabled for that module. `modules_write module_enable_uapi` with approval. |
+| Field names differ from docs | Trust live responses. Inspect with `content_read` / `content_write`/`users_read`/`shop_read` / `shop_write` first. |
 | `X&#124;S` in names | HTML entities. Decode before comparing, and escape on output. |
 | `({"SCRIPTDATA":…})` | The legacy PHP wrapper — wrong URL/stack. If the site still depends on that script, migrate it: [MIGRATION.md](MIGRATION.md). |
 

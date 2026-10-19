@@ -22,7 +22,7 @@
 
 ## Scope boundary
 
-A framework is the source for the complete site design. `skeleton_publish` regenerates all supported templates. Use `templates_tool.patch_template` for a fragment in one template and `templates_tool.update_template` for one complete template. Never use the framework to avoid finding a template ID.
+A framework is the source for the complete site design. `skeleton_publish` regenerates all supported templates. Use `templates_write.patch_template` for a fragment in one template and `templates_write.update_template` for one complete template. Never use the framework to avoid finding a template ID.
 
 Point edits are not synchronized back into a saved framework. Preserve intentional template-level changes in the framework source before the next publication or accept that they will be overwritten.
 
@@ -36,8 +36,8 @@ Use this order:
 4. `skeleton_validate` — read-only server validation.
 5. `project_save` — source snapshot and recovery point; it does not affect the live site.
 6. Explicit user approval for replacement of CSS and all templates.
-7. `templates_tool.create_backup` — manual restore point before the first destructive write.
-8. `templates_tool.update_template` for the complete `3/3` stylesheet.
+7. `templates_write.create_backup` — manual restore point before the first destructive write.
+8. `templates_write.update_template` for the complete `3/3` stylesheet.
 9. `skeleton_publish(confirm=true, pda=0|1)` — this changes the live site.
 10. `project_save_active` with the final post-informer source — this marks the source active but does not publish templates.
 
@@ -96,7 +96,7 @@ The framework contains structure only. Include this link in `<head>`:
 
 **Forbidden stylesheet paths:** bare `/my.css`, `/css/my.css`, `my.css`, and stale `/.s/t/<design-id>/` theme assets as the site design stylesheet. Those paths do not receive the compiled `3/3` table the same way `/_st/my.css?v=…` does and produce orphan shells (Search `19/1` is a frequent offender). Local lint fails on missing versioned `/_st/my.css` and on bare `/my.css`.
 
-Do not add `<style>` blocks. For a new design, send the complete stylesheet to `templates_tool.update_template(module_id=3, template_id=3)`. This is a full replacement, not an append operation. Never send a CSS fragment to `update_template`. Read `VISUAL.md` before writing the stylesheet (non-negotiables, tokens, type/spacing floors).
+Do not add `<style>` blocks. For a new design, send the complete stylesheet to `templates_write.update_template(module_id=3, template_id=3)`. This is a full replacement, not an append operation. Never send a CSS fragment to `update_template`. Read `VISUAL.md` before writing the stylesheet (non-negotiables, tokens, type/spacing floors).
 
 After the first full write, use `read_template` plus `patch_template` for incremental CSS changes. The generated site rewrites the query version automatically; independent custom pages require a manual version bump.
 
@@ -288,7 +288,7 @@ Without approval, generate and validate only.
 
 A successful `skeleton_publish` does not prove every live system template was regenerated. Full redesign approval must cover both framework publication and targeted migration of active/system templates that remain standard or stale. After the final publication:
 
-1. Call `modules_list`, then `templates_tool.list_modules`. Inventory Pages, Users, every active content module, Search, common system/error templates, globals, comments, forms, related-material views, and other shared partials.
+1. Call `modules_list`, then `templates_read.list_modules`. Inventory Pages, Users, every active content module, Search, common system/error templates, globals, comments, forms, related-material views, and other shared partials.
 2. Read every mapped template, not only IDs returned in `affected_templates`. Always inspect Search `19/1` and `19/2`; current tmaker sources do not verify a `search_entry_view`, so the result item may remain standard.
 3. Classify each template as current theme, standard inner markup safely handled by shared CSS, or stale/structurally incompatible markup requiring a targeted change.
 4. For each stale template, call `get_variables`, preserve required placeholders and behavior, validate the candidate, then use `patch_template` for a narrow structural edit or `update_template` for one complete template. Do not republish the entire framework to fix one missed system template.

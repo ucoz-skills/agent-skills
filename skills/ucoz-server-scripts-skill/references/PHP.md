@@ -16,7 +16,7 @@ domains/{domain}/
    ├─ .htaccess                  deny lib/, no listings, clean URLs
    ├─ lib/bootstrap.php          error handling, own log, secrets, DB, HTTP client, keys, identity
    ├─ lib/app.php                the module: actions, page, router
-   └─ assets/                    small CSS/JS (text). Binary images → files_tool site storage
+   └─ assets/                    small CSS/JS (text). Binary images → files_read / files_write site storage
 ```
 
 **Why the stub (verified):** by default this hosting writes no PHP error log you can read through MCP; only

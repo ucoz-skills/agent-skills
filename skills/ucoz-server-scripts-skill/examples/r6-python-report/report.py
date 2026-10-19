@@ -133,37 +133,37 @@ def build_xlsx(rows, site, path, today):
 
     # Summary
     ws = wb.active
-    ws.title = "Summary"
+    ws.title = "Сводка"
     total_views = sum(r["views"] for r in rows)
     recent = [r for r in rows if (today - r["date"]).days <= 30]
     top = rows[0] if rows else None
-    ws["A1"] = f"Blog report for {site}"
+    ws["A1"] = f"Отчёт по блогу {site}"
     ws["A1"].font = Font(bold=True, size=16)
-    ws["A2"] = f"Generated {today.isoformat()}"
+    ws["A2"] = f"Сформирован {today.strftime('%d.%m.%Y')}"
     ws["A2"].font = Font(color="808080")
     kpis = [
-        ("Posts", len(rows)),
-        ("Views, all time", total_views),
-        ("Comments", sum(r["comments"] for r in rows)),
-        ("Average views per post", round(total_views / max(1, len(rows)))),
-        ("New posts in 30 days", len(recent)),
+        ("Записей", len(rows)),
+        ("Просмотров за всё время", total_views),
+        ("Комментариев", sum(r["comments"] for r in rows)),
+        ("В среднем просмотров на запись", round(total_views / max(1, len(rows)))),
+        ("Новых записей за 30 дней", len(recent)),
     ]
     for i, (label, value) in enumerate(kpis, start=4):
         ws.cell(row=i, column=1, value=label)
         c = ws.cell(row=i, column=2, value=value)
         c.number_format, c.font = "#,##0", Font(bold=True, size=12)
     if top:
-        ws.cell(row=10, column=1, value="Most read post")
+        ws.cell(row=10, column=1, value="Самая читаемая запись")
         c = ws.cell(row=10, column=2, value=top["title"])
         c.hyperlink, c.font = top["url"] or None, link_font
     ws.column_dimensions["A"].width, ws.column_dimensions["B"].width = 34, 70
 
     # Posts
-    ws = wb.create_sheet("Posts")
-    table(ws, ["#", "Post", "Category", "Date", "Views", "Comments", "Views per day"],
+    ws = wb.create_sheet("Записи")
+    table(ws, ["#", "Запись", "Рубрика", "Дата", "Просмотры", "Комментарии", "Просмотров в день"],
           [6, 70, 22, 12, 13, 13, 12],
           [[i, r["title"], r["category"], r["date"], r["views"], r["comments"], r["per_day"]] for i, r in enumerate(rows, 1)],
-          {4: "YYYY-MM-DD", 5: "#,##0", 6: "#,##0", 7: "#,##0.0"})
+          {4: "DD.MM.YYYY", 5: "#,##0", 6: "#,##0", 7: "#,##0.0"})
     for i, r in enumerate(rows, 2):
         if r["url"]:
             ws.cell(row=i, column=2).hyperlink = r["url"]
@@ -180,14 +180,14 @@ def build_xlsx(rows, site, path, today):
         c["c"] += r["comments"]
         c["last"] = max(c["last"], r["date"])
     cats = sorted(by_cat.items(), key=lambda kv: kv[1]["v"], reverse=True)
-    ws = wb.create_sheet("Categories")
-    table(ws, ["Category", "Posts", "Views", "Average per post", "Comments", "Latest post"],
+    ws = wb.create_sheet("Рубрики")
+    table(ws, ["Рубрика", "Записей", "Просмотров", "В среднем на запись", "Комментариев", "Последняя запись"],
           [26, 10, 14, 14, 14, 14],
           [[k, v["n"], v["v"], round(v["v"] / v["n"]), v["c"], v["last"]] for k, v in cats],
-          {3: "#,##0", 4: "#,##0", 5: "#,##0", 6: "YYYY-MM-DD"})
+          {3: "#,##0", 4: "#,##0", 5: "#,##0", 6: "DD.MM.YYYY"})
     if cats:
         ch = BarChart()
-        ch.type, ch.style, ch.title, ch.legend = "bar", 10, "Average views per post", None
+        ch.type, ch.style, ch.title, ch.legend = "bar", 10, "Средние просмотры на запись", None
         ch.add_data(Reference(ws, min_col=4, min_row=1, max_row=len(cats) + 1), titles_from_data=True)
         ch.set_categories(Reference(ws, min_col=1, min_row=2, max_row=len(cats) + 1))
         ch.height, ch.width = max(7.5, 0.6 * len(cats)), 18
@@ -200,11 +200,11 @@ def build_xlsx(rows, site, path, today):
         y["n"] += 1
         y["v"] += r["views"]
     years = sorted(by_year.items())
-    ws = wb.create_sheet("By year")
-    table(ws, ["Year", "Posts", "Views"], [8, 10, 14], [[y, v["n"], v["v"]] for y, v in years], {3: "#,##0"})
+    ws = wb.create_sheet("По годам")
+    table(ws, ["Год", "Записей", "Просмотров"], [8, 10, 14], [[y, v["n"], v["v"]] for y, v in years], {3: "#,##0"})
     if years:
         ch = BarChart()
-        ch.style, ch.title, ch.legend = 10, "Post views by publication year", None
+        ch.style, ch.title, ch.legend = 10, "Просмотры записей по году публикации", None
         ch.add_data(Reference(ws, min_col=3, min_row=1, max_row=len(years) + 1), titles_from_data=True)
         ch.set_categories(Reference(ws, min_col=1, min_row=2, max_row=len(years) + 1))
         ch.height, ch.width = 8, 18
@@ -247,8 +247,8 @@ def main(send=True):
     name = f"blog-report-{today.isoformat()}.xlsx"
     path = os.path.join(REPORTS, name)
     build_xlsx(rows, cfg["site"], path, today)
-    views = f"{sum(r['views'] for r in rows):,}"   # 14,600,000
-    caption = f"Blog report for {cfg['site']}, {today.isoformat()}: {len(rows)} posts, {views} views"
+    views = f"{sum(r['views'] for r in rows):,}".replace(",", " ")   # 14 600 000
+    caption = f"Отчёт по блогу {cfg['site']} за {today.strftime('%d.%m.%Y')}: {len(rows)} записей, {views} просмотров"
     sent = send_telegram(cfg, path, caption) if send else False
     prune()
     state = {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "file": name, "posts": len(rows),

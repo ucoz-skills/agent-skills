@@ -14,7 +14,7 @@ prefixes (`leads_`, `votes_`) instead of creating a database per module.
 ## 2. Create
 
 ```text
-apps_tool db_create_with_user  name=main            → DB {username}_main + user {username}_main, full privileges
+apps_read / apps_write / apps_delete db_create_with_user  name=main            → DB {username}_main + user {username}_main, full privileges
 ```
 
 - The response contains the **password** (generated when you omit `password`). Write it immediately
@@ -32,7 +32,7 @@ full names (`{username}_main`). Symptom of a missing prefix: `Access denied for 
 
 ## 4. Schema: MCP cannot run SQL
 
-`apps_tool` has no "execute query" action. Create and evolve the schema in one of two ways:
+`apps_read` / `apps_write` / `apps_delete` has no "execute query" action. Create and evolve the schema in one of two ways:
 
 **A. Idempotent migrations in code (preferred).** Keep the DDL in the module and run it on first use:
 

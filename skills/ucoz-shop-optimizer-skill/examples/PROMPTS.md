@@ -3,101 +3,101 @@
 ## Audit
 
 ```text
-Audit my uCoz shop without making changes: categories, product template, cart, checkout and menu. Return a prioritized issue list.
+Проверь магазин uCoz без изменений: категории, шаблоны товара, корзину, checkout и меню. Верни список проблем по приоритету.
 ```
 
 ```text
-Audit shop categories: names, URLs, descriptions, meta title, meta description, hierarchy and visibility. Do not change anything.
+Сделай аудит категорий магазина: названия, URL, описания, meta title, meta description, вложенность и видимость. Ничего не меняй.
 ```
 
 ## Category optimization
 
 ```text
-Find categories without descriptions and suggest copy. Do not change URLs, access groups or visibility.
+Найди категории без описаний и предложи тексты. URL, доступы и видимость не менять.
 ```
 
 ```text
-Optimize the first 10 categories: meta title, meta description and short description. Show a before/after table first.
+Оптимизируй первые 10 категорий: meta title, meta description и короткое описание. Сначала покажи таблицу до/после.
 ```
 
 ## Product optimization
 
 ```text
-For this product list, prepare name, brief and html_dscr. Do not touch prices, stock, SKU/article or product types.
+По этому списку товаров подготовь name, brief и html_dscr. Цены, остатки, артикулы и типы не трогай.
 ```
 
 ```text
-Improve descriptions for 20 products, but do not change commercial fields. Prepare a batch with preview.
+Улучши описания 20 товаров, но не меняй коммерческие поля. Сделай пакет правок с предпросмотром.
 ```
 
 ## Scope selection
 
 ```text
-Before starting, ask what to work with: one product, selected products, one category or products inside a category.
+Перед началом спроси, с чем работаем: один товар, выбранные товары, одна категория или товары внутри категории.
 ```
 
 ```text
-Do not optimize the whole shop at once. First suggest choosing a category or a product list.
+Не оптимизируй весь магазин сразу. Сначала предложи выбрать категорию или список товаров.
 ```
 
 ## Images
 
 ```text
-For these 20 products, prepare image generation prompts in a unified style: white background, realistic e-commerce, no text on the image.
+Для этих 20 товаров подготовь промпты для генерации изображений в едином стиле: белый фон, реалистичный e-commerce, без текста на картинке.
 ```
 
 ```text
-Generate images for products without photos and add them through the Online Shop API: /shop/editgoods/img_add, file_add_cnt and file_add_*. If appearance is unknown, create only a careful concept illustration and note that in the report.
+Сгенерируй изображения для товаров без фото. Для каждого файла: files_write upload_direct (filename и точный size), POST сырого тела на upload_url, затем один shop_write img_add с image_upload_ids. image_base64 не передавать. Если внешний вид неизвестен, делай только аккуратную концепт-иллюстрацию и помечай это в отчёте. Существующие фото не заменять.
 ```
 
 ```text
-For each product card, prepare: prompt, alt, filename, then add the product image via /shop/editgoods/img_add. Do not replace existing images.
+Подготовь для каждой карточки: prompt, alt, filename, затем добавь изображение товара через upload_direct и shop_write img_add. Существующие изображения не заменять.
 ```
 
 ```text
-For the selected category, generate a banner and update the category image via /shop/edit_cat with mode=img. Show the plan first.
+Для выбранной категории сгенерируй баннер и поставь картинку категории через upload_direct, затем shop_write category_image с одним image_upload_id. Сначала покажи план. Существующую картинку не заменять без подтверждения.
 ```
 
 ```text
-Create a banner for the "Accessories" category: wide format, clean modern style, no text on the banner. Show the concept first.
+Сделай баннер категории “Аксессуары”: широкий формат, чистый современный стиль, без текста на баннере. Сначала покажи концепцию.
 ```
 
 ## Template optimization
 
 ```text
-Check the product page template: H1, price, old price, availability, cart button, breadcrumbs and Product Schema. Show the plan first.
+Проверь шаблон страницы товара: есть ли H1, цена, старая цена, наличие, кнопка корзины, breadcrumbs и Product Schema. Сначала план.
 ```
 
 ```text
-Add Product/Offer JSON-LD to the product template. Use only available uCoz variables and validate the template before saving.
+Добавь Product/Offer JSON-LD в шаблон товара. Используй только доступные переменные uCoz и обязательно провалидируй шаблон.
 ```
 
 ## Orders and operations
 
 ```text
-Generate an order report for the past month: new, paid, processing, delivered and cancelled. Do not change statuses.
+Сделай отчёт по заказам за месяц: новые, оплаченные, в обработке, доставленные, отменённые. Статусы не менять.
 ```
 
 ```text
-Check stuck orders in New and Paying status older than 7 days. Do not change anything, list only.
+Проверь зависшие заказы в статусах New и Paying старше 7 дней. Ничего не меняй, только список.
 ```
 
 ## Creation
 
 ```text
-Create a new "Accessories" category, but first show the fields: name, URL, description, meta title and meta description.
+Создай новую категорию “Аксессуары”, но сначала покажи поля: название, URL, описание, meta title и meta description.
 ```
 
 ```text
-Create 5 products from this list in hidden state so I can review the cards before publishing.
+Создай 5 товаров по этому списку в скрытом состоянии, чтобы я потом проверил карточки перед публикацией.
 ```
 
-## MCP/API connection
+## MCP connection
 
 ```text
-Connect to ucoz-mcp, take the current site and API key from MCP and optimize the selected products through the shop API.
+Вызови list_sites, затем select_site, и оптимизируй выбранные товары через shop_read и shop_write. Ключ API не брать.
 ```
 
 ```text
-For products 101, 102 and 103, generate images and add them via /shop/editgoods/img_add. Do not replace existing images.
+Для товаров 101, 102 и 103 сгенерируй изображения и добавь их через upload_direct, затем shop_write img_add. Существующие изображения не заменять.
 ```

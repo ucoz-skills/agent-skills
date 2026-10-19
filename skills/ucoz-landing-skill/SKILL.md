@@ -1,6 +1,6 @@
 ---
-name: ucoz-landing-skill
-version: "1.4"
+name: uCoz Landing Skill
+version: 1.5
 description: "Create and edit uCoz homepage landing pages via MCP: custom templates, hero sections, lead forms, navigation menus, SEO, and responsive layout. Includes a visual design system (style selection, layout/grid, section recipes, typography/spacing, color tokens, component states, icons, modern CSS/JS, motion, imagery, social proof, copy/voice, accessibility). Uses ucoz-mcp tools for templates, site file uploads, and site modules."
 ---
 
@@ -36,12 +36,11 @@ Landing page = personal template of the home page (`page_id=1`, `page_owntmpl=1`
 
 | Tool | Purpose |
 |---|---|
-| `templates_tool` | Pages (`page_*`), menus (`menu_*`), mail forms (`mail_*`), `patch_template` / `update_template` |
-| `files_tool` | Site files: `list`, `mkdir`, `upload` (text or `content_base64`), `upload_url`, `content_get` / `content_put` |
-| `ftp_tool` | FTP password (`ftp_password_*`); in the legacy NPM MCP — also FTP file operations |
-| `modules_tool` | Module catalog, mail forms module install (`module_install`); quarantine unlock for indexing (`quarantine_unlock`) |
+| `templates_write` | Pages (`page_*`), menus (`menu_*`), mail forms (`mail_*`), `patch_template` / `update_template` |
+| `files_read` / `files_write` | Site files: `list`, `mkdir`, `upload_direct` then `upload` with `upload_ids` (batch, at most 20), `upload_url`, `content_get` / `content_put` |
+| `modules_write` | Module catalog, mail forms module install (`module_install`); quarantine unlock for indexing (`quarantine_unlock`) |
 
-`modules_tool` and `ftp_password_*` require the signed-in account to be the site owner or have site administrator rights.
+`modules_read` / `modules_write` require the signed-in account to be the site owner or have site administrator rights.
 
 ## Instructions
 
@@ -55,7 +54,7 @@ The playbook includes:
 - core principles (tools, CSS/JS, responsive layout, burger menu, forms, SEO, Schema.org)
 - step-by-step algorithm (steps 0–11): requirements → publish → final step: quarantine/indexing
 - `patch_template` rule for editing existing landing HTML (module_id=2, template_id=1)
-- mail forms module activation and site file uploads via `files_tool`
+- mail forms module activation and site file uploads via `files_read` / `files_write`
 - final step: quarantine and indexing (with user confirmation)
 - checklist, reference action order, prohibitions, report format
 

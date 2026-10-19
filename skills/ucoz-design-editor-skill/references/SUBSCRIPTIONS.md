@@ -21,8 +21,8 @@ Never transfer IDs, variable names, URLs, or DOM structure from another site —
 
 ## Mandatory pre-redesign checks
 
-1. `modules_tool(action="module_status", module_code="subscriptions")` or `modules_tool(action="modules_list")` — confirm the module is installed and active.
-2. `templates_tool(action="list_modules")` — find all `module_id=25` templates; do not assume purpose by number.
+1. `modules_read(action="module_status", module_code="subscriptions")` or `modules_read(action="modules_list")` — confirm the module is installed and active.
+2. `templates_read(action="list_modules")` — find all `module_id=25` templates; do not assume purpose by number.
 3. `read_template` with `include_variables=true` on every template to be changed.
 4. Read `25/8` (module CSS) and `3/3` (site-wide CSS).
 5. Confirm every variable, system form, link, handler, and class from the live template. If a variable is unconfirmed, do not use it.
@@ -134,7 +134,7 @@ System legal text (`$RECURRENT_CHARGE_INFO$`, `.aa-subs-checkout-note`) must not
 
 ## CSS strategy
 
-For a full subscription landing redesign: use one canonical external file uploaded via `files_tool` (e.g. `/css/style.css`) linked with `?v=` in every rewritten shell template. Do NOT maintain a competing theme in `25/8` — it overrides external design and restores system blue buttons.
+For a full subscription landing redesign: use one canonical external file uploaded via `files_read` / `files_write` (e.g. `/css/style.css`) linked with `?v=` in every rewritten shell template. Do NOT maintain a competing theme in `25/8` — it overrides external design and restores system blue buttons.
 
 Never add `<style>` blocks to HTML templates. Add JavaScript only when necessary and only after confirming it does not duplicate module logic.
 

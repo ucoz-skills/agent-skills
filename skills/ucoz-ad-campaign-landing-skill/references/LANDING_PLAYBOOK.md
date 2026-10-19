@@ -1,6 +1,6 @@
 # uCoz landing publishing playbook (Ad Campaign Landing Skill)
 
-A single playbook for publishing landing pages on uCoz via MCP (`templates_tool`, `files_tool`).
+A single playbook for publishing landing pages on uCoz via MCP (`templates_read` / `templates_write`, `files_read` / `files_write`).
 **Do not use** the separate skill `ucoz-landing-agent` — every rule is here.
 
 Marketing links: `COPY.md` (message match) and `PIPELINE.md` (the overall pipeline).
@@ -13,7 +13,7 @@ Paid traffic → **a separate page per segment**, not the homepage.
 
 | Parameter | Value |
 |----------|----------|
-| Creation | `templates_tool(action="page_add")` |
+| Creation | `templates_write(action="page_add")` |
 | Pretty URL | `page_ownurl` from `segments.json` (a deterministic slug) |
 | HTML | `page_tmpl` (a full document), the title in `page_message` |
 | Hero | Strictly the ad offer (`COPY.md`, Message Match section) |
@@ -90,9 +90,8 @@ On a typical segment landing page (anchors `#order` and `#faq` only) this block 
 ### Quick reference for `page_add`
 
 ```text
-templates_tool(action="page_list", page_page=1, page_per_page=100)
-templates_tool(
-  action="page_add",
+templates_read(action="page_list", page_page=1, page_per_page=100)
+templates_write(action="page_add",
   page_name="<offer>",
   page_message="<offer>",
   page_owntmpl=1,
@@ -100,7 +99,7 @@ templates_tool(
   page_meta_title="...", page_meta_description="...", page_meta_keywords="...",
   page_tmpl="<!DOCTYPE html>... $POWERED_BY$ after </body>"
 )
-templates_tool(action="page_get", page_id=<new_id>)
+templates_read(action="page_get", page_id=<new_id>)
 ```
 
 Shared CSS/JS for every segment: one `/css/style.css`, one `/js/script.js`, different content in `page_tmpl`.
@@ -120,15 +119,15 @@ Landing HTML is always passed in `page_tmpl`, not in `page_message` (`page_messa
 
 ## 2) Core principles (mandatory)
 
-1. Work only through MCP tools (`templates_tool`, `files_tool`) — without manual guesses. For the homepage, use `templates_tool` with the actions `page_list`, `page_get`, `page_update`.
+1. Work only through MCP tools (`templates_read` / `templates_write`, `files_read` / `files_write`) — without manual guesses. For the homepage, use `templates_read` / `templates_write` with the actions `page_list`, `page_get`, `page_update`.
 2. After `page_add`/`page_update`, run `validate_template` when the action supports this template type. If the tool does not apply, save the exact reason and supplement the check with `page_get` + the public URL; do not skip validation silently.
 3. Do not delete or break uCoz variables and system constructs.
 4. Do not remove `$POWERED_BY$` — it must stand after `</body>`.
 5. Do not use a static year in the footer — only `$YEAR$`.
 6. Menus go only through menu actions. A horizontal header is `$SMENU_N$`; a vertical placement (sidebar, footer column, a list in a drawer) is `$NMENU_N$`. Which variable to place is decided by the orientation in `references/VISUAL.md`, not by the `layout` parameter of `menu_create`.
 7. Create a lead form only if the user explicitly asked for one; if it is needed, only through mail actions + output via `$MFORM_N$`.
-8. Landing styles go in a separate `style.css` file, uploaded to the site in the `css` folder (URL `/css/style.css`) via `files_tool`.
-9. Landing scripts go in a separate `script.js` file, uploaded to the site in the `js` folder (URL `/js/script.js`) via `files_tool`.
+8. Landing styles go in a separate `style.css` file, uploaded to the site in the `css` folder (URL `/css/style.css`) via `files_read` / `files_write`.
+9. Landing scripts go in a separate `script.js` file, uploaded to the site in the `js` folder (URL `/js/script.js`) via `files_read` / `files_write`.
 10. For CSS/JS, use URL versioning (`?v=<ASSET_VERSION>`), and increment the version on every file change.
 11. The landing page must be responsive: correct display at a minimum of 320/375/768/1024+ px.
 12. Always add Open Graph and Twitter Card meta tags in `<head>`.
@@ -138,7 +137,7 @@ Landing HTML is always passed in `page_tmpl`, not in `page_message` (`page_messa
 16. Store text in HTML in readable UTF-8 form; do not encode Cyrillic into HTML entities such as `&#1057;...` without a technical need.
 17. After adding a mail form, always override the styles of the standard uCoz modal to match the landing style. The window uses a 9-slice model — reset `background-image` on all 9 frame parts (`.xw-tl`, `.xw-tr`, `.xw-tc`, `.xw-ml`, `.xw-mr`, `.xw-mc`, `.xw-bl`, `.xw-br`, `.xw-bc`), and also override `.xw-shadow`, `.xw-sps`, `.xw-hdr`, `.xw-hdr-text`, `.xw-body`, `.myWinCont`, `.myWinCont b`, `.myWinFooter`, `.xt-close`, `.xt-close2`, `.xw-blank`, `.xw-disabled`. The detailed table is in step 4.1, item 7.
 18. At mobile sizes (≤768 px) the navigation menu is hidden and replaced by a burger button. The toggle logic lives in `script.js`, the styles in `style.css`, and the button in the template HTML.
-19. The logo and the favicon must be visually identical. The favicon is generated programmatically from the SVG logo in the landing header. Upload it to the site root as `favicon.ico` via `files_tool(action="upload")` with `content_base64` and link it in `<head>` via `<link rel="icon">`. If the upload is unavailable, save it locally and tell the user.
+19. The logo and the favicon must be visually identical. The favicon is generated programmatically from the SVG logo in the landing header. Upload it to the site root as `favicon.ico` via `files_write` `upload_direct` (exact byte `size`, raw POST to `upload_url`) and then `upload` with that `upload_id`. Link it in `<head>` via `<link rel="icon">`. If the upload is unavailable, save it locally and tell the user.
 
 20. Before Step 4 (any CSS or HTML), read `references/VISUAL.md` and follow it: style choice, grid, section recipes, the typography and spacing floor, `:root` tokens, component states, icons (Heroicons / Lucide / Tabler), CSS/JS tiers, motion, images, social proof, copy voice, and the accessibility checklist. Brand colors and fonts set the token values, but they do not cancel the typography floor, the `:root` structure, the icon source, or the tiers. For an ad series, use one visual direction for the whole site. If a general VISUAL rule conflicts with hyper-segmentation, `VISUAL.md` §0 takes priority.
 
@@ -152,7 +151,7 @@ Landing HTML is always passed in `page_tmpl`, not in `page_message` (`page_messa
 - For site examples, use images without cropping: `object-fit: contain` or the natural aspect ratio. Do not use `cover` if it cuts text or the interface.
 - When fixing the source site, recapture the image and bump the asset version.
 - While screenshots are missing, use neutral placeholders; do not generate a fictional product interface.
-- Upload images via `files_tool(action="upload", path="img/landing", files=[{filename, content_base64}])` or `files_tool(action="upload_url", path="img/landing", url="...")`. If the folder is missing, first run `files_tool(action="mkdir", path="img")` and `files_tool(action="mkdir", path="img/landing")`.
+- Upload images through `upload_direct`, then one `files_write(action="upload", path="img/landing", upload_ids="<id1>,<id2>,...")` (at most 20). For each file: `files_write(action="upload_direct", filename, size=<exact bytes>)`, then POST the raw bytes to `upload_url` as `application/octet-stream`. `upload_url` as an action is only for a file that is already at a public http(s) address. If the folder is missing, first run `files_write(action="mkdir", path="img")` and `files_write(action="mkdir", path="img/landing")`.
 
 ---
 
@@ -179,11 +178,11 @@ Decision rule:
 - before CSS, write down the non-negotiables and the "must not look like" list for the chosen style (§1.6);
 - inside one ad series, do not change the style from segment to segment: a shared `style.css`.
 
-### Step 1. Check pages via `templates_tool(action="page_list")`
+### Step 1. Check pages via `templates_read(action="page_list")`
 
 Always start from the page list:
 ```text
-templates_tool(action="page_list", page_page=1, page_per_page=100)
+templates_read(action="page_list", page_page=1, page_per_page=100)
 ```
 
 **Segment mode (default):**
@@ -193,7 +192,7 @@ templates_tool(action="page_list", page_page=1, page_per_page=100)
 
 **Homepage mode (only on request):**
 1. Find the homepage `page_id=1` in the list.
-2. `templates_tool(action="page_get", page_id=1)`.
+2. `templates_read(action="page_get", page_id=1)`.
 3. If `owntmpl=1` — read `tmpl` and continue editing.
 4. If `owntmpl=0` — enable it via `page_update` at step 10; do not ask the user to switch it in the control panel.
 
@@ -202,7 +201,7 @@ templates_tool(action="page_list", page_page=1, page_per_page=100)
 ### Step 2. Check available modules (recommended)
 
 ```text
-templates_tool(action="list_modules")
+templates_read(action="list_modules")
 ```
 
 Use the response to check the operations that follow.
@@ -211,18 +210,18 @@ Use the response to check the operations that follow.
 
 1. Get the menu list:
 ```text
-templates_tool(action="menu_list")
+templates_read(action="menu_list")
 ```
 
 2. If the needed menu does not exist — create it:
 ```text
-templates_tool(action="menu_create", title="Landing Main Menu", layout=1)
+templates_write(action="menu_create", title="Landing Main Menu", layout=1)
 ```
-`layout` only sets the orientation preview in the uCoz control panel and does not choose the variable in the template. A horizontal header (most `VISUAL.md` recipes) is `$SMENU_<ID>$`. `$NMENU_<ID>$` is for vertical placements. If it is unclear — `templates_tool(action="get_guide")`.
+`layout` only sets the orientation preview in the uCoz control panel and does not choose the variable in the template. A horizontal header (most `VISUAL.md` recipes) is `$SMENU_<ID>$`. `$NMENU_<ID>$` is for vertical placements. If it is unclear — `templates_read(action="get_guide")`.
 
 3. Update the items:
 ```text
-templates_tool(action="menu_update_items", menu_id=<ID>, items=[...])
+templates_write(action="menu_update_items", menu_id=<ID>, items=[...])
 ```
 
 Menu item requirements:
@@ -254,58 +253,56 @@ Forbidden:
 - leaving desktop navigation without a burger on mobile (≤768 px);
 - picking `$NMENU_N$` or `$SMENU_N$` at random, without the orientation from `VISUAL.md`.
 
-### Step 4. Styles — only in a separate `style.css` + upload via `files_tool`
+### Step 4. Styles — only in a separate `style.css` + upload via `files_write`
 
 Before the first rule, read `references/VISUAL.md` (the style catalog, the typography floor, the token contract, icons, the CSS toolbox). `style.css` opens with the `:root` block from §3.1. CSS nesting is no deeper than 3 levels. Selectors that override uCoz system markup (`.xw-*`, menu classes) stay outside `@layer` (`VISUAL.md` §5).
 
 1. Generate or update the `style.css` contents locally.
 2. Check the `css` folder:
 ```text
-files_tool(action="list", path="")
+files_read(action="list", path="")
 ```
 3. If `css` does not exist — create it:
 ```text
-files_tool(action="mkdir", path="css")
+files_write(action="mkdir", path="css")
 ```
 4. Upload the file:
 ```text
-files_tool(action="upload", path="css", files=[{filename: "style.css", content: "<full CSS>"}])
+files_write(action="upload", path="css", files=[{filename: "style.css", content: "<full CSS>"}])
 ```
 or write the file content directly:
 ```text
-files_tool(action="content_put", path="css/style.css", content="<full CSS>", create=true)
+files_write(action="content_put", path="css/style.css", content="<full CSS>", create=true)
 ```
 Check the `state` of every file in the `upload` response — a per-file error does not fail the request. If a text file already exists, update it with `content_put`.
-If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
 
 5. Link it in the template with a version:
 ```html
 <link rel="stylesheet" href="/css/style.css?v=<ASSET_VERSION>">
 ```
 
-### Step 4.1. JS — only in a separate `script.js` + upload via `files_tool`
+### Step 4.1. JS — only in a separate `script.js` + upload via `files_write`
 
 `script.js` is one plain file: no `type="module"`, no bundler, and no CDN frameworks. Follow the tiers from `references/VISUAL.md` §7: `?.` and `??` around `querySelector`, `IntersectionObserver` for block reveal, `requestAnimationFrame` for scroll/resize. **Do not intercept `$MFORM_<ID>$` submission via `fetch` or `FormData`** — the platform handles the form itself and shows the `_uWnd` modal.
 
 1. Generate or update the `script.js` contents locally.
 2. Check the `js` folder:
 ```text
-files_tool(action="list", path="")
+files_read(action="list", path="")
 ```
 3. If `js` does not exist — create it:
 ```text
-files_tool(action="mkdir", path="js")
+files_write(action="mkdir", path="js")
 ```
 4. Upload the file:
 ```text
-files_tool(action="upload", path="js", files=[{filename: "script.js", content: "<full JS>"}])
+files_write(action="upload", path="js", files=[{filename: "script.js", content: "<full JS>"}])
 ```
 or write the file content directly:
 ```text
-files_tool(action="content_put", path="js/script.js", content="<full JS>", create=true)
+files_write(action="content_put", path="js/script.js", content="<full JS>", create=true)
 ```
 Check the `state` of every file in the `upload` response — a per-file error does not fail the request. If a text file already exists, update it with `content_put`.
-If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
 
 5. Link it in the template before `</body>` with a version:
 ```html
@@ -394,17 +391,14 @@ $ico.Write($pngBytes, 0, $pngBytes.Length)
 $ico.Close()
 ```
 
-3. Read the file bytes and encode them as base64:
-```powershell
-$b64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes("<workspace_path>\favicon.ico"))
-```
-
-4. Upload the file to the site root via `files_tool`:
+3. Take the exact byte length and upload through `upload_direct`, then store the file in the site root:
 ```text
-files_tool(action="upload", path="", files=[{filename: "favicon.ico", content_base64: "<base64>"}])
+$size = (Get-Item "<workspace_path>\favicon.ico").Length
+files_write(action="upload_direct", filename="favicon.ico", size=$size)
+# POST the raw file to upload_url, Content-Type: application/octet-stream, body length = size
+files_write(action="upload", path="", upload_id="<upload_id from upload_direct>")
 ```
 Check the `state` of every file in the `upload` response — a per-file error does not fail the request.
-If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the same files with `ftp_tool` (`write` for text, `upload` for a local file, paths with a leading slash, e.g. `/css/style.css`).
 
 5. Add the tag to the template `<head>` (immediately after `<meta charset>`):
 ```html
@@ -413,7 +407,7 @@ If `files_tool` is unavailable (the legacy NPM MCP is connected), upload the sam
 
 **Rules:**
 - The favicon colors, shape, and graphic motif must match the SVG logo in the header.
-- If `files_tool` returned an error, save the file locally and explicitly tell the user to upload it manually through the uCoz control panel file manager.
+- If `files_write` returned an error, save the file locally and explicitly tell the user to upload it manually through the uCoz control panel file manager.
 - Do not use emoji or the browser's default favicon — only the generated file.
 
 ---
@@ -424,7 +418,7 @@ Run this only if the form is explicitly requested in the prompt.
 
 1. Create the form:
 ```text
-templates_tool(action="mail_create_form", name="Landing Form", ...)
+templates_write(action="mail_create_form", name="Landing Form", ...)
 ```
 
 Before `mail_create_form`:
@@ -440,15 +434,15 @@ Before `mail_create_form`:
 
 2. Add fields:
 ```text
-templates_tool(action="mail_add_field", form_id=<ID>, ...)
+templates_write(action="mail_add_field", form_id=<ID>, ...)
 ```
 
 3. Captcha: add a type 7 field only on an **explicit** request. If a captcha is already present in an existing form and the user did not ask for it — delete it (`mail_delete_field`).
 
 4. After field changes, always sync the email HTML:
 ```text
-templates_tool(action="mail_get_template", form_id=<ID>)
-templates_tool(action="mail_save_template", form_id=<ID>, template_html="<email HTML>")
+templates_read(action="mail_get_template", form_id=<ID>)
+templates_write(action="mail_save_template", form_id=<ID>, template_html="<email HTML>")
 ```
 
 5. In the page `tmpl`, output only:
@@ -559,12 +553,12 @@ Before the final save, make sure:
 
 **New segment:**
 ```text
-templates_tool(action="page_add", page_owntmpl=1, page_ownurl="<slug>", page_name="...", page_message="...", page_tmpl="<HTML>", page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
+templates_write(action="page_add", page_owntmpl=1, page_ownurl="<slug>", page_name="...", page_message="...", page_tmpl="<HTML>", page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
 ```
 
 **Edit an existing segment:**
 ```text
-templates_tool(action="page_update", page_id=<ID>, ...)
+templates_write(action="page_update", page_id=<ID>, ...)
 ```
 
 After publishing: check `id` and `url` in the response; run `page_get`; write `ucoz.page_id` and `ucoz.published: true` into `segments.json`. Only then include `final_url` in OUTPUT_PACK.
@@ -572,7 +566,7 @@ After publishing: check `id` and `url` in the response; run `page_get`; write `u
 #### 10B. Homepage (only on an explicit user request) — `page_update` on `page_id=1`
 
 ```text
-templates_tool(action="page_update", page_id=1, page_owntmpl=1, page_message="<title>", page_tmpl="<new HTML>", page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
+templates_write(action="page_update", page_id=1, page_owntmpl=1, page_message="<title>", page_tmpl="<new HTML>", page_meta_title="...", page_meta_description="...", page_meta_keywords="...")
 ```
 
 Publishing rules (both modes):
@@ -595,9 +589,9 @@ The agent must check and explicitly confirm:
 - [ ] Every menu item has the `URL` field filled in (anchor links for a landing page).
 - [ ] The burger menu is implemented: an SVG button in the HTML, the toggle in `script.js`, the styles in `style.css`.
 - [ ] At 320/375 px the desktop navigation is hidden, the burger works, and the menu closes on an item click.
-- [ ] `style.css` was created and uploaded via `files_tool` to `css/style.css`.
+- [ ] `style.css` was created and uploaded via `files_read` / `files_write` to `css/style.css`.
 - [ ] The template links `/css/style.css?v=<ASSET_VERSION>`.
-- [ ] `script.js` was created and uploaded via `files_tool` to `js/script.js`.
+- [ ] `script.js` was created and uploaded via `files_read` / `files_write` to `js/script.js`.
 - [ ] The template links `/js/script.js?v=<ASSET_VERSION>` (before `</body>`).
 - [ ] The mail form was created via `mail_create_form` or an existing one was used — it is output via `$MFORM_N$`.
 - [ ] For an existing form, every field was checked via `mail_list_fields`; extra fields (including a type 7 captcha that was not requested) were deleted via `mail_delete_field`.
@@ -622,7 +616,7 @@ The agent must check and explicitly confirm:
 - [ ] Footer: `$YEAR$`, small and muted, separate from the link columns (`VISUAL.md` §10.1).
 - [ ] If there was no logo — a §4.1 monogram before the favicon; if there was a logo — that logo was used, not a monogram.
 - [ ] `script.js` does not intercept `$MFORM_N$` via `fetch` / `FormData`.
-- [ ] The favicon was generated from the SVG logo (colors and shape match); `favicon.ico` was uploaded to the site root via `files_tool` or saved locally with a notice to the user.
+- [ ] The favicon was generated from the SVG logo (colors and shape match); `favicon.ico` was uploaded to the site root via `files_read` / `files_write` or saved locally with a notice to the user.
 - [ ] `<link rel="icon" type="image/x-icon" href="/favicon.ico">` was added to `<head>`.
 - [ ] After `page_update`, `id` and `url` in the response were checked; `page_get` was run when needed.
 - [ ] `validate_template` was run, or the exact reason it does not apply was recorded; `page_get` and the public URL were also checked.
@@ -634,35 +628,35 @@ The agent must check and explicitly confirm:
 ### Segment page (default)
 
 ```text
-1) templates_tool(action="page_list", page_page=1, page_per_page=100)
-2) templates_tool(action="menu_list")
-3) files_tool: css/style.css, js/script.js, favicon.ico (shared by all segments)
+1) templates_read(action="page_list", page_page=1, page_per_page=100)
+2) templates_read(action="menu_list")
+3) files_read / files_write: css/style.css, js/script.js, favicon.ico (shared by all segments)
 4) mail_* (only if a form was requested)
-5) templates_tool(action="page_add", page_owntmpl=1, page_ownurl=..., page_tmpl=..., meta_*)
-6) templates_tool(action="page_get", page_id=<new>) → confirm url
+5) templates_write(action="page_add", page_owntmpl=1, page_ownurl=..., page_tmpl=..., meta_*)
+6) templates_read(action="page_get", page_id=<new>) → confirm url
 7) check message match (COPY.md §Message Match)
 ```
 
 ### Homepage (only on request)
 
 ```text
-1) templates_tool(action="page_list", page_page=1, page_per_page=100)
-2) templates_tool(action="page_get", page_id=1)
-3) templates_tool(action="menu_list")
-4) templates_tool(action="menu_create"/"menu_update"/"menu_update_items", ...)
-5) files_tool(action="list", path="")
-6) files_tool(action="mkdir", path="css")   // if missing
-7) files_tool(action="upload", path="css", files=[{filename: "style.css", content: "..."}])
-8) files_tool(action="mkdir", path="js")    // if missing
-9) files_tool(action="upload", path="js", files=[{filename: "script.js", content: "..."}])
-9.1) Shell: PowerShell → generate favicon.ico from the logo and encode its bytes as base64
-9.2) files_tool(action="upload", path="", files=[{filename: "favicon.ico", content_base64: "<base64>"}])
-10) templates_tool(action="mail_create_form", ...)
-11) templates_tool(action="mail_add_field", ...)
-12) templates_tool(action="mail_get_template", form_id=...)
-13) templates_tool(action="mail_save_template", form_id=..., template_html="...")
-14) templates_tool(action="page_update", page_id=1, ...)
-15) templates_tool(action="page_get", page_id=1)
+1) templates_read(action="page_list", page_page=1, page_per_page=100)
+2) templates_read(action="page_get", page_id=1)
+3) templates_read(action="menu_list")
+4) templates_write(action="menu_create"/"menu_update"/"menu_update_items", ...)
+5) files_read(action="list", path="")
+6) files_write(action="mkdir", path="css")   // if missing
+7) files_write(action="upload", path="css", files=[{filename: "style.css", content: "..."}])
+8) files_write(action="mkdir", path="js")    // if missing
+9) files_write(action="upload", path="js", files=[{filename: "script.js", content: "..."}])
+9.1) Shell: PowerShell → generate favicon.ico and read its exact byte length
+9.2) files_write upload_direct (filename=favicon.ico, size=<exact bytes>), POST the raw body to upload_url, then files_write upload path="" upload_id=<id>
+10) templates_write(action="mail_create_form", ...)
+11) templates_write(action="mail_add_field", ...)
+12) templates_read(action="mail_get_template", form_id=...)
+13) templates_write(action="mail_save_template", form_id=..., template_html="...")
+14) templates_write(action="page_update", page_id=1, ...)
+15) templates_read(action="page_get", page_id=1)
 ```
 
 For the homepage: if `owntmpl=0`, enable it via step 14 `page_update`; do not ask the user to switch it in the control panel.
@@ -725,7 +719,7 @@ At the end, the agent provides a short technical report:
 6. Where the JS was uploaded (`/js/script.js`).
 7. Which SEO, Open Graph/Twitter, and schema blocks were added.
 8. Responsiveness confirmation (320/375/768/1024+).
-9. Favicon status: uploaded via `files_tool` (`/favicon.ico`) or saved locally (with the path and manual-upload instructions).
+9. Favicon status: uploaded via `files_write` (`/favicon.ico`) or saved locally (with the path and manual-upload instructions).
 10. The `validate_template` result, or the exact reason it does not apply and the fallback that was run.
 11. The chosen style (`VISUAL.md` §1.2) and where the token contract lives (`style.css` `:root`).
 12. Whether there was an official logo or a generated monogram (`VISUAL.md` §4.1).

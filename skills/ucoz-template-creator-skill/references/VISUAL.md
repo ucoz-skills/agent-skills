@@ -1,8 +1,8 @@
 # uCoz Template Creator Visual System
 
-Version: **1.2** (ships with Template Creator Skill **v1.2**)
+Version: **1.2** (ships with Template Creator Skill **v1.3**)
 
-This file is the **visual contract** for greenfield framework builds via `tmaker_tool`. `FRAMEWORK.md` owns platform mechanics (blocks, variables, migration, QA). `DESIGN-DIRECTIONS.md` picks the **named direction** and soft vibe. **This file** owns what the built template must look like in practice: non-negotiables, layout recipes, typography and spacing floors, color tokens, icons, the modern CSS/JS toolbox, motion, imagery, social proof, copy voice, and accessibility.
+This file is the **visual contract** for greenfield framework builds via `tmaker_read` / `tmaker_write` / `tmaker_publish`. `FRAMEWORK.md` owns platform mechanics (blocks, variables, migration, QA). `DESIGN-DIRECTIONS.md` picks the **named direction** and soft vibe. **This file** owns what the built template must look like in practice: non-negotiables, layout recipes, typography and spacing floors, color tokens, icons, the modern CSS/JS toolbox, motion, imagery, social proof, copy voice, and accessibility.
 
 **Read this file before writing CSS in `3/3`.** Everything here is mandatory unless marked "situational" or "only on request." When a soft vibe note in `DESIGN-DIRECTIONS.md` conflicts with a floor or toolbox rule here, **this file wins**.
 

@@ -86,7 +86,7 @@ function notify_lead(array $lead): void
 {
     $s = secrets();
     if (!empty($s['tg_token']) && !empty($s['tg_chat'])) {
-        $text = "New lead #{$lead['id']}\n{$lead['name']} <{$lead['email']}>\n\n" . mb_substr($lead['message'], 0, 1500);
+        $text = "Новая заявка #{$lead['id']}\n{$lead['name']} <{$lead['email']}>\n\n" . mb_substr($lead['message'], 0, 1500);
         $r = http_post_json('https://api.telegram.org/bot' . $s['tg_token'] . '/sendMessage',
             ['chat_id' => $s['tg_chat'], 'text' => $text, 'disable_web_page_preview' => true], [], 5);
         app_log('notify_tg', ['id' => $lead['id'], 'code' => $r['code'], 'error' => $r['error']]);
@@ -138,11 +138,11 @@ function render_page(): void
     $base = h(APP_PUBLIC_BASE);
     echo <<<HTML
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Contact us</title>
+  <title>Заявка</title>
   <style>
     body{font:16px/1.5 system-ui,sans-serif;max-width:560px;margin:40px auto;padding:0 16px}
     label{display:block;margin:12px 0 4px}input,textarea{width:100%;padding:10px;font:inherit;box-sizing:border-box}
@@ -150,13 +150,13 @@ function render_page(): void
   </style>
 </head>
 <body>
-  <h1>Send a request</h1>
+  <h1>Оставить заявку</h1>
   <form id="f">
-    <label for="name">Name</label><input id="name" name="name" maxlength="120" required>
+    <label for="name">Имя</label><input id="name" name="name" maxlength="120" required>
     <label for="email">E-mail</label><input id="email" name="email" type="email" maxlength="190" required>
-    <label for="message">Message</label><textarea id="message" name="message" rows="5" maxlength="4000" required></textarea>
+    <label for="message">Сообщение</label><textarea id="message" name="message" rows="5" maxlength="4000" required></textarea>
     <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <button type="submit">Send</button>
+    <button type="submit">Отправить</button>
     <p id="msg" role="status"></p>
   </form>
   <script>
@@ -164,14 +164,14 @@ function render_page(): void
     document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
       const out = document.getElementById('msg');
-      out.textContent = 'Sending…';
+      out.textContent = 'Отправка…';
       try {
         const r = await fetch(BASE + 'api/submit', {method: 'POST', credentials: 'same-origin',
           headers: {'Content-Type': 'application/json'}, body: JSON.stringify(Object.fromEntries(new FormData(e.target)))});
         const j = await r.json();
-        out.textContent = j.ok ? 'Thank you! We will get back to you.' : (j.message || 'Error: ' + j.error);
+        out.textContent = j.ok ? 'Спасибо! Мы свяжемся с вами.' : (j.message || 'Ошибка: ' + j.error);
         if (j.ok) e.target.reset();
-      } catch (err) { out.textContent = 'Network error, please try again.'; }
+      } catch (err) { out.textContent = 'Ошибка сети, попробуйте ещё раз.'; }
     });
   </script>
 </body>

@@ -1,6 +1,6 @@
-# `apps_tool` reference
+# `apps_read` / `apps_write` / `apps_delete` reference
 
-Every action of `apps_tool`, grouped by job, with the parameters that matter, gates, and the quirks
+Every action of `apps_read` / `apps_write` / `apps_delete`, grouped by job, with the parameters that matter, gates, and the quirks
 seen on a live account. The tool schema in your MCP client is the source of truth for parameter
 names. If it differs from this page, follow the schema and `get_guide`.
 

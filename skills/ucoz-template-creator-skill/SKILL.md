@@ -1,7 +1,7 @@
 ---
 name: ucoz-template-creator-skill
 description: "Creates complete original website templates for uCoz and carries one coherent design across the entire site: expressive composition, a responsive framework, the visual design system (directions, non-negotiables, typography/spacing floors, tokens, icons, CSS toolbox), templates for every active module, custom Pages, SEO, informers, native rating with a custom SVG sprite, and system pages with no leftover standard styling. Use when building a website template from scratch, performing a complete redesign, or generating, publishing, migrating, and auditing a framework through ucoz-mcp. Do not use for a small edit to one template or an isolated CSS fragment."
-version: "1.2"
+version: "1.3"
 metadata:
   hermes:
     tags: [ucoz, mcp, template, template-creator, templates, tmaker, design, redesign, css, svg, informers, rating, seo, cms]
@@ -19,9 +19,9 @@ Create an original, production-ready uCoz website template as one framework plus
 
 ## Route the request first
 
-- Full design, new framework, global structure, `new_informer`, framework `global_x`, `popup`, `config`, or PDA design → use this skill and `tmaker_tool`.
-- Small change in one existing template → use `templates_tool.patch_template`; stop this workflow.
-- Full replacement of one existing template → use `templates_tool.update_template`; stop this workflow.
+- Full design, new framework, global structure, `new_informer`, framework `global_x`, `popup`, `config`, or PDA design → use this skill and `tmaker_read` / `tmaker_write` / `tmaker_publish`.
+- Small change in one existing template → use `templates_write.patch_template`; stop this workflow.
+- Full replacement of one existing template → use `templates_write.update_template`; stop this workflow.
 - Small change in an existing CSS table → read `3/3`, then use `patch_template`; stop this workflow.
 
 Never publish a framework as a shortcut for a local edit. Framework changes do not receive later `patch_template` edits back; the next framework publication erases them.
@@ -30,9 +30,9 @@ Never publish a framework as a shortcut for a local edit. Framework changes do n
 
 Always call, in order:
 
-1. `tmaker_tool(action="skeleton_guide")`.
-2. `tmaker_tool(action="skeleton_rules")`.
-3. `tmaker_tool(action="project_list")` and the relevant `project_get`, or `designs_list` and one `design_get`.
+1. `tmaker_read(action="skeleton_guide")`.
+2. `tmaker_read(action="skeleton_rules")`.
+3. `tmaker_read(action="project_list")` and the relevant `project_get`, or `designs_list` and one `design_get`.
 
 Treat the live guide, rules, and retrieved source as authoritative. Never invent service blocks or uCoz variables. Read these bundled references only as needed:
 
@@ -55,7 +55,7 @@ Clarify only missing decisions that materially change the result:
 - desktop (`pda=0`) or PDA (`pda=1`);
 - whether existing brand assets must be preserved.
 
-Upload new logos and images with `files_tool` (`upload` with `content_base64`, or `upload_url`); if the legacy NPM MCP without `files_tool` is connected, use `ftp_tool`.
+Upload new logos and images with `files_write` `upload_direct` (exact `size`, POST the raw bytes to `upload_url`), then `files_write` `upload` with `upload_id` or `upload_ids` (at most 20). Use action `upload_url` only when the file is already at a public http(s) address.
 
 Select a direction from `DESIGN-DIRECTIONS.md` (use niche → direction routing when the brief has no brand input), **state the chosen direction before writing any CSS**, then adapt it to the content. Do not default every site to dark gradients, glass cards, centered heroes, identical pills, teal accents, or Inter. After selecting the direction, write non-negotiables and must-not-look-like anti-references per `VISUAL.md` before writing any CSS in `3/3`. Typography, spacing, tokens, icons, and the CSS toolbox in `VISUAL.md` override soft vibe notes in `DESIGN-DIRECTIONS.md` when they conflict.
 
@@ -81,7 +81,7 @@ Before any write, explain that two resources will be replaced: the complete CSS 
 
 For a new site-wide design, generate the complete stylesheet as one coherent file with tokens, base rules, components, module/system markup, responsive rules, focus states, and reduced-motion behavior.
 
-Before replacing CSS or publishing templates, call `templates_tool.create_backup`. Then publish the stylesheet with `templates_tool.update_template(module_id=3, template_id=3, content=<complete CSS>)`. This call replaces the entire existing CSS table; never send a fragment. Reading the old CSS is not required when the user approved a complete redesign. For later incremental style changes, switch to `read_template` plus `patch_template`.
+Before replacing CSS or publishing templates, call `templates_write.create_backup`. Then publish the stylesheet with `templates_write.update_template(module_id=3, template_id=3, content=<complete CSS>)`. This call replaces the entire existing CSS table; never send a fragment. Reading the old CSS is not required when the user approved a complete redesign. For later incremental style changes, switch to `read_template` plus `patch_template`.
 
 Use `/_st/my.css?v=1` in the framework. uCoz rewrites the version for generated templates; manually increment it only in independent custom page templates.
 
@@ -109,7 +109,7 @@ Run the bundled preflight first:
 python scripts/lint_skeleton.py <framework.html>
 ```
 
-Then run `tmaker_tool(action="skeleton_validate", tmpl=<full framework>)`. Parse every item in `details[]`; do not stop at the first error. After a successful validation, run `project_save` as a source-level recovery point. A saved project is not visible on the live site. `project_save_active` only marks the final source project active; the design becomes visible only after `skeleton_publish` regenerates the site templates.
+Then run `tmaker_read(action="skeleton_validate", tmpl=<full framework>)`. Parse every item in `details[]`; do not stop at the first error. After a successful validation, run `project_save` as a source-level recovery point. A saved project is not visible on the live site. `project_save_active` only marks the final source project active; the design becomes visible only after `skeleton_publish` regenerates the site templates.
 
 Before publishing, check backup capacity when practical. If the backup limit blocks a write, show the list and obtain permission before deleting a specific old backup.
 
@@ -119,7 +119,7 @@ Only after explicit approval call `skeleton_publish(confirm=true, pda=<0|1>, tmp
 
 Framework publication is not the end of a full redesign. Before the initial approval, explain that the migration includes targeted updates of active/system templates that tmaker leaves standard or stale. After every final framework publication:
 
-1. Call `modules_list`, then `templates_tool.list_modules`; inventory every active module plus Pages, Users, Search, common system templates, globals, forms, comments, and shared partials.
+1. Call `modules_list`, then `templates_read.list_modules`; inventory every active module plus Pages, Users, Search, common system templates, globals, forms, comments, and shared partials.
 2. Read every mapped template, not only the templates named in `affected_templates`. Always inspect Search `19/1` and `19/2`; current tmaker has no verified `search_entry_view` block.
 3. Classify each template: current design; standard inner markup that shared `3/3` CSS can safely style; or stale/structurally incompatible markup requiring a targeted template change.
 4. For every stale template, call `get_variables`, preserve required platform placeholders and behavior, validate the candidate, then use `patch_template` for a narrow structural fragment or `update_template` for a complete one-template replacement. Use the same shell, CSS, SVG vocabulary, breadcrumbs, typography, spacing, and responsive rules as the site template.

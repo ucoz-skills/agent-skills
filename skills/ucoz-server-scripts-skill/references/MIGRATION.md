@@ -27,7 +27,7 @@ any credentials in them as compromised once they have been shared (chat, messeng
 Before writing anything, write down — and show the user — what the old feature really does:
 
 1. **Caller.** Which page, form, or script calls it? Find the include in templates
-   (`templates_tool read_template`, usually a global block such as the footer) and the JS in site storage.
+   (`templates_read read_template`, usually a global block such as the footer) and the JS in site storage.
 2. **Contract.** Input parameters, output format (HTML fragment or JSON), how the caller renders it.
 3. **Data sources.** Which uAPI endpoints (or external services) it reads or writes, and how often.
 4. **Secrets.** Keys and tokens in the code. List them by kind — never repeat their values.
@@ -60,7 +60,7 @@ Read the code for defects worth fixing during the move, and tell the user what y
    (Control Panel → uAPI → create key → dedicated user with read-only rights, only the modules needed).
    Do not reuse the legacy OAuth credentials.
 3. Port the logic, not the code: start from `templates/php` and the matching recipe.
-4. Inspect real data shapes with MCP before coding (`content_tool list per_page=5`). Keep MCP pages
+4. Inspect real data shapes with MCP before coding (`content_read list per_page=5`). Keep MCP pages
    small: answers above roughly 200 KB come back as `invalid JSON response` — a limit of the MCP proxy,
    not of uAPI. The script itself read `per_page=50` from uAPI without problems (verified).
 5. Check data against the source: item count equals `total` from uAPI minus items you deliberately skip
@@ -92,7 +92,7 @@ proxied domain — so the new script must not intercept submit, or it would brea
 
 The switch is the only change visitors see, so show the user the exact diff and get an explicit yes.
 
-1. **Back up the template first:** `templates_tool create_backup`. Do not rely on the automatic backup of
+1. **Back up the template first:** `templates_write create_backup`. Do not rely on the automatic backup of
    `patch_template` — in a live run none was created (`list_backups` showed `mcp_count: 0`).
 2. **Point the include to a new URL instead of overwriting the old file.** Site storage files such as
    `/js/search.js` are served with `Cache-Control: max-age=1728000` (20 days, verified); an overwritten file
@@ -121,7 +121,7 @@ After the user confirms the new version works:
 
 | Symptom | Cause | Action |
 |---|---|---|
-| Every DirectAdmin-backed `apps_tool` action (`session`, `files_list`, `db_list`, `cron_list`, `usage`) returns `500 SERVER_ERROR`, while `status` and `login_key_list` work | Fresh Server Scripts account: the `main` login key was auto-created seconds after the account folder, before DirectAdmin accepted it | Explain it and, **with the user's explicit request**, `login_key_rotate key_id=main confirm:true`; the next `files_list` worked |
+| Every DirectAdmin-backed `apps_read` / `apps_write` / `apps_delete` action (`session`, `files_list`, `db_list`, `cron_list`, `usage`) returns `500 SERVER_ERROR`, while `status` and `login_key_list` work | Fresh Server Scripts account: the `main` login key was auto-created seconds after the account folder, before DirectAdmin accepted it | Explain it and, **with the user's explicit request**, `login_key_rotate key_id=main confirm:true`; the next `files_list` worked |
 | Secrets file became `-rw-r--r--` | `files_patch` (and rewrites) reset the mode to 0644 | `files_chmod perm:"384"` after **every** write to a secrets file; check with `files_list` |
 | Old and new feature both active | The new client is wired but the template still includes the old script too | Replace the include, do not add a second one |
 

@@ -10,7 +10,7 @@ Cron `PATH` is `/usr/local/php83/bin:/home/{username}/.local/bin:â€¦:/usr/bin` â
 ## 1. Create, list, delete
 
 ```text
-apps_tool cron_create minute="*/15" hour="*" dayofmonth="*" month="*" dayofweek="*"
+apps_read / apps_write / apps_delete cron_create minute="*/15" hour="*" dayofmonth="*" month="*" dayofweek="*"
           command="curl -fsS --max-time 50 -H 'X-Cron-Key: <key>' https://{site}/apps/{name}/api/cron >/dev/null 2>&1"
 ```
 

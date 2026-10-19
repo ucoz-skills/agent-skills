@@ -54,7 +54,7 @@ optional `tg_token` + `tg_chat`, optional `notify_webhook_url` + `notify_secret`
 1. usage → a database slot is free (3 per account); db_list → reuse an app database if one exists
 2. db_create_with_user name=main → put the password straight into the secrets file (never echo it)
 3. Common PHP module setup (name e.g. "leads")
-4. users_tool groups → pick staff group ids → staff_gids
+4. users_read / users_write groups → pick staff group ids → staff_gids
 5. Verify (all verified live; every JSON answer is wrapped as {"ok":true,"data":{…}} or {"ok":false,"error":…}):
    GET  /apps/leads/api/health                 → 200 data {"db":true,"leads":N}   (the migration created the table)
    GET  /apps/leads/                           → 200 form page
@@ -151,12 +151,12 @@ and quotes or `&` break the link — and a text parameter lets anyone draw any t
 ```text
 1. Common PHP module setup (name e.g. "og"); secrets admin_key, hash_salt, site.
 2. GET /apps/og/api/setup with X-Admin-Key → downloads PT Sans (Cyrillic) into og_data/fonts
-   (apps_tool cannot upload binaries — the module fetches them itself). Response shows gd.freetype=true.
+   (apps_read / apps_write / apps_delete cannot upload binaries — the module fetches them itself). Response shows gd.freetype=true.
 3. Verify the image on a real material path:
      /apps/og/blog/<slug>/<yyyy-mm-dd>-<id>.jpg → image/jpeg 1200×630 (~75 KB); download and look at it
      /apps/og/blog/nope/<date>-999.jpg → 404; anything that is not a material path → 404
-4. [ask] templates_tool create_backup → patch_template the module's material page template
-   (Blog: the entry page and comments template, module_id 7, template_id 3), inside <head>:
+4. [ask] templates_write create_backup → patch_template the module's material page template
+   (Blog: «Страница материала и комментариев к нему», module_id 7, template_id 3), inside <head>:
      <meta property="og:type" content="article">
      <meta property="og:title" content="$ENTRY_NAME$">
      <meta property="og:image" content="https://{site}/apps/og$REQUEST_URI$.jpg">
@@ -190,7 +190,7 @@ technical domains, verified 2026-10-08), while outbound calls to `api.telegram.o
    echoed. One bot token = one consumer: getUpdates hands each update to whoever polls first, so never point
    two modules (or a module and another bot framework) at the same token.
 2. Common PHP module setup (name e.g. "tgbot") with examples/r5-telegram-poll/lib/app.php. Secrets as above;
-   staff_gids from users_tool groups; origins = ["https://{site}"]; uapi_token from a dedicated read-only
+   staff_gids from users_read / users_write groups; origins = ["https://{site}"]; uapi_token from a dedicated read-only
    uAPI user (UAPI.md §1) if materials are wanted.
 3. Verify: GET /apps/tgbot/api/health → bot username; GET /apps/tgbot/api/cron without X-Cron-Key → 404,
    with the key → 200 {"updates":0,"announced":0}; GET /apps/tgbot/ as a guest → 401; lib/ → 403.
@@ -240,7 +240,7 @@ limit does not apply. Use the same shape for any library-driven job: PDF, charts
 ```
 
 Verified live: ~540 blog posts read through uAPI (6 pages of 100) and written to a 65 KB workbook with four
-sheets (Summary, Posts, Categories, By year) in 8.2 s from cron; packages installed by the cron pip job;
+sheets (Сводка, Записи, Рубрики, По годам) in 8.2 s from cron; packages installed by the cron pip job;
 guest 401, private files 404; the file arrived in Telegram via sendDocument (9.1 s including the upload).
 
 ---
@@ -255,7 +255,7 @@ wired into a global block. **Secrets:** `site`, `uapi_token` (read-only, the con
 Live module: a site with ~750 articles (`publ`), hints in ~0.7 s per query including the network.
 
 ```text
-1. Inspect the module through MCP (content_tool list module=<publ|blog|news…> per_page=2): list key
+1. Inspect the module through MCP (content_read list module=<publ|blog|news…> per_page=2): list key
    (publs / blogs / …), entry_url, title, category, message/description, reads, pending.
 2. Index build (GET /api/reindex, X-Cron-Key, cron every 10 min):
    - rebuild when the live index is older than ~55 min; otherwise answer "fresh";
@@ -267,12 +267,10 @@ Live module: a site with ~750 articles (`publ`), hints in ~0.7 s per query inclu
    - tables: docs (id, path, title, category, reads, boost), fts5(title, keywords, category, body,
      tokenize "unicode61 remove_diacritics 2"), fts5vocab → words (term, df) as the spelling dictionary.
 3. Query (GET /api/query?q=…, rate limit per IP hash, Cache-Control 60 s):
-   - words: lower case, stop words dropped, a light stemmer for the site language → prefix search
-     ("connect"* for "connecting"; the live case is a Russian site, which also folds ё → е);
-   - unknown words → on a Cyrillic site first try the other keyboard layout (Latin "ajhev" → "форум"),
-     then the closest dictionary word
-     (same first letter, 1–2 edits); show "Showing results for …" when the query was changed;
-   - synonym groups (backup ↔ restore point, ssl ↔ SSL) as OR alternatives;
+   - words: lower case, ё → е, stop words dropped, a light Russian stemmer → prefix search ("подключ"*);
+   - unknown words → try the other keyboard layout ("ajhev" → "форум"), then the closest dictionary word
+     (same first letter, 1–2 edits); show "Показаны результаты по запросу …" when the query was changed;
+   - synonym groups (бэкап ↔ резервная копия, ссл ↔ SSL) as OR alternatives;
    - order: titles containing more query words first, then bm25 (title 10, keywords 5, category 3, body 1)
      minus a popularity bonus 0.3·ln(1 + reads); no hit for all words → fall back to any word;
    - answer: title, path, category, snippet with match markers.
@@ -364,7 +362,7 @@ Full procedure, legacy patterns and verified pitfalls: [MIGRATION.md](../referen
 2. **Build next to it** under a **new** `{name}`: secrets (new uAPI key, never the old credentials),
    storage (`db_create_with_user` + migration in code, or a SQLite/JSON cache built by cron), code from
    `templates/php`. Verify the API and a temporary `noindex` demo page on every domain.
-3. **[ask] Switch:** `templates_tool create_backup`, then `patch_template` the one include line to the new
+3. **[ask] Switch:** `templates_write create_backup`, then `patch_template` the one include line to the new
    `/apps/{name}/…` URL — do not overwrite the old site-storage file (20-day browser cache). Verify zero
    requests to the legacy endpoint.
 4. **Retire:** the user revokes the old credentials and deletes the legacy files; keep backups until the
