@@ -1,7 +1,7 @@
 # uCoz Server Scripts Skill
 
 Version 1.1. Agent skill for building and running backend code for a uCoz site in its **Server Scripts**
-environment (Серверные скрипты) through the official `ucoz-mcp` **`apps_read` / `apps_write` / `apps_delete`**.
+environment through the official `ucoz-mcp` **`apps_read` / `apps_write` / `apps_delete`**.
 
 It covers PHP endpoints, Node.js and Python apps under Passenger, MySQL, cron, visitor identity
 (`ucoz_user()`), calling the site uAPI, security, deploy/rollback, testing, and troubleshooting. Each

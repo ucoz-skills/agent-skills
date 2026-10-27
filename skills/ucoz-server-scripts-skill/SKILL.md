@@ -2,7 +2,7 @@
 name: ucoz-server-scripts-skill
 version: "1.2"
 description: >
-  Build backend features for a uCoz site in Server Scripts (Серверные скрипты) through the official
+  Build backend features for a uCoz site in Server Scripts through the official
   ucoz-mcp apps_read / apps_write / apps_delete: PHP, Node.js or Python apps with MySQL, cron jobs and visitor identity
   (ucoz_user()). Use it when a site needs what the Control Panel cannot do: forms that store data,
   members-only features, Telegram bots, smart search, dashboards of top materials, Excel reports,
