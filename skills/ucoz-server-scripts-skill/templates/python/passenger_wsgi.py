@@ -1,12 +1,12 @@
 """
 Entry stub of a Python (WSGI) app for uCoz Server Scripts (Passenger) — keep it this small.
 App root:   domains/{domain}/app_python/{name}/passenger_wsgi.py   (logic lives in app.py)
-Create:     apps_tool python_create app_root=domains/{domain}/app_python/{name} app_uri=/{name}
+Create:     apps_write python_create app_root=domains/{domain}/app_python/{name} app_uri=/{name}
                       version=3.11 startup_file=passenger_wsgi.py entry_point=application
                       env_vars={"APP_NAME":"{name}"}          (APP_NAME is required)
             THEN write this file (python_create replaces passenger_wsgi.py with its own stub).
 Public URL: https://{site}/apps/{name}/
-Reload after every change: apps_tool python_restart, or files_write {app_root}/tmp/restart.txt.
+Reload after every change: apps_write python_restart, or files_write {app_root}/tmp/restart.txt.
 
 Why a stub (verified): print()/stderr and Passenger logs are not readable through MCP, and a startup
 crash shows only Passenger's "Web application could not be started … Error ID" page. Here a crash while

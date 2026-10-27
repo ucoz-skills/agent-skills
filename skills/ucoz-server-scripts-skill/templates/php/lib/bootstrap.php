@@ -275,7 +275,7 @@ function require_user(): array
     return current_user() ?? fail(401, 'auth', 'Please log in to the site.');
 }
 
-/** Staff check: group ids come from secrets (verify ids with users_tool groups). */
+/** Staff check: group ids come from secrets (verify ids with users_read groups). */
 function require_staff(): array
 {
     $u = require_user();

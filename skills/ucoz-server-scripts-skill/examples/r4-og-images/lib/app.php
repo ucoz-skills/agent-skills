@@ -11,12 +11,12 @@
  *
  * Files: public_html/{name}/index.php (templates/php stub), lib/bootstrap.php, lib/app.php (this), .htaccess,
  *        domains/{domain}/{name}_secrets.php: admin_key, hash_salt, site, og (brand settings, optional)
- *        {name}_data/fonts/*.ttf — downloaded by /api/setup (apps_tool cannot upload binary files)
+ *        {name}_data/fonts/*.ttf — downloaded by /api/setup (apps_write cannot upload binary files)
  *
  * URLs:  GET /apps/{name}/api/setup              header X-Admin-Key → downloads fonts once, reports GD
  *        GET /apps/{name}/<material path>.jpg    → image/jpeg
  *
- * Template (inside <head> of the module's material page, e.g. Blog → «Страница материала и комментариев к нему»;
+ * Template (inside <head> of the module's material page, e.g. Blog → entry page and comments;
  * the title variable there is $ENTRY_NAME$, the page path is $REQUEST_URI$):
  *   <meta property="og:type" content="article">
  *   <meta property="og:title" content="$ENTRY_NAME$">

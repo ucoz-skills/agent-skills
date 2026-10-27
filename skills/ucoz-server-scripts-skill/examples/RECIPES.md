@@ -156,7 +156,7 @@ and quotes or `&` break the link — and a text parameter lets anyone draw any t
      /apps/og/blog/<slug>/<yyyy-mm-dd>-<id>.jpg → image/jpeg 1200×630 (~75 KB); download and look at it
      /apps/og/blog/nope/<date>-999.jpg → 404; anything that is not a material path → 404
 4. [ask] templates_write create_backup → patch_template the module's material page template
-   (Blog: «Страница материала и комментариев к нему», module_id 7, template_id 3), inside <head>:
+   (Blog: the entry page and comments template, module_id 7, template_id 3), inside <head>:
      <meta property="og:type" content="article">
      <meta property="og:title" content="$ENTRY_NAME$">
      <meta property="og:image" content="https://{site}/apps/og$REQUEST_URI$.jpg">
@@ -240,7 +240,7 @@ limit does not apply. Use the same shape for any library-driven job: PDF, charts
 ```
 
 Verified live: ~540 blog posts read through uAPI (6 pages of 100) and written to a 65 KB workbook with four
-sheets (Сводка, Записи, Рубрики, По годам) in 8.2 s from cron; packages installed by the cron pip job;
+sheets (Summary, Posts, Categories, By year) in 8.2 s from cron; packages installed by the cron pip job;
 guest 401, private files 404; the file arrived in Telegram via sendDocument (9.1 s including the upload).
 
 ---
@@ -267,10 +267,12 @@ Live module: a site with ~750 articles (`publ`), hints in ~0.7 s per query inclu
    - tables: docs (id, path, title, category, reads, boost), fts5(title, keywords, category, body,
      tokenize "unicode61 remove_diacritics 2"), fts5vocab → words (term, df) as the spelling dictionary.
 3. Query (GET /api/query?q=…, rate limit per IP hash, Cache-Control 60 s):
-   - words: lower case, ё → е, stop words dropped, a light Russian stemmer → prefix search ("подключ"*);
-   - unknown words → try the other keyboard layout ("ajhev" → "форум"), then the closest dictionary word
-     (same first letter, 1–2 edits); show "Показаны результаты по запросу …" when the query was changed;
-   - synonym groups (бэкап ↔ резервная копия, ссл ↔ SSL) as OR alternatives;
+   - words: lower case, stop words dropped, a light stemmer for the site language → prefix search
+     ("connect"* for "connecting"; on a Russian site also fold the letter yo into ye);
+   - unknown words → on a Cyrillic site first retry the query typed in the wrong keyboard layout,
+     then the closest dictionary word
+     (same first letter, 1–2 edits); show "Showing results for …" when the query was changed;
+   - synonym groups (backup ↔ restore point, ssl ↔ SSL) as OR alternatives;
    - order: titles containing more query words first, then bm25 (title 10, keywords 5, category 3, body 1)
      minus a popularity bonus 0.3·ln(1 + reads); no hit for all words → fall back to any word;
    - answer: title, path, category, snippet with match markers.

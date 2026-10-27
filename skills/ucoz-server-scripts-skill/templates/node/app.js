@@ -2,10 +2,10 @@
 /**
  * Entry stub of a Node.js app for uCoz Server Scripts (Passenger) — keep it this small.
  * App root:   domains/{domain}/app_node/{name}/app.js   (logic lives in lib/main.js)
- * Create:     apps_tool node_create app_root=domains/{domain}/app_node/{name} app_uri=/{name}
+ * Create:     apps_write node_create app_root=domains/{domain}/app_node/{name} app_uri=/{name}
  *                       version=22 startup_file=app.js env_vars={"APP_NAME":"{name}"}   (APP_NAME is required)
  * Public URL: https://{site}/apps/{name}/
- * Reload after every change: apps_tool node_restart, or files_write {app_root}/tmp/restart.txt.
+ * Reload after every change: apps_write node_restart, or files_write {app_root}/tmp/restart.txt.
  *
  * Why a stub (verified): console output and Passenger logs are not readable through MCP, and a startup
  * crash shows only Passenger's "Web application could not be started … Error ID" page. Here a crash in

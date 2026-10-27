@@ -1,7 +1,7 @@
 # Visitor identity: `ucoz_user()` and the visitor key
 
-Sources: uCoz Help Center, "Серверные скрипты на uCoz → Встроенные функции uCoz"
-(https://www.ucoz.ru/help/tools/servernye-skripty-na-ucoz), plus the platform helper sources and
+Sources: uCoz Help Center, "Server Scripts on uCoz → Built-in uCoz functions"
+(https://www.ucoz.ru/help/tools/servernye-skripty-na-ucoz, in Russian), plus the platform helper sources and
 live tests on a Server Scripts account (October 2026). Everything below marked **(verified)** was
 observed live.
 
