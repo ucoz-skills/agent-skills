@@ -1,5 +1,5 @@
 ---
-name: uCoz Design Editor Skill
+name: ucoz-design-editor-skill
 version: "1.3"
 description: "Give any uCoz site a beautiful, modern makeover — safely. Refreshes the whole look and feel: colors, typography, CSS, header/footer and global blocks, menus and forms, plus a tailored restyle for every module (blog, shop, forum, photos, users, search, subscriptions). Includes a visual design system (identity extraction, style routing, typography/spacing, color tokens, component states, icons, modern CSS/JS, motion, imagery, accessibility) so every module ends up visually consistent. Works with the platform instead of against it, so pages stay pixel-perfect and unbroken. Use for any 'redesign / restyle / make my site look better / change the design or CSS' request via ucoz-mcp."
 metadata:

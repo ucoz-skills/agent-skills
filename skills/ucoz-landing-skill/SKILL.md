@@ -1,6 +1,6 @@
 ---
-name: uCoz Landing Skill
-version: 1.5
+name: ucoz-landing-skill
+version: "1.5"
 description: "Create and edit uCoz homepage landing pages via MCP: custom templates, hero sections, lead forms, navigation menus, SEO, and responsive layout. Includes a visual design system (style selection, layout/grid, section recipes, typography/spacing, color tokens, component states, icons, modern CSS/JS, motion, imagery, social proof, copy/voice, accessibility). Uses ucoz-mcp tools for templates, site file uploads, and site modules."
 ---
 

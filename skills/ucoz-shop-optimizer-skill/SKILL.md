@@ -1,8 +1,8 @@
 ---
-name: uCoz Shop Optimizer Skill
+name: ucoz-shop-optimizer-skill
 description: >-
   AI skill for optimizing uCoz Online Shop sites through the current uCoz MCP tools: products, categories, product images, templates, checkout, SEO, structured data and order reports.
-version: 0.7
+version: "0.7"
 author: uCoz
 language: en
 tags:
