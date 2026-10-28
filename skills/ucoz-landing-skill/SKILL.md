@@ -38,7 +38,8 @@ Landing page = personal template of the home page (`page_id=1`, `page_owntmpl=1`
 |---|---|
 | `templates_write` | Pages (`page_*`), menus (`menu_*`), mail forms (`mail_*`), `patch_template` / `update_template` |
 | `files_read` / `files_write` | Site files: `list`, `mkdir`, `upload_direct` then `upload` with `upload_ids` (batch, at most 20), `upload_url`, `content_get` / `content_put` |
-| `modules_write` | Module catalog, mail forms module install (`module_install`); quarantine unlock for indexing (`quarantine_unlock`) |
+| `modules_read` | Module catalog (`modules_list`), quarantine status (`quarantine_status`) |
+| `modules_write` | Mail forms module install (`module_install`); quarantine unlock for indexing (`quarantine_unlock`, `confirm=true` after the user agrees) |
 
 `modules_read` / `modules_write` require the signed-in account to be the site owner or have site administrator rights.
 

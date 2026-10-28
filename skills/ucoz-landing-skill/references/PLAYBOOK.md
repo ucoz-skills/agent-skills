@@ -546,7 +546,7 @@ modules_read(action="quarantine_status")
 
 4. If response has `locked=true` (quarantine on) — unlock:
 ```text
-modules_write(action="quarantine_unlock")
+modules_write(action="quarantine_unlock", confirm=true)
 ```
 
 5. If `locked=false` — quarantine already off; inform the user.
@@ -647,7 +647,7 @@ The agent must verify and explicitly confirm:
 19) templates_read(action="page_get", page_id=1)   // verify result
 20) Ask user: indexing needed in search engines?
     → if yes: modules_read(action="quarantine_status")
-    → if locked=true: modules_write(action="quarantine_unlock")
+    → if locked=true: modules_write(action="quarantine_unlock", confirm=true)
 // validate_template — only on explicit user request
 ```
 

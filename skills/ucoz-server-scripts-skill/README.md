@@ -1,6 +1,6 @@
 # uCoz Server Scripts Skill
 
-Version 1.1. Agent skill for building and running backend code for a uCoz site in its **Server Scripts**
+Version 1.2. Agent skill for building and running backend code for a uCoz site in its **Server Scripts**
 environment through the official `ucoz-mcp` **`apps_read` / `apps_write` / `apps_delete`**.
 
 It covers PHP endpoints, Node.js and Python apps under Passenger, MySQL, cron, visitor identity

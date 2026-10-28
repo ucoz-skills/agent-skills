@@ -69,21 +69,21 @@ Use the site-wide CSS template (`module 3/3`) only for small corrections that mu
 
 ## Modules Tool
 
-`modules_read` manages site modules and admin functions. Most actions require the signed-in account to be the site owner or have site administrator rights. The exception is `active_mods`, which does not.
+`modules_read` reads modules and quarantine status, `modules_write` installs modules, toggles uAPI and lifts quarantine, `modules_uninstall` removes modules. Most actions require the signed-in account to be the site owner or have site administrator rights. The exception is `active_mods`, which does not.
 
 ### Actions
 
-| Action | Notes |
-|---|---|
-| `modules_list` | Full module catalog with `active` / `api_enabled` flags |
-| `module_status` | Status of one module (requires `module_code`) |
-| `module_install` | Installs a module |
-| `module_uninstall` | Uninstalls a module. **Confirm with user first** — protected modules (Users, SEO, etc.) cannot be removed regardless |
-| `active_mods` | Legacy simplified list of active modules (no special permission needed) |
-| `module_enable_uapi` | Enables uAPI methods for a module |
-| `module_disable_uapi` | Disables uAPI methods for a module |
-| `quarantine_status` | Checks whether site quarantine is active (`locked=true` = quarantine on) |
-| `quarantine_unlock` | Removes site quarantine. **Confirm with user first** — quarantine is usually applied for a reason; unlocking must be a deliberate user decision |
+| Tool | Action | Notes |
+|---|---|---|
+| `modules_read` | `modules_list` | Full module catalog with `active` / `api_enabled` flags |
+| `modules_read` | `module_status` | Status of one module (requires `module_code`) |
+| `modules_read` | `active_mods` | Legacy simplified list of active modules (no special permission needed) |
+| `modules_read` | `quarantine_status` | Checks whether site quarantine is active (`locked=true` = quarantine on) |
+| `modules_write` | `module_install` | Installs a module |
+| `modules_write` | `module_enable_uapi` | Enables uAPI methods for a module |
+| `modules_write` | `module_disable_uapi` | Disables uAPI methods for a module |
+| `modules_write` | `quarantine_unlock` | Removes site quarantine; pass `confirm=true` only after the user approves. **Confirm with user first** — quarantine is usually applied for a reason; unlocking must be a deliberate user decision |
+| `modules_uninstall` | `module_uninstall` | Uninstalls a module. **Confirm with user first** — protected modules (Users, SEO, etc.) cannot be removed regardless |
 
 ### `module_code` values
 
@@ -92,10 +92,10 @@ Use the site-wide CSS template (`module 3/3`) only for small corrections that mu
 ### Typical flow
 
 ```
-modules_list                               # see what's installed/active
-module_status(module_code="shop")          # check one module before acting
-module_install(module_code="shop")         # install if needed
-module_enable_uapi(module_code="shop")     # enable API access if the task needs it
+modules_read(action="modules_list")                               # see what's installed/active
+modules_read(action="module_status", module_code="shop")          # check one module before acting
+modules_write(action="module_install", module_code="shop")        # install if needed
+modules_write(action="module_enable_uapi", module_code="shop")    # enable API access if the task needs it
 ```
 
 Before uninstalling or making other destructive module changes, run `module_status` first and confirm with the user.

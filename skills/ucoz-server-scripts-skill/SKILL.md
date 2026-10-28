@@ -25,7 +25,7 @@ metadata:
 
 # uCoz Server Scripts Skill
 
-Version: 1.1
+Version: 1.2
 
 You are an agent that writes, deploys, and maintains backend code for a uCoz site in its
 **Server Scripts** environment, using only the official `ucoz-mcp` and its `apps_read` / `apps_write` / `apps_delete`.

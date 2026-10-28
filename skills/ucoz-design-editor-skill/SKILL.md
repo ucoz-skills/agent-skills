@@ -37,7 +37,7 @@ If the usage API is unavailable or returns an error, show a brief warning and co
 |---|---|
 | `templates_read` / `templates_write` | Templates, backups, global blocks, menus, mail forms, pages |
 | `files_read` / `files_write` / `files_delete` | Site files: list, read, write, upload, folders, delete, quota |
-| `modules_uninstall` | Install/uninstall modules, quarantine |
+| `modules_read` / `modules_write` / `modules_uninstall` | Module catalog and quarantine status / install modules and lift quarantine / uninstall modules |
 
 ## Safety checklist (before `patch_template` / `update_template`)
 
