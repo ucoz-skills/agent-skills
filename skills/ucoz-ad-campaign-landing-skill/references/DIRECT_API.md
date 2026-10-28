@@ -82,7 +82,7 @@ In **Yandex ID** (oauth.yandex.ru) there is **no** application status — only *
 6. Save the **Client ID** and **Client secret** in `.env.local`:
 
 ```env
-YANDEX_DIRECT_CLIENT_ID=05c89462fef4400eb3493c4f67d9ceea
+YANDEX_DIRECT_CLIENT_ID=...
 YANDEX_DIRECT_CLIENT_SECRET=...
 ```
 
@@ -194,7 +194,7 @@ YANDEX_DIRECT_CLIENT_LOGIN=login-reklamodatelya
 
 ```env
 # Yandex Direct API (OAuth token of the Direct user)
-YANDEX_DIRECT_TOKEN=AQAAAAxxxxxxxxxxxxxxxx
+YANDEX_DIRECT_TOKEN=AQAAAA...
 # Agency only — client login:
 # YANDEX_DIRECT_CLIENT_LOGIN=client-login
 ```

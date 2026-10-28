@@ -56,8 +56,8 @@ GOOGLE_ADS_CLIENT_SECRET=GOCSPX-...
 
 ```env
 GOOGLE_ADS_REFRESH_TOKEN=1//0g...
-GOOGLE_ADS_DEVELOPER_TOKEN=xsLwgnr1fHf1slJgfx9T3w
-GOOGLE_ADS_CUSTOMER_ID=6097804519
+GOOGLE_ADS_DEVELOPER_TOKEN=...
+GOOGLE_ADS_CUSTOMER_ID=0000000000
 ```
 
 ### Step 4 — Check
@@ -80,9 +80,9 @@ The campaign is created **PAUSED** — there will be no charges until it is enab
 ### Get an access token
 
 ```bash
-ACCESS_TOKEN=$(curl -s -X POST https://oauth2.googleapis.com/token \
-  -d "client_id=$GOOGLE_ADS_CLIENT_ID&client_secret=$GOOGLE_ADS_CLIENT_SECRET&refresh_token=$GOOGLE_ADS_REFRESH_TOKEN&grant_type=refresh_token" \
-  | python -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+TOKEN_JSON=$(curl -s -X POST https://oauth2.googleapis.com/token \
+  -d "client_id=$GOOGLE_ADS_CLIENT_ID&client_secret=$GOOGLE_ADS_CLIENT_SECRET&refresh_token=$GOOGLE_ADS_REFRESH_TOKEN&grant_type=refresh_token")
+ACCESS_TOKEN=$(python -c "import sys,json; print(json.load(sys.stdin)['access_token'])" <<<"$TOKEN_JSON")
 ```
 
 ### Create a campaign

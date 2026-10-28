@@ -117,9 +117,9 @@ Response (key fields):
 
 ```bash
 # First, get an access token:
-ACCESS_TOKEN=$(curl -s -X POST https://oauth2.googleapis.com/token \
-  -d "client_id=$GOOGLE_ADS_CLIENT_ID&client_secret=$GOOGLE_ADS_CLIENT_SECRET&refresh_token=$GOOGLE_ADS_REFRESH_TOKEN&grant_type=refresh_token" \
-  | python -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+TOKEN_JSON=$(curl -s -X POST https://oauth2.googleapis.com/token \
+  -d "client_id=$GOOGLE_ADS_CLIENT_ID&client_secret=$GOOGLE_ADS_CLIENT_SECRET&refresh_token=$GOOGLE_ADS_REFRESH_TOKEN&grant_type=refresh_token")
+ACCESS_TOKEN=$(python -c "import sys,json; print(json.load(sys.stdin)['access_token'])" <<<"$TOKEN_JSON")
 
 curl -s -X POST \
   "https://googleads.googleapis.com/v18/customers/$GOOGLE_ADS_CUSTOMER_ID/googleAds:searchStream" \
