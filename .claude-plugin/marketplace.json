@@ -7,8 +7,8 @@
     {
       "name": "ucoz",
       "source": "./",
-      "description": "uCoz agent skills and remote MCP for landing pages, shop, translation, design, server scripts, site content, and more.",
-      "version": "1.11.0",
+      "description": "uCoz agent skills and remote MCP for landing pages, shop, translation, design, server scripts, site content, popup styling, and more.",
+      "version": "1.12.0",
       "strict": false
     }
   ]

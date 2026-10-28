@@ -1,0 +1,213 @@
+/* ucoz-popup-design-skill v1.0 — visual overrides only; load after system CSS.
+   Excludes CP dialogs/lightbox; do not edit /.s/ resources. */
+:root {
+  --uwd-surface: #ffffff;
+  --uwd-soft: #f2f5fb;
+  --uwd-text: #202939;
+  --uwd-muted: #576579;
+  --uwd-border: #c6cfdd;
+  --uwd-accent: #345ed5;
+  --uwd-hover: #244ab8;
+  --uwd-on-accent: #ffffff;
+  --uwd-field: #ffffff;
+  --uwd-danger: #b42338;
+  --uwd-success: #167047;
+  --uwd-warning: #865300;
+  --uwd-shadow: 0 16px 52px #172c4d26;
+  --uwd-scheme: light;
+  --uwd-font: var(--tpl-font-system, system-ui, -apple-system, "Segoe UI", sans-serif);
+  --uwd-radius: 16px;
+}
+html[data-uwnd-theme="light"] {
+  --uwd-surface: #ffffff;
+  --uwd-soft: #f2f5fb;
+  --uwd-text: #202939;
+  --uwd-muted: #576579;
+  --uwd-border: #c6cfdd;
+  --uwd-accent: #345ed5;
+  --uwd-hover: #244ab8;
+  --uwd-on-accent: #ffffff;
+  --uwd-field: #ffffff;
+  --uwd-danger: #b42338;
+  --uwd-success: #167047;
+  --uwd-warning: #865300;
+  --uwd-shadow: 0 16px 52px #172c4d26;
+  --uwd-scheme: light;
+}
+html[data-uwnd-theme="dark"] {
+  --uwd-surface: #202631;
+  --uwd-soft: #2a3342;
+  --uwd-text: #f1f5fb;
+  --uwd-muted: #b5c1d3;
+  --uwd-border: #5c6c83;
+  --uwd-accent: #a8c4ff;
+  --uwd-hover: #c4d6ff;
+  --uwd-on-accent: #142445;
+  --uwd-field: #19202b;
+  --uwd-danger: #ffacb8;
+  --uwd-success: #8cddba;
+  --uwd-warning: #f3cd87;
+  --uwd-shadow: 0 16px 52px #00000055;
+  --uwd-scheme: dark;
+}
+html[data-uwnd-theme="lavender"] {
+  --uwd-surface: #fcfaff;
+  --uwd-soft: #f0eafb;
+  --uwd-text: #30253f;
+  --uwd-muted: #685874;
+  --uwd-border: #ccbedc;
+  --uwd-accent: #7050ad;
+  --uwd-hover: #573789;
+  --uwd-on-accent: #ffffff;
+  --uwd-field: #ffffff;
+  --uwd-danger: #af2d4b;
+  --uwd-success: #267350;
+  --uwd-warning: #845500;
+  --uwd-shadow: 0 16px 52px #60428b26;
+  --uwd-scheme: light;
+}
+html[data-uwnd-theme="mint"] {
+  --uwd-surface: #f9fffc;
+  --uwd-soft: #e5f4ed;
+  --uwd-text: #203d34;
+  --uwd-muted: #526d63;
+  --uwd-border: #afcfc0;
+  --uwd-accent: #286e58;
+  --uwd-hover: #1d5744;
+  --uwd-on-accent: #ffffff;
+  --uwd-field: #ffffff;
+  --uwd-danger: #b02d46;
+  --uwd-success: #1c7046;
+  --uwd-warning: #825600;
+  --uwd-shadow: 0 16px 52px #285b4726;
+  --uwd-scheme: light;
+}
+html[data-uwnd-theme="peach"] {
+  --uwd-surface: #fffcf8;
+  --uwd-soft: #fff0e2;
+  --uwd-text: #442f27;
+  --uwd-muted: #786052;
+  --uwd-border: #dcc1ac;
+  --uwd-accent: #9d4c2d;
+  --uwd-hover: #7e391f;
+  --uwd-on-accent: #ffffff;
+  --uwd-field: #ffffff;
+  --uwd-danger: #ac2845;
+  --uwd-success: #286e48;
+  --uwd-warning: #815300;
+  --uwd-shadow: 0 16px 52px #73412926;
+  --uwd-scheme: light;
+}
+
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) { color:var(--uwd-text); font-family:var(--uwd-font); color-scheme:var(--uwd-scheme); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xw-plain { border-radius:var(--uwd-radius); box-shadow:var(--uwd-shadow); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.xw-tl,.xw-ml,.xw-bl,.xw-blank) { background-color:var(--uwd-surface); background-image:none; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xw-tl { border-radius:var(--uwd-radius) var(--uwd-radius) 0 0; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xw-bl { border-radius:0 0 var(--uwd-radius) var(--uwd-radius); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xw-hdr-text { color:var(--uwd-text); font-family:var(--uwd-font); font-weight:650; font-size:18px; line-height:24px; overflow-wrap:anywhere; min-width:0; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xw-hdr { gap:8px; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.myWinCont,.myWinCont td,.myWinCont dt,.myWinCont dd,.myWinCont dl,.myWinHeader,.myWinFooter) { color:var(--uwd-text); font-family:var(--uwd-font); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont { font-size:14px; line-height:1.5; scrollbar-color:var(--uwd-border) var(--uwd-soft); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(b,strong,h1,h2,h3,h4,label,legend) { color:var(--uwd-text); font-family:var(--uwd-font); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(b,strong) { font-weight:650; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(.fHelp,small) { color:var(--uwd-muted); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(a,.noun) { color:var(--uwd-accent); text-decoration-thickness:1px; text-underline-offset:3px; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont a:hover { color:var(--uwd-hover); text-decoration:underline; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont hr { border-color:var(--uwd-border); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(td.myTblTD2,thead tr:first-child) { background:var(--uwd-soft); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(.myTblTD1,th) { color:var(--uwd-text); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(input:not([type]),input[type=text],input[type=email],input[type=url],input[type=tel],input[type=search],input[type=password],input[type=number],input[type=date],input[type=time],input[type=datetime-local],select,textarea) {
+ background-color:var(--uwd-field); color:var(--uwd-text); border:1px solid var(--uwd-border);
+ border-radius:8px; font:inherit; padding:9px 10px; max-width:100%; box-sizing:border-box;
+}
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont select:is(:not([multiple]):not([size]),[size="1"]:not([multiple])) { appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22m5%207.5%205%205%205-5%22%20fill%3D%22none%22%20stroke%3D%22%23718096%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:18px 18px; padding-inline-end:40px; min-height:40px; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont select:is(:not([multiple]):not([size]),[size="1"]:not([multiple])):dir(rtl) { background-position:left 12px center; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont option { color:var(--uwd-text); background:var(--uwd-field); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont ::placeholder { color:var(--uwd-muted); opacity:1; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(input,select,textarea):focus { border-color:var(--uwd-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(input,select,textarea):disabled { background:var(--uwd-soft); color:var(--uwd-muted); border-color:var(--uwd-border); cursor:not-allowed; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(input[type=checkbox],input[type=radio]) { accent-color:var(--uwd-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(input,select,textarea)[readonly] { background:var(--uwd-soft); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(a,button,input,textarea,select,[tabindex]):focus-visible { outline:2px solid var(--uwd-accent); outline-offset:-2px; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(input,select,textarea):is(.u-form-error,[aria-invalid=true]) { border-color:var(--uwd-danger); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinError { color:var(--uwd-danger)!important; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinSuccess { color:var(--uwd-success)!important; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.ubtn-default,.ubtn-link,input[type=button],input[type=submit],input[type=reset]) {
+ background:var(--uwd-accent); color:var(--uwd-on-accent); border:1px solid var(--uwd-accent);
+ border-radius:8px; font:600 14px/20px var(--uwd-font); padding:9px 13px; text-shadow:none;
+ height:auto; cursor:pointer; transition:background-color .15s,color .15s,border-color .15s;
+}
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.ubtn-default,.ubtn-link).light-btn,body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.gray-btn,.outline-btn) { background:var(--uwd-soft); color:var(--uwd-text); border-color:var(--uwd-border); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .ubtn-default.red-btn { background:var(--uwd-danger); border-color:var(--uwd-danger); color:var(--uwd-surface); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.ubtn-default,.ubtn-link,input[type=button],input[type=submit]):hover:not(:disabled) { background:var(--uwd-hover); border-color:var(--uwd-hover); color:var(--uwd-on-accent); text-decoration:none; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .ubtn-default.red-btn:hover:not(:disabled) { background:var(--uwd-danger); border-color:var(--uwd-danger); color:var(--uwd-surface); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.ubtn-default,input[type=button],input[type=submit]):disabled { background:var(--uwd-soft); color:var(--uwd-muted); border-color:var(--uwd-border); cursor:not-allowed; }
+/* Preserve all native display/position/size rules on the tool buttons. */
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.xt-close,.xt-mini,.xt-maxi,.xt-rest) { background:var(--uwd-muted); mask:var(--uwd-tool-icon) center/18px 18px no-repeat; -webkit-mask:var(--uwd-tool-icon) center/18px 18px no-repeat; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.xt-close-over,.xt-mini-over,.xt-maxi-over,.xt-rest-over,.xt:hover) { background-color:var(--uwd-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.myBtnLeft,.myBtnCenter,.myBtnRight) { border-color:var(--uwd-border); background:var(--uwd-soft); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.myBtnCenter a:link,.myBtnCenter a:visited) { color:var(--uwd-text); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.myBtnLeftA,.myBtnCenterA,.myBtnRightA) { background:var(--uwd-accent); border-color:var(--uwd-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myBtnCenterA a { color:var(--uwd-on-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(.overBtn,.downBtn) :is(.myBtnLeft,.myBtnCenter,.myBtnRight) { background:var(--uwd-soft); border-color:var(--uwd-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(.pgSwch,.pgSwchA) { border:1px solid var(--uwd-border); border-radius:6px; color:var(--uwd-text); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(.pgSwchA,a.pgSwch:hover) { background:var(--uwd-accent); border-color:var(--uwd-accent); color:var(--uwd-on-accent); }
+/* Toast layout and measurement must agree. Do not alter native padding/icon dimensions. */
+body .uwnd-toast { color-scheme:var(--uwd-scheme); --layer-accent-blue-500:var(--uwd-accent); --layer-gray-800:var(--uwd-surface); --layer-gray-600:var(--uwd-muted); --layer-gray-100:var(--uwd-text); --layer-gray-700:var(--uwd-muted); --layer-accent-400:var(--uwd-danger); --layer-accent-green:var(--uwd-success); --layer-accent-orange-400:var(--uwd-warning); --layer-font-system:var(--uwd-font); }
+body .uwnd-toast .xw-plain { box-shadow:var(--uwd-shadow); }
+body .uwnd-toast .xw-hdr-text,body .uwnd-toast-measure .alert-measure-title { font:600 16px/24px var(--uwd-font); }
+body .uwnd-toast .myWinCont,body .uwnd-toast-measure .alert-measure-message { font:400 14px/20px var(--uwd-font); }
+body .uwnd-toast .myWinCont { color:var(--uwd-muted); }
+body .uwnd-toast.uwnd-toast-info .xw-hdr-text:before { color:var(--uwd-accent); }
+@media (prefers-reduced-motion:reduce) { body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) :is(button,a,input,select,textarea) { transition:none; } }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xt-close { --uwd-tool-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M6%206l12%2012M18%206L6%2018%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E"); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xt-mini { --uwd-tool-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M5%2017h14%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E"); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xt-maxi { --uwd-tool-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M5%205h14v14H5z%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E"); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .xt-rest { --uwd-tool-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M8%205h11v11M5%208h11v11H5z%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E"); }
+/* uToast measurement must include its icon padding in the declared width,
+   even on sites without a global border-box reset. */
+body .uwnd-toast-measure :is(.alert-measure-title,.alert-measure-message) { box-sizing:border-box; }
+
+/* Controls remain native inputs: keyboard, label activation and form values are preserved. */
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input:is([type=checkbox],[type=radio]) {
+ -webkit-appearance:none; appearance:none; box-sizing:border-box;
+ display:inline-grid; place-content:center; vertical-align:middle;
+ width:20px; height:20px; min-width:20px; min-height:20px; flex:0 0 20px;
+ margin:0; padding:0; border:1.5px solid var(--uwd-muted); background:var(--uwd-field);
+ border-radius:5px; cursor:pointer;
+}
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input[type=radio] { border-radius:50%; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input:is([type=checkbox],[type=radio])::before {
+ content:""; display:block; width:12px; height:12px; background:var(--uwd-on-accent);
+ position:static; inset:auto; margin:0; border-radius:0; transition:none;
+ transform:scale(0); pointer-events:none;
+}
+/* Site templates may draw their own mark with ::after; one mark only. */
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input:is([type=checkbox],[type=radio])::after { content:none; display:none; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input[type=checkbox]::before {
+ mask:var(--uwd-check-icon) center/contain no-repeat; -webkit-mask:var(--uwd-check-icon) center/contain no-repeat;
+}
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input[type=radio]::before { width:10px; height:10px; border-radius:50%; background:var(--uwd-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input[type=checkbox]:is(:checked,:indeterminate) { background:var(--uwd-accent); border-color:var(--uwd-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input[type=radio]:checked { border-color:var(--uwd-accent); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input:is([type=checkbox],[type=radio]):checked::before { transform:scale(1); }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input[type=checkbox]:indeterminate::before { transform:scale(1); mask:none; -webkit-mask:none; width:10px; height:2px; border-radius:1px; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input:is([type=checkbox],[type=radio]):disabled { opacity:.5; cursor:not-allowed; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input:is([type=checkbox],[type=radio]):focus-visible { outline:2px solid var(--uwd-text); outline-offset:-4px; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont label:has(> input:is([type=checkbox],[type=radio])) { display:inline-flex; align-items:center; gap:8px; line-height:1.5; }
+/* Inset focus is not clipped by the system's overflow:auto / overflow:hidden wrappers. */
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont :is(input:not([type=checkbox]):not([type=radio]),textarea,select):focus {
+ outline:2px solid var(--uwd-accent); outline-offset:-2px; box-shadow:none;
+}
+/* Compact the message, not its buttons. Long messages still need native autosize. */
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .messagebox-content { padding:0 0 8px; overflow-wrap:anywhere; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .messagebox-actions { padding:0; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .messagebox-actions > table { border-spacing:6px 0; max-width:100%; margin-inline:auto; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .messagebox-actions td { padding:0; }
+body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .messagebox-actions .ubtn-default { white-space:normal; }
+@media (forced-colors:active) {
+ body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input:is([type=checkbox],[type=radio]) { appearance:auto; -webkit-appearance:auto; }
+ body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont input:is([type=checkbox],[type=radio])::before { display:none; }
+ body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast) .myWinCont select:is(:not([multiple]):not([size]),[size="1"]:not([multiple])) { appearance:auto; -webkit-appearance:auto; background-image:none; }
+}
+:root { --uwd-check-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22m3%208%203.2%203.2L13%204.5%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E"); }
