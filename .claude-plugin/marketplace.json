@@ -3,6 +3,7 @@
   "owner": {
     "name": "uCoz"
   },
+  "description": "Official uCoz plugin: agent skills plus the remote uCoz MCP for building and managing uCoz sites.",
   "plugins": [
     {
       "name": "ucoz",

@@ -1,6 +1,7 @@
 {
   "mcpServers": {
     "ucoz-mcp": {
+      "type": "http",
       "url": "https://www.ucoz.com/mcp"
     }
   }

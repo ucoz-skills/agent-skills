@@ -119,7 +119,7 @@ After the first install, skills appear on [skills.sh/ucoz-skills/agent-skills](h
 /plugin install ucoz@ucoz-skills
 ```
 
-Skills load from `skills/`; MCP config is read from [`.mcp.json`](.mcp.json) at the plugin root.
+Plugin manifest: [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json). Skills load from `skills/`; MCP config is read from [`.mcp.json`](.mcp.json) at the plugin root.
 
 ### Skills CLI (skills only)
 

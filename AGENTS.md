@@ -29,7 +29,7 @@ Skill IDs and folder names use kebab-case and match frontmatter `name` (e.g. `uc
 Plugin / catalog surfaces that must stay aligned when adding or renaming a skill:
 
 - Explicit skill lists: `.cursor-plugin/plugin.json`, `skills.sh.json`
-- Mostly version/description alignment: root `plugin.json`, `.codex-plugin/plugin.json` (scans `./skills/`), `.claude-plugin/marketplace.json`
+- Mostly version/description alignment: root `plugin.json`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json` (scans `./skills/`), `.claude-plugin/marketplace.json`
 - README “Available skills” table and install examples
 - Root MCP configs: `.mcp.json`, `mcp_config.json` (official remote `https://www.ucoz.com/mcp` only)
 

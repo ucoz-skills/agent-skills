@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "ucoz",
+  "displayName": "uCoz",
+  "version": "1.12.0",
+  "description": "uCoz agent skills and the official remote MCP (https://www.ucoz.com/mcp): landing pages, ad campaign landings, shop optimization, translation, design restyling, original templates, server scripts, site content, and popup styling.",
+  "author": {
+    "name": "uCoz",
+    "url": "https://www.ucoz.com"
+  },
+  "homepage": "https://www.ucoz.com/ai/skills",
+  "repository": "https://github.com/ucoz-skills/agent-skills",
+  "license": "MIT",
+  "keywords": ["ucoz", "ucoz-mcp", "mcp", "landing-page", "cms", "website-builder", "translation", "design"],
+  "icon": "./assets/logo.svg",
+  "documentationUrl": "https://www.ucoz.com/ai/mcp",
+  "supportUrl": "https://github.com/ucoz-skills/agent-skills/issues",
+  "privacyPolicyUrl": "https://www.ucoz.com/privacy/",
+  "termsOfServiceUrl": "https://www.ucoz.com/terms/"
+}
