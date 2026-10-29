@@ -78,6 +78,26 @@ Validate a local clone before installing:
 agy plugin validate /path/to/agent-skills
 ```
 
+### Kimi Code
+
+[Kimi Code](https://www.kimi.com/code/docs/en/kimi-code-cli/customization/plugins) reads [`kimi.plugin.json`](kimi.plugin.json). That manifest lists every skill folder and the remote `ucoz-mcp` server.
+
+```text
+/plugins install https://github.com/ucoz-skills/agent-skills
+```
+
+Then run `/reload` or start a new session. The MCP server is on by default. On first connection, sign in to your uCoz account and click **Allow**.
+
+### OpenClaw
+
+[OpenClaw](https://docs.openclaw.ai/plugins/bundles) installs this repository as a compatible plugin bundle. The Claude, Cursor, and Codex manifests are already in the repo, so skills load from `skills/` and `ucoz-mcp` comes from [`.mcp.json`](.mcp.json).
+
+```bash
+openclaw plugins install git:github.com/ucoz-skills/agent-skills@main
+```
+
+Check it with `openclaw plugins list` and `openclaw plugins inspect ucoz`. This repo holds nine skills under `skills/`, so install the plugin above. A one-skill git install expects `SKILL.md` at the repository root.
+
 ### Hermes (Skills Hub)
 
 [Hermes Agent](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills) discovers skills from GitHub taps and the [skills.sh](https://skills.sh) index.
@@ -165,7 +185,7 @@ Copy a skill folder into your agent skills directory:
 
 ## MCP setup
 
-The repo includes [`.mcp.json`](.mcp.json) — bundled automatically when you install the **Cursor**, **Codex**, **Claude Code**, or **Antigravity** plugin.
+The repo includes [`.mcp.json`](.mcp.json) — bundled automatically when you install the **Cursor**, **Codex**, **Claude Code**, **Antigravity**, or **OpenClaw** plugin. **Kimi Code** reads the same server from [`kimi.plugin.json`](kimi.plugin.json).
 
 Remote MCP (Control Panel auth — no API key in client config):
 

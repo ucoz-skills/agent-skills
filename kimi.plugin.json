@@ -1,0 +1,34 @@
+{
+  "name": "ucoz",
+  "version": "1.12.0",
+  "description": "uCoz agent skills and the official remote MCP (https://www.ucoz.com/mcp): landing pages, ad campaign landings, shop optimization, translation, design restyling, original templates, server scripts, site content, and popup styling.",
+  "author": {
+    "name": "uCoz"
+  },
+  "homepage": "https://www.ucoz.com/ai/skills",
+  "license": "MIT",
+  "keywords": ["ucoz", "ucoz-mcp", "mcp", "landing-page", "cms", "website-builder", "translation", "design"],
+  "skills": [
+    "./skills/ucoz-landing-skill",
+    "./skills/ucoz-ad-campaign-landing-skill",
+    "./skills/ucoz-shop-optimizer-skill",
+    "./skills/ucoz-site-translator-skill",
+    "./skills/ucoz-design-editor-skill",
+    "./skills/ucoz-template-creator-skill",
+    "./skills/ucoz-server-scripts-skill",
+    "./skills/ucoz-content-manager-skill",
+    "./skills/ucoz-popup-design-skill"
+  ],
+  "mcpServers": {
+    "ucoz-mcp": {
+      "transport": "http",
+      "url": "https://www.ucoz.com/mcp"
+    }
+  },
+  "interface": {
+    "displayName": "uCoz",
+    "shortDescription": "Build and manage uCoz sites from Kimi Code",
+    "developerName": "uCoz",
+    "websiteURL": "https://www.ucoz.com/ai/skills"
+  }
+}
