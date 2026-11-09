@@ -166,7 +166,7 @@ function current_user(): ?array {
 | Node: `Cannot find module 'ucoz'` | Not running as a Passenger app of this account — a cron script (verified: fails there) or a local test. Fall back to guest mode; cron has no visitor anyway. |
 | Python: `ModuleNotFoundError: ucoz` | Same (verified in cron: `PYTHONPATH` is not set there). |
 
-To verify on a new account, deploy `templates/probe/probe.php` as `public_html/_probe_<rand>/index.php` (token-protected), open it via
+To verify on a new account, deploy `templates/probe/probe.php.md` as `public_html/_probe_<rand>/index.php` (token-protected), open it via
 `https://{site}/apps/_probe_<rand>/?t=<token>` once as a guest and once logged in, then delete it (**C**).
 
 ## 10. Privacy

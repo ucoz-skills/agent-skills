@@ -1,7 +1,7 @@
 {
   "name": "ucoz",
   "description": "Generate uCoz landing pages, ad campaign landings, shop optimization, translate and localize site content, restyle site design, create original site templates, build server-side scripts (PHP, Node.js, Python, MySQL, cron), manage site content (materials, categories, images, SEO), and style native popups and notifications via remote MCP. Includes landing, ad campaign, shop, translator, design editor, template creator, server scripts, content manager, and popup design skills plus ucoz-mcp.",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "author": {
     "name": "uCoz",
     "url": "https://www.ucoz.com"
@@ -22,5 +22,5 @@
     "./skills/ucoz-content-manager-skill",
     "./skills/ucoz-popup-design-skill"
   ],
-  "logo": "assets/logo.svg"
+  "logo": "assets/logo.png"
 }

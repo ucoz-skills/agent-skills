@@ -1,0 +1,10 @@
+# `ads.multi.example.csv`
+
+Source of `templates/ads.multi.example.csv`. Write the code block below to a file named `ads.multi.example.csv` before you use it; this Markdown wrapper exists because the plugin ships code as text.
+
+```csv
+segment_id,segment_name,headline_1,headline_2,text,main_keyword,page_ownurl
+seg_01,Accounting for an LLC,Accounting services for an LLC,Reports · taxes · payroll,Turnkey accounting outsourcing. A quote after the brief. Leave a request.,accounting services for an llc,buhgalterskoe-obsluzhivanie-ooo
+seg_02,Accountant for a sole proprietor,Accountant for a sole proprietor on the simplified tax system,From 3 000 ₽/month · nothing extra,Federal Tax Service and fund reports. Without leaving the office. Get a price.,accountant for a sole proprietor on the simplified tax system,buhgalter-ip-usn
+seg_03,Restoring the books,Restoring accounting records,In 5 days · a no-penalty guarantee,We will sort out neglected books. Price after an audit. Leave a request.,restoring accounting records,vosstanovlenie-buhuchyota
+```

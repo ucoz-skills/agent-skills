@@ -11,34 +11,6 @@ description: >-
   "write SEO for materials", "set URLs", "configure a module". Not for the online shop
   (ucoz-shop-optimizer-skill), the forum, full redesigns (ucoz-design-editor-skill) or landings
   (ucoz-landing-skill).
-version: "1.2"
-author: uCoz
-language: en
-tags:
-  - ucoz
-  - mcp
-  - content
-  - cms
-  - seo
-  - categories
-  - images
-entrypoint: SKILL.md
-references:
-  - references/TOOLS_REFERENCE.md
-  - references/MODULES.md
-  - references/CATEGORIES_AND_ACCESS.md
-  - references/FORMATS.md
-  - references/SEO_AND_URLS.md
-  - references/MEDIA_WORKFLOW.md
-  - references/IMAGE_GENERATION_GUIDE.md
-  - references/TEMPLATES.md
-  - references/SETTINGS_AND_MODULES.md
-  - references/PAGES_AND_MENUS.md
-  - references/COPY_GUIDE.md
-  - references/HUMANIZER.md
-  - references/styles/README.md
-  - references/PLAYBOOK.md
-  - references/CHECKLIST.md
 ---
 
 # uCoz Content Manager Skill

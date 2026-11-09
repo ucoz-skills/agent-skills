@@ -40,7 +40,7 @@ Public URL: `https://{site}/apps/{name}/`. Keep **everything that is not an endp
 - Never let PHP print an HTML error into a JSON endpoint. The bootstrap's handlers turn every
   uncaught error into JSON and log it.
 
-`templates/php/lib/app.php` implements this with an action table, so each new feature is one
+`templates/php/lib/app.php.md` implements this with an action table, so each new feature is one
 function and one line in the table.
 
 ## 3. Error handling (mandatory)
@@ -129,7 +129,7 @@ never throw (`code: 0` on network errors). Verified against Telegram, CBR, GitHu
 | `ucoz_user()` — preloaded via `auto_prepend_file` (IDENTITY.md) | Your own `auto_prepend_file` (it would replace the platform helper) |
 | `ini_set` for `memory_limit`, `error_log`, `display_errors`, `max_execution_time` (within limits) | apcu, redis, memcached, opcache |
 
-Check what is really enabled on the target with `templates/probe/probe.php` when anything is uncertain.
+Check what is really enabled on the target with `templates/probe/probe.php.md` when anything is uncertain.
 
 ## 6. Uploads
 
@@ -153,7 +153,7 @@ Do this:
 
 ## 8. `.htaccess` for a module
 
-Use [templates/php/.htaccess](../templates/php/.htaccess) unchanged:
+Use [templates/php/.htaccess.md](../templates/php/.htaccess.md) unchanged:
 
 ```apache
 Options -Indexes

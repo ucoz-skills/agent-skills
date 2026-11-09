@@ -54,7 +54,7 @@ Expect ~2.5 s on the first Node/Python request after a reload; warm requests ~0.
 **PHP** — no reload needed (opcache off). Check that `/apps/{name}` without a slash 301-redirects and always
 link with the slash. A parse error in `lib/app.php` must come back as JSON 500 with `app.php:N` in
 `app.log`; a fatal (memory, time) appears in `php-error.log`. Unknown environment details: deploy
-`templates/probe/probe.php` temporarily (IDENTITY.md §9), then delete it.
+`templates/probe/probe.php.md` temporarily (IDENTITY.md §9), then delete it.
 
 **Node** — after a change: bump `BUILD` → `node_restart` (or write `tmp/restart.txt`) → `/health`.
 Startup-crash check: if the response is JSON `{"error":"startup"}` or the Passenger "could not be started"

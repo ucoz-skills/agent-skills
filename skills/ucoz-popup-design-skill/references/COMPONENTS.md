@@ -69,4 +69,4 @@ Demos use the site's own library, sample text and fields, and local callbacks. S
 
 ## Audit script
 
-`scripts/inspect-windows.js` is a function for a browser `evaluate`. Open representative windows first. It returns the page URL, viewport, loaded stylesheets and scripts, site CSS variables (font, accent, colour, radius, surface) and, for each window, the classes, roles, tabindex, computed styles and geometry of its nodes. It does not read form values, cookies, tokens or library internals.
+`scripts/inspect-windows.js.md` is a function for a browser `evaluate`. Open representative windows first. It returns the page URL, viewport, loaded stylesheets and scripts, site CSS variables (font, accent, colour, radius, surface) and, for each window, the classes, roles, tabindex, computed styles and geometry of its nodes. It does not read form values, cookies, tokens or library internals.

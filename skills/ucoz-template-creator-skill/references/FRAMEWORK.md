@@ -300,7 +300,7 @@ If a template has the current shell but standard inner markup, prefer narrowly s
 
 ## Validation and browser QA
 
-Before publication, run `python scripts/lint_skeleton.py <framework.html>`, inspect duplicate IDs, placeholder copy, hard-coded test links, unverified variables, and mojibake, then call `skeleton_validate` and process every `details[]` entry. Save the validated source with `project_save`.
+Before publication, run `python lint_skeleton.py <framework.html>` (saved from `scripts/lint_skeleton.py.md`), inspect duplicate IDs, placeholder copy, hard-coded test links, unverified variables, and mojibake, then call `skeleton_validate` and process every `details[]` entry. Save the validated source with `project_save`.
 
 After publication, record `success`, `affected_templates`, informer results, project IDs, desktop/PDA target, and backup result. Read back a generated global and module template; compare a known Cyrillic phrase against the UTF-8 source. Then complete the active-template migration above.
 

@@ -102,7 +102,7 @@ Example framework starters in `examples/` (editorial-journal, technical-catalog,
 
 ## Semantic SVG system
 
-Icons label uCoz values; they are not interchangeable decoration. Copy only required symbols from [assets/ui-icons.svg](../assets/ui-icons.svg) into one framework global block and render that block once from the header. One shared sprite avoids duplicate symbol IDs in repeated entries.
+Icons label uCoz values; they are not interchangeable decoration. Copy only required symbols from [assets/ui-icons.svg.md](../assets/ui-icons.svg.md) into one framework global block and render that block once from the header. One shared sprite avoids duplicate symbol IDs in repeated entries.
 
 Technical contract:
 

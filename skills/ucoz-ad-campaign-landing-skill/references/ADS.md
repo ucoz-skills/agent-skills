@@ -22,7 +22,7 @@ Branch 2A: ads are ready → the agent reads the CSV and builds `segments.json` 
 | `page_ownurl` | no | Slug; otherwise transliteration of headline_1 |
 | `display_path` | no | Display path |
 
-Template: `templates/ads.example.csv`.
+Template: `templates/ads.example.csv.md`.
 
 ### What the agent does with the CSV
 

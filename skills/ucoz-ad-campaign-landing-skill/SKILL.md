@@ -1,11 +1,12 @@
 ---
 name: ucoz-ad-campaign-landing-skill
-version: "2.1"
 description: >
   Designs hyper-segmentation, creates and publishes uCoz landing pages, prepares Yandex Direct search campaigns, groups them into package strategies, and links them to verified Yandex Metrica goals. Use for the chain "microsegment → ad → separate URL → campaign → shared budget package". Visual landing generation follows references/VISUAL.md (Landing Skill v1.5 contract) with the ad-series priorities from §0 of this file. Do not launch ads or change production without an explicit owner command.
 ---
 
 # uCoz Landing + Yandex Direct Hypersegmentation
+
+> Version 2.1
 
 The skill takes an advertising experiment from a brief to a verifiable set of drafts: a hypothesis matrix, landing pages, ads, campaigns, package strategies, Yandex Metrica goals, and state evidence.
 

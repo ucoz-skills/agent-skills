@@ -10,7 +10,7 @@
 
 ## Tokens
 
-The base stylesheet `assets/uwnd-overrides.css` is driven by `--uwd-*` custom properties.
+The base stylesheet `assets/uwnd-overrides.css.md` is driven by `--uwd-*` custom properties.
 
 | Token | Meaning |
 |---|---|
@@ -31,8 +31,10 @@ The stylesheet also defines `--uwd-font` and `--uwd-radius`. Bind tokens to site
 
 ## Theme builder
 
+Save the code block from `scripts/build_theme.py.md` as `build_theme.py` in a working folder, then run:
+
 ```bash
-python scripts/build_theme.py --theme mint --output uwnd-theme.css
+python build_theme.py --theme mint --output uwnd-theme.css
 ```
 
 - `--theme`: `light` (default), `dark`, `lavender`, `mint`, `peach`.

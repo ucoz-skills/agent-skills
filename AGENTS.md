@@ -37,7 +37,7 @@ Human install/security docs: `README.md`, `SECURITY.md`. Prefer pointing agents 
 
 ## Editing `SKILL.md`
 
-1. Preserve YAML frontmatter: at least `name`, `version`, `description`. Keep `name` kebab-case and identical to the folder / `skill_id`.
+1. YAML frontmatter holds only `name` and `description`. The Anthropic plugin directory refuses other frontmatter keys from non-Verified organizations, so keep `version`, requirements, tags and similar metadata in the body (a `Version: x.y` or `> Version x.y` line near the top). Keep `name` kebab-case and identical to the folder / `skill_id`.
 2. In the **body** (never frontmatter), keep a short usage-accounting note that after successful main work calls  
    `skills_tool(action="register_usage", skill_id="<same-as-name>")`  
    (warn and continue if the API fails; never ask the user for UUID/token/site URL).  
@@ -45,6 +45,7 @@ Human install/security docs: `README.md`, `SECURITY.md`. Prefer pointing agents 
 3. Put long procedures in `references/`; keep `SKILL.md` as routing + non-negotiables + pointers.
 4. Do not invent uCoz variables, service blocks, or MCP actions — follow live MCP docs/tools and existing references.
 5. English preferred for `SKILL.md` / README / this file, to match the published catalog language.
+6. Ship only Markdown, text, JSON, YAML and PNG/JPEG/GIF/WebP/ICO files. The Anthropic directory refuses any other file type from non-Verified organizations, so code (PHP, Python, JS, HTML, CSS, SVG, CSV, `.htaccess`, `.env` examples) lives in `<file>.<ext>.md` wrappers with the source in a fenced block, and docs tell the agent to save the block as `<file>.<ext>` before using it. No file may start with `#!`.
 
 ## Versioning and validation
 
@@ -52,7 +53,7 @@ Skill `version` (per `SKILL.md`) is **not** the plugin `version` (shared across 
 
 When changing skill behavior or public contract:
 
-1. Bump that skill’s `version` in `SKILL.md` frontmatter (and any in-body version line / `manifest.json` if present). Quote it as a YAML string (e.g. `version: "1.4"`), not a bare number. If a skill still uses an unquoted version, quote it in the same change.
+1. Bump that skill’s version line in the `SKILL.md` body (and `manifest.json` if present). Do not add `version` back to the frontmatter.
 2. Update the matching version in the README skills table.
 3. If the change affects packaging/discovery, bump the plugin `version` in the plugin manifests listed above and keep those plugin versions equal to each other.
 4. Before publish: validate packaging where applicable (e.g. `agy plugin validate` on a local clone); ensure no secrets (`.env`, tokens, cookies, auth state) are committed — see `SECURITY.md`.

@@ -1,6 +1,5 @@
 ---
 name: ucoz-server-scripts-skill
-version: "1.2"
 description: >
   Build backend features for a uCoz site in Server Scripts through the official
   ucoz-mcp apps_read / apps_write / apps_delete: PHP, Node.js or Python apps with MySQL, cron jobs and visitor identity
@@ -10,20 +9,11 @@ description: >
   for moving old scripts off the legacy uCoz PHP server and for debugging /apps/ URLs, 500 errors,
   Passenger and MySQL failures. Comes with live-tested recipes, code templates and a test checklist.
   Not for design (templates_read / templates_write), site content (content_read / content_write) or site file storage (files_read / files_write).
-author: uCoz
-license: MIT
-requires:
-  - official ucoz-mcp (apps_read / apps_write / apps_delete)
-  - uCoz account with owner or administrator rights on the site
-  - Server Scripts service available for the site (MCP cannot purchase it)
-metadata:
-  hermes:
-    tags: [ucoz, mcp, server-scripts, backend, php, nodejs, python, mysql, cron, uapi, telegram]
-  compatible_agents: [Hermes, Claude Desktop, Claude Code, Cursor, Codex, OpenAI Agents, OpenWebUI, generic MCP clients]
-  required_mcp_servers: [ucoz-mcp]
 ---
 
 # uCoz Server Scripts Skill
+
+> Requires: official ucoz-mcp (apps_read / apps_write / apps_delete); uCoz account with owner or administrator rights on the site; Server Scripts service available for the site (MCP cannot purchase it).
 
 Version: 1.2
 

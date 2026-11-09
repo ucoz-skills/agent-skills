@@ -7,8 +7,8 @@ An agent skill that restyles the popups uCoz draws on a live site — system win
 ## What it does
 
 - Offers three ways to pick the look: a preset (Light, Dark, Lavender, Mint, Peach), a palette matched to the live site, or a custom palette.
-- Audits the real popup DOM and computed styles read-only (`scripts/inspect-windows.js`); field values and personal data are never collected.
-- Builds the theme locally (`scripts/build_theme.py`) and refuses palettes below 4.5:1 contrast for key text pairs.
+- Audits the real popup DOM and computed styles read-only (`scripts/inspect-windows.js.md`); field values and personal data are never collected.
+- Builds the theme locally (`scripts/build_theme.py.md`) and refuses palettes below 4.5:1 contrast for key text pairs.
 - Styles text, headings, links, fields, selects, checkboxes and radios, buttons, close icons, error/success states and the four toast types, while native geometry, drag/resize and keyboard behaviour stay intact.
 - Publishes one CSS file and one `<link>` between `uwnd-design:start/end` markers, with a template backup and exact read-back; removal is one patch.
 - Verifies desktop and 375px, light/dark site modes, long messages and field states, and reports what was not tested.
@@ -43,8 +43,8 @@ An agent skill that restyles the popups uCoz draws on a live site — system win
 | `references/THEMES.md` | Presets, tokens, site-matched and custom palettes, the builder |
 | `references/PUBLISHING.md` | Backup, CSS file, marked insertion, HTTP 413, rollback |
 | `references/VERIFICATION.md` | Test matrix and acceptance criteria |
-| `assets/uwnd-overrides.css`, `assets/themes.json` | Base stylesheet and preset palettes |
-| `scripts/build_theme.py`, `scripts/inspect-windows.js` | Theme builder and read-only audit |
+| `assets/uwnd-overrides.css.md`, `assets/themes.json` | Base stylesheet and preset palettes |
+| `scripts/build_theme.py.md`, `scripts/inspect-windows.js.md` | Theme builder and read-only audit |
 | `examples/PROMPTS.md` | Example requests |
 
 ## Limits

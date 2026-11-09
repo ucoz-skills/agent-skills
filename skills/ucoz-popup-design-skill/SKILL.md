@@ -9,22 +9,6 @@ description: >-
   popups match my site", "dark notifications", "restyle the login window", "remove the popup styles".
   Not for a full site redesign (ucoz-design-editor-skill), new templates (ucoz-template-creator-skill)
   or site content (ucoz-content-manager-skill).
-version: "1.0"
-author: uCoz
-language: en
-tags:
-  - ucoz
-  - mcp
-  - design
-  - css
-  - popups
-  - notifications
-entrypoint: SKILL.md
-references:
-  - references/COMPONENTS.md
-  - references/THEMES.md
-  - references/PUBLISHING.md
-  - references/VERIFICATION.md
 ---
 
 # uCoz Popup Design Skill
@@ -78,7 +62,7 @@ Not this skill: `update_template`, `tmaker_publish`, `templates_delete`, `settin
 3. **Scope every ordinary-window rule** to `body [id^="_uwndTop"]:not(.x-lb,.cp-modal,.cp-alert,.uwnd-toast)`. Toasts are styled separately under `.uwnd-toast`. Do not restyle `.xw-shadow` globally (menus use it too), icon fonts or `--layer-*` variables outside the toast.
 4. **Native geometry stays.** Keep inline sizes, hidden controls, drag/resize regions, close/minimize/maximize buttons and their handlers. Never monkeypatch the `_uWnd` / `uToast` library.
 5. **Fields stay native.** Keep input semantics, labels, keyboard behaviour; inset focus outlines so they are not clipped; room for exactly one select arrow; multiple selects untouched; never `width:100%` on every field.
-6. **Contrast 4.5:1** for key text pairs, presets and custom palettes alike. `scripts/build_theme.py` refuses palettes below it.
+6. **Contrast 4.5:1** for key text pairs, presets and custom palettes alike. `scripts/build_theme.py.md` refuses palettes below it.
 7. **No personal data.** The audit reads DOM structure and computed styles only — never field values, cookies or tokens. Never submit real forms for a visual check.
 8. **Honest accessibility.** CSS cannot add focus traps, ARIA roles or tabindex. Never claim full accessibility.
 
@@ -110,11 +94,11 @@ If the user has not chosen, offer three options in their language:
 
 ### 3. Audit
 
-Open representative windows on the live site and run `scripts/inspect-windows.js` in the browser (read-only). Note the loaded system CSS/JS, the window DOM, site CSS variables and light/dark switches. → `references/COMPONENTS.md`
+Open representative windows on the live site and run the function from `scripts/inspect-windows.js.md` in the browser (read-only). Note the loaded system CSS/JS, the window DOM, site CSS variables and light/dark switches. → `references/COMPONENTS.md`
 
 ### 4. Build
 
-Generate the stylesheet locally (`python scripts/build_theme.py --theme <name> --output <file>`, optional `--accent` / `--hover`). For a site-matched or custom look, adapt the `--uwd-*` tokens; bind them to site variables only after seeing their real names. Show a preview with the site's own library and harmless demo windows.
+Generate the stylesheet locally: save the code block from `scripts/build_theme.py.md` as `build_theme.py` in a working folder, then run `python build_theme.py --theme <name> --output <file>` (optional `--accent` / `--hover`). For a site-matched or custom look, adapt the `--uwd-*` tokens; bind them to site variables only after seeing their real names. Show a preview with the site's own library and harmless demo windows.
 
 ### 5. Publish
 
@@ -153,6 +137,6 @@ Use the output format below. Then call `skills_tool register_usage`.
 | Presets, tokens, site-matched and custom palettes, the theme builder | `references/THEMES.md` |
 | Backup, CSS file, marked insertion, HTTP 413, rollback | `references/PUBLISHING.md` |
 | Test matrix and acceptance criteria | `references/VERIFICATION.md` |
-| Base stylesheet / preset palettes | `assets/uwnd-overrides.css`, `assets/themes.json` |
-| Theme builder / read-only DOM audit | `scripts/build_theme.py`, `scripts/inspect-windows.js` |
+| Base stylesheet / preset palettes | `assets/uwnd-overrides.css.md`, `assets/themes.json` |
+| Theme builder / read-only DOM audit | `scripts/build_theme.py.md`, `scripts/inspect-windows.js.md` |
 | Example requests | `examples/PROMPTS.md` |

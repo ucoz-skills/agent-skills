@@ -26,7 +26,7 @@ Treat a framework as one visual system, not a pile of interchangeable cards. The
 - Footer: manifesto, repeated navigation and `$POWERED_BY$`; no invented social links.
 - Rating: verified `<?$RSTARS$(...)?>` on full material pages, driven by a warm custom three-state sprite; `$RATING$` is reserved for its availability condition or numeric list metadata.
 
-See [editorial-journal-framework.html](../examples/editorial-journal-framework.html) and [editorial-journal.css](../examples/editorial-journal.css).
+See [editorial-journal-framework.html](../examples/editorial-journal-framework.html.md) and [editorial-journal.css](../examples/editorial-journal.css.md).
 
 ### Technical catalog
 
@@ -37,7 +37,7 @@ See [editorial-journal-framework.html](../examples/editorial-journal-framework.h
 - Footer: compact sitemap and system/version line.
 - Rating: sharp geometric sprite; Shop keeps native basket/options/compare behavior.
 
-See [technical-catalog-framework.html](../examples/technical-catalog-framework.html) and [technical-catalog.css](../examples/technical-catalog.css).
+See [technical-catalog-framework.html](../examples/technical-catalog-framework.html.md) and [technical-catalog.css](../examples/technical-catalog.css.md).
 
 ### Compact community
 
@@ -48,7 +48,7 @@ See [technical-catalog-framework.html](../examples/technical-catalog-framework.h
 - Footer: community navigation and `$POWERED_BY$`; social links only when real destinations are provided.
 - Rating: Guestbook uses its native like/dislike URLs; vote-capable full material pages keep the verified `<?$RSTARS$(...)?>` generator.
 
-See [compact-community-framework.html](../examples/compact-community-framework.html) and [compact-community.css](../examples/compact-community.css). Its forum blocks must be copied from the retrieved live source before customization because state variables and controls are unusually dense.
+See [compact-community-framework.html](../examples/compact-community-framework.html.md) and [compact-community.css](../examples/compact-community.css.md). Its forum blocks must be copied from the retrieved live source before customization because state variables and controls are unusually dense.
 
 ### Gallery atelier
 
@@ -58,7 +58,7 @@ See [compact-community-framework.html](../examples/compact-community-framework.h
 - Containers: gallery directory and collector/account panel.
 - Rating: mineral normal state, terracotta hover and deep green selection.
 
-See [gallery-atelier-framework.html](../examples/gallery-atelier-framework.html) and [gallery-atelier.css](../examples/gallery-atelier.css).
+See [gallery-atelier-framework.html](../examples/gallery-atelier-framework.html.md) and [gallery-atelier.css](../examples/gallery-atelier.css.md).
 
 ### Brutalist bulletin
 
@@ -68,7 +68,7 @@ See [gallery-atelier-framework.html](../examples/gallery-atelier-framework.html)
 - Containers: directory and access panels; no soft cards or gradients.
 - Rating: pale normal state, signal-yellow hover and red selection through the native generator.
 
-See [brutalist-bulletin-framework.html](../examples/brutalist-bulletin-framework.html) and [brutalist-bulletin.css](../examples/brutalist-bulletin.css).
+See [brutalist-bulletin-framework.html](../examples/brutalist-bulletin-framework.html.md) and [brutalist-bulletin.css](../examples/brutalist-bulletin.css.md).
 
 All five framework files keep CSS outside the skeleton and point to `/_st/my.css?v=1`. A saved tmaker project stores the framework source, not its companion CSS file. Before publishing a chosen example, upload its matching CSS as the complete `3/3` template and run the normal backup/validation workflow.
 

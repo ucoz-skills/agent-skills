@@ -2,26 +2,6 @@
 name: ucoz-site-translator-skill
 description: >-
   AI skill for translating and localizing uCoz site content through the current uCoz MCP: module materials and categories, design templates and global blocks, site menus, Page Editor pages, and associated images. Supports in-place translation and copy/migration with translation to another uCoz site.
-version: "1.2"
-author: uCoz
-language: en
-tags:
-  - ucoz
-  - mcp
-  - uapi
-  - translation
-  - localization
-  - migration
-  - templates
-  - seo
-entrypoint: SKILL.md
-references:
-  - references/UAPI.md
-  - references/PRESERVATION_RULES.md
-  - references/CONTENT_FIELDS_AND_FORMATS.md
-  - references/IMAGE_LOCALIZATION.md
-  - references/SITE_MIGRATION.md
-  - references/SETUP.md
 ---
 
 # uCoz Site Translator Skill

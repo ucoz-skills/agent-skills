@@ -1,13 +1,11 @@
 ---
 name: ucoz-template-creator-skill
 description: "Creates complete original website templates for uCoz and carries one coherent design across the entire site: expressive composition, a responsive framework, the visual design system (directions, non-negotiables, typography/spacing floors, tokens, icons, CSS toolbox), templates for every active module, custom Pages, SEO, informers, native rating with a custom SVG sprite, and system pages with no leftover standard styling. Use when building a website template from scratch, performing a complete redesign, or generating, publishing, migrating, and auditing a framework through ucoz-mcp. Do not use for a small edit to one template or an isolated CSS fragment."
-version: "1.3"
-metadata:
-  hermes:
-    tags: [ucoz, mcp, template, template-creator, templates, tmaker, design, redesign, css, svg, informers, rating, seo, cms]
 ---
 
 # uCoz Template Creator
+
+> Version 1.3
 
 Create an original, production-ready uCoz website template as one framework plus one complete CSS table. Treat publication as a site-wide migration: it overwrites every generated template.
 
@@ -70,7 +68,7 @@ Before any write, explain that two resources will be replaced: the complete CSS 
 5. Keep `[TITLE]` and `[BODY]` intact inside `popup`.
 6. Declare custom global blocks with lowercase Latin names of 1–10 letters. Their declaration is their render position: nest the marked block at the intended conditional/component location and do not add a second explicit `$GLOBAL_NAME$` call.
 7. Inventory every enabled content module before writing views. Add verified `*_entry_view` and `*_entry_page__body` blocks where the framework supports them. For a template without a framework block, style standard uCoz markup in the site-wide CSS and use narrowly scoped SVG masks on known metadata classes when an icon is required; do not publish a framework and leave enabled modules visually standard by accident.
-8. Read the icon contract in `DESIGN-DIRECTIONS.md`, then use accessible inline SVG icons with `viewBox` and `currentColor`; reuse or adapt [assets/ui-icons.svg](assets/ui-icons.svg). Every custom material card and full material page must pair date, views, category, author, comments, downloads/redirects, duration, cart, or voting values with the matching semantic icon. Never use one generic icon for unrelated values, emoji, or a broken icon font.
+8. Read the icon contract in `DESIGN-DIRECTIONS.md`, then use accessible inline SVG icons with `viewBox` and `currentColor`; reuse or adapt [assets/ui-icons.svg.md](assets/ui-icons.svg.md). Every custom material card and full material page must pair date, views, category, author, comments, downloads/redirects, duration, cart, or voting values with the matching semantic icon. Never use one generic icon for unrelated values, emoji, or a broken icon font.
 9. Build a mobile off-canvas header. Keep fixed overlays outside ancestors using `transform`, `filter`, `backdrop-filter`, `perspective`, `contain`, or relevant `will-change`.
 10. Put no CSS rules in the framework. Keep only `<link type="text/css" rel="stylesheet" href="/_st/my.css?v=1">`.
 11. Build the document head from verified variables. Prefer `$SEO_TITLE$`, `$SEO_DESCRIPTION$`, and `$SEO_KEYWORDS$` only where `get_variables` and `skeleton_validate` confirm them; preserve `[TITLE]` as the framework fallback.
@@ -103,10 +101,10 @@ Do not clean informer tails with template patches. `created=1` means created dur
 
 ## Validate before any publication
 
-Run the bundled preflight first:
+Run the bundled preflight first. Save the code block from `scripts/lint_skeleton.py.md` as `lint_skeleton.py` in a working folder, then run:
 
 ```text
-python scripts/lint_skeleton.py <framework.html>
+python lint_skeleton.py <framework.html>
 ```
 
 Then run `tmaker_read(action="skeleton_validate", tmpl=<full framework>)`. Parse every item in `details[]`; do not stop at the first error. After a successful validation, run `project_save` as a source-level recovery point. A saved project is not visible on the live site. `project_save_active` only marks the final source project active; the design becomes visible only after `skeleton_publish` regenerates the site templates.

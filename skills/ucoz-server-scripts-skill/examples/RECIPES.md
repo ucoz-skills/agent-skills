@@ -30,9 +30,9 @@ Live tests: October 2026, PHP 8.3 / Node 22 / Python 3.11, on production Server 
 
 ```text
 1. files_mkdir   domains/{domain}/public_html/{name}/lib
-2. files_write   …/{name}/index.php            ← templates/php/index.php (stub)
-   files_write   …/{name}/lib/bootstrap.php    ← templates/php/lib/bootstrap.php, APP_NAME='{name}'
-   files_write   …/{name}/.htaccess            ← templates/php/.htaccess
+2. files_write   …/{name}/index.php            ← templates/php/index.php.md (stub)
+   files_write   …/{name}/lib/bootstrap.php    ← templates/php/lib/bootstrap.php.md, APP_NAME='{name}'
+   files_write   …/{name}/.htaccess            ← templates/php/.htaccess.md
    files_write   …/{name}/lib/app.php          ← examples/<recipe>/lib/app.php
    (second module on the same account: files_copy the first module's folder, files_patch APP_NAME,
     then files_write lib/app.php with overwrite:true)
@@ -47,7 +47,7 @@ Generate every secret randomly (32+ hex chars). `require_key()` refuses keys sho
 
 ## R1. Lead form → MySQL (+ notifications) ✅
 
-**Code:** `examples/r1-leads/lib/app.php`. **Secrets:** `db`, `origins`, `hash_salt`, `staff_gids`,
+**Code:** `examples/r1-leads/lib/app.php.md`. **Secrets:** `db`, `origins`, `hash_salt`, `staff_gids`,
 optional `tg_token` + `tg_chat`, optional `notify_webhook_url` + `notify_secret`.
 
 ```text
@@ -102,7 +102,7 @@ The template stores data in a JSON file (one process). For more data or concurre
 
 ## R3. Signed webhooks → queue → cron worker ✅
 
-**Code:** `examples/r3-webhook-queue/lib/app.php`. **Secrets:** `db`, `webhook_secret`, `cron_key`,
+**Code:** `examples/r3-webhook-queue/lib/app.php.md`. **Secrets:** `db`, `webhook_secret`, `cron_key`,
 `staff_gids`, `hash_salt`.
 
 Sender contract (give it to whoever sends events):
@@ -138,7 +138,7 @@ Before calling an integration done, have the real provider deliver one event. To
 
 ## R4. Open Graph preview images ✅
 
-**Code:** `examples/r4-og-images/lib/app.php`. **Secrets:** `admin_key`, `hash_salt`, `site`, optional `og`
+**Code:** `examples/r4-og-images/lib/app.php.md`. **Secrets:** `admin_key`, `hash_salt`, `site`, optional `og`
 (colors `bg1`, `bg2`, `fg`, `muted`, `accent`, `site_name`). No uAPI key.
 
 **How it works:** the image URL is the material's own path plus `.jpg`. The module opens that public page,
@@ -177,7 +177,7 @@ removed `?t=` route, `..` → 403, the query-string form, the template tags rend
 
 ## R5. Telegram bot via short polling (PHP) ✅
 
-**Code:** `examples/r5-telegram-poll/lib/app.php` — its header lists the exact routes and secrets.
+**Code:** `examples/r5-telegram-poll/lib/app.php.md` — its header lists the exact routes and secrets.
 **Secrets:** `tg_token`, `cron_key`, `staff_gids`, `origins`; optional `site` + `uapi_token` + `uapi_module`
 (posting new site materials and `/latest`). **State:** `{name}_data/state.json` (no database).
 
@@ -212,7 +212,7 @@ technical domains, verified 2026-10-08), while outbound calls to `api.telegram.o
 ## R6. Weekly Excel report in Python (cron → uAPI → openpyxl → Telegram) ✅
 
 **Code:** `examples/r6-python-report/` — `report.py` (the cron job), `app.py` (admin page + downloads),
-`requirements.txt`; entry stub `templates/python/passenger_wsgi.py`.
+`requirements.txt`; entry stub `templates/python/passenger_wsgi.py.md`.
 **Config:** `config.json` (0600): `site`, `uapi_token` (read-only), `staff_gids`; optional `tg_token` + `tg_chat`.
 
 **Why Python:** openpyxl builds a real `.xlsx` — styled header, number and date formats, filters, frozen
@@ -334,7 +334,7 @@ Design notes: [CAPABILITIES.md](../references/CAPABILITIES.md) §5, storage choi
 1. Reproduce: HTTP request → status, Content-Type, first bytes.
    PHP blank 500 text/html = error before bootstrap (entry file) → check index.php is the stub.
    Node/Python Passenger HTML "Web application could not be started … Error ID" = startup crash without
-   the entry stub → install the stub (templates/node/app.js, templates/python/passenger_wsgi.py), reload.
+   the entry stub → install the stub (templates/node/app.js.md, templates/python/passenger_wsgi.py.md), reload.
    JSON {"error":"startup","detail":…} = the stub caught a startup crash → logs/startup.log.
    JSON {"error":"server"} = caught in a handler → the module log has the reason.
    504 at ~60 s = request too long → cron batches.

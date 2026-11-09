@@ -261,7 +261,7 @@ The same button, card, badge, and input treatment must hold across blog, shop, f
 
 ## 4) Icons
 
-**Module metadata (date, views, category, author, comments, …):** prefer the semantic sprite in [assets/ui-icons.svg](../assets/ui-icons.svg). Copy only needed symbols into one framework global block; render that block once from the header. Follow the semantic map in `DESIGN-DIRECTIONS.md`. Never use one generic glyph for unrelated values.
+**Module metadata (date, views, category, author, comments, …):** prefer the semantic sprite in [assets/ui-icons.svg.md](../assets/ui-icons.svg.md). Copy only needed symbols into one framework global block; render that block once from the header. Follow the semantic map in `DESIGN-DIRECTIONS.md`. Never use one generic glyph for unrelated values.
 
 **Chrome UI icons** (menu, search, close, chevrons, social, cart chrome): may use path data from [Heroicons](https://heroicons.com/) Outline 24×24, then [Lucide](https://lucide.dev/), then [Tabler Icons](https://tabler.io/icons/). Keep one stroke language (`stroke-width` consistent) across the theme.
 

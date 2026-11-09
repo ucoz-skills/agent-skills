@@ -21,7 +21,7 @@ Each image is one vertical sprite with three equal square rows:
 
 For size 24, use 24×72; for size 16, use 16×48. Transparent PNG is the safest platform-compatible format. SVG is acceptable only when it preserves the same vertical geometry and is verified on the live widget.
 
-Use [assets/rating-sprite-template.svg](../assets/rating-sprite-template.svg) as the editable 24×72 reference. Recolor all three rows for the selected design, URL-encode the complete SVG when embedding it as `data:image/svg+xml`, and set the corresponding size to `24`. The asset is a state image consumed by uCoz, not five inline stars.
+Use [assets/rating-sprite-template.svg.md](../assets/rating-sprite-template.svg.md) as the editable 24×72 reference. Recolor all three rows for the selected design, URL-encode the complete SVG when embedding it as `data:image/svg+xml`, and set the corresponding size to `24`. The asset is a state image consumed by uCoz, not five inline stars.
 
 Configure the sprite in the framework `<config>` block. Metadata icons are a separate SVG system and must not be used as rating states.
 
