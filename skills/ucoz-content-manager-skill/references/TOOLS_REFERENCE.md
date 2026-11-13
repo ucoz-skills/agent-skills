@@ -93,6 +93,17 @@ An `upload_id` is spent only when an entry/category/folder actually consumes it;
 
 `dry_run: true` returns `current` values and `unknown` keys without saving. A real update returns `changed` (before/after) and `unchanged` (with a reason: already set, unknown, clamped). See `SETTINGS_AND_MODULES.md` for keys that need `confirm`.
 
+## signs_read / signs_write / signs_delete
+
+Standard captions (module names, form field labels, buttons, list titles, dates). Rules and verified behaviour: `SIGNS.md`.
+
+| Action | Purpose | Parameters |
+|---|---|---|
+| `signs_read signs_groups` | Caption groups with `active`, counts of captions and changed ones | — |
+| `signs_read signs_list` | Captions with `id`, `value`, `default`, `customized` | optional `group`, `ids`, `customized`, `offset` |
+| `signs_write signs_update` | New texts by id, live at once; all or nothing; ≤150 characters; `""` restores the default | `signs` `{"<id>": "<text>"}` |
+| `signs_delete signs_reset` | Restore defaults by `ids` / `group`, or `all: true` alone; own texts are lost | `confirm: true` when asked |
+
 ## modules_read / modules_write / modules_uninstall
 
 | Action | Purpose |

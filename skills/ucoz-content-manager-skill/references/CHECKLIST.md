@@ -44,4 +44,4 @@
 
 ## Protected by default (never change without a request)
 
-Category of a material, author, `add_date`, `pending`, `ontop`, `comments`, access arrays, filters, `hgu_title` (never sent) and `ownurl`, existing covers and images, `other1..5`, counters, module settings, templates, menus.
+Category of a material, author, `add_date`, `pending`, `ontop`, `comments`, access arrays, filters, `hgu_title` (never sent) and `ownurl`, existing covers and images, `other1..5`, counters, module settings, standard captions (`signs_*`), templates, menus.
