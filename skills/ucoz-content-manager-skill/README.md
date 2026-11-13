@@ -1,6 +1,6 @@
 # uCoz Content Manager Skill
 
-Version: 1.2
+Version: 1.3
 
 An agent skill for managing the content of a uCoz site through the official uCoz MCP: materials of every content module, categories and access rights, SEO fields and own URLs, covers and gallery images (with bulk uploads and image generation), site pages and menus, module installation and settings, and the template edits that make SEO data render.
 
@@ -46,6 +46,7 @@ An agent skill for managing the content of a uCoz site through the official uCoz
 - `references/TEMPLATES.md` — SEO head patch, H1, Open Graph, JSON-LD, backups.
 - `references/SETTINGS_AND_MODULES.md` — module install, settings keys, dangerous keys.
 - `references/PAGES_AND_MENUS.md` — site pages and menus.
+- `references/SIGNS.md` — standard captions: field labels and list titles, when to rename, rollback.
 - `references/COPY_GUIDE.md` — general writing rules (facts, lengths, meta, URL, tags, alt).
 - `references/styles/` — one file per material type: news, guide, article, review, listicle, announcement, story, faq, category, board-ad, page, file; `README.md` = style picker, writing pipeline, voice presets, HTML components.
 - `references/HUMANIZER.md` — removing AI tells from Russian (and English) site texts without touching facts, HTML or image codes; synthesized from MIT-licensed blader/humanizer, ilyautov/humanizer-ru, smixs/humanizer-ru, Vladimir-Human/humanizer-ru; editing order inspired by unicodef1wn/russian-writing-skills (editor-ru).

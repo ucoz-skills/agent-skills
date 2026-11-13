@@ -4,7 +4,7 @@ description: >-
   Manage uCoz site content through the official uCoz MCP tools: materials in every content module
   (news, blog, articles, files, board, FAQ, photo, video, sites catalog, guestbook, polls),
   categories with access rights, filters, tags, covers and in-text images, SEO fields, own URLs,
-  site pages and menus, module settings, and the template edits that make SEO render ($SEO_TITLE$,
+  site pages and menus, module settings, standard captions (field labels), and the template edits that make SEO render ($SEO_TITLE$,
   meta description, H1, Open Graph). Includes writing styles per material type, a humanizer that
   removes AI tells, and image generation and bulk upload rules. Use for "publish an article",
   "write a news post", "create categories", "fill the blog", "rewrite so it doesn't sound like AI",
@@ -15,7 +15,7 @@ description: >-
 
 # uCoz Content Manager Skill
 
-Version: 1.2
+Version: 1.3
 
 ## Usage accounting
 
@@ -59,6 +59,7 @@ A permission error means the signed-in account cannot do that operation. Say so;
 | Templates, global blocks, backups | `templates_read` | `templates_write` `patch_template` | `templates_delete` `restore_backup` (`confirm: true`) |
 | Site pages, menus, mail forms | `templates_read` `page_*`, `menu_*` | `templates_write` `page_add` / `page_update` / `menu_update_items` | `templates_delete` `page_delete` (`confirm: true`) |
 | User groups (for access rights) | `users_read` `groups` | — | — |
+| Standard captions (module names, form field labels, buttons, list titles) | `signs_read` `signs_groups` / `signs_list` | `signs_write` `signs_update` | `signs_delete` `signs_reset` (`confirm: true`) |
 
 Not this skill: shop goods → `ucoz-shop-optimizer-skill`; forum → `forum_*`; whole-site redesign → `ucoz-design-editor-skill`.
 
@@ -84,6 +85,7 @@ These are facts of the platform. Each one has broken real content when ignored.
 14. **Indexing can be off at site level.** Check `modules_read quarantine_status` and `/robots.txt` in every SEO task. A site in quarantine (`locked: true`, robots `Disallow: /`) is not indexed whatever you do — report it; lifting it is the owner's decision (`quarantine_unlock`, `confirm: true`).
 15. **Two dates, two tools.** `add_date` = date added (set on `add`, never changed by a normal edit). Modification date = `uplastmod: 1` on `update` — the only way to mark a material as changed; use it for real content changes. Platform trap: if the module option `options_show_adddate` is `true`, `update` silently resets the **date added** to now (entry jumps to the top; in blog/news the date is in the URL), and the `add_date` parameter is ignored on update. To keep the date added unchanged, send it back as `fields: {ya, ma, da, ha, mia}` (site local time) with every such update. → `references/MODULES.md` "Dates"
 16. **Images go in only through `upload_direct`.** Covers, material images, category images, photos, screenshots, archives: `files_write upload_direct` → POST raw bytes → `*_upload_id` / `image_upload_ids` in the `content_write` call. Never `*_base64`, never a detour through the file manager (`files_write upload`/`upload_url` + `*_site_path`), even though the schema allows it. The file manager is only for tasks about site files themselves. → `references/MEDIA_WORKFLOW.md` §7–8
+17. **Fields and captions: the agent proposes, the user decides.** By default the stock captions and the fields already on are used. Renaming a label, switching a field on or making it required is always a proposal with a reason (data without a field of its own → an extra field `other1..5` with a label; a module holding recipes, a price list, a portfolio → labels of standard fields and list titles), written only after the user's yes; a request that names the change is the yes for it. If you can't ask, change nothing and list the proposal in the report. First `content_read fields` of the module, then `signs_list group=<module>`: find each field's caption by its `default` text in the module's form section («Дополнительное поле N» = `otherN`, «Название материала» = `title`…). `signs_update` is live at once and saves all or nothing; keep old values for rollback; re-read `fields` after. The `modules` captions don't change visible module titles — that is settings `name` and the menu. → `references/SIGNS.md`
 
 ## Safety rules
 
@@ -212,6 +214,7 @@ When the request was already an approval (it contains the content and says to pu
 | Template ids, SEO head patch, H1, Open Graph, JSON-LD, backups | `references/TEMPLATES.md` |
 | Installing modules, module/site/SEO settings, dangerous keys | `references/SETTINGS_AND_MODULES.md` |
 | Site pages, menus | `references/PAGES_AND_MENUS.md` |
+| Standard captions: field labels and list titles, when to rename, rollback | `references/SIGNS.md` |
 | **Which style, skeleton, HTML layout and brief for this material** (news, guide, article, review, listicle, announcement, story, FAQ, category, board ad, page) + voice presets + HTML components | `references/styles/README.md` → `references/styles/<style>.md` |
 | **Remove AI tells / make text human** (Russian-first, keeps facts and HTML) | `references/HUMANIZER.md` |
 | General writing rules: facts, lengths, meta, URL (`ownurl`), tags, alt | `references/COPY_GUIDE.md` |

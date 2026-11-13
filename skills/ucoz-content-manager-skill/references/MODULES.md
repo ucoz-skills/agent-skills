@@ -91,7 +91,7 @@ Per-module differences in step 2: required fields from the matrix above (board n
 | `screenshot` | `screenshot_upload_id` | stuff: the game logo |
 | `archive` | `archive_upload_id` | load / board / dir / stuff |
 | module-specific (`year`, `producer`, `acters`, `language`, `duration`, `quality`, `genre` for video; `link2swf`, `link2pc`, `link2mac`, `link2mob`, `playground_sizes` for stuff; `archlink`, `archsize`, `versions`, `licence`, `os`, `language` for load) | inside `fields: {…}` | Verified for video and stuff |
-| `other1..5` | `other1..other5` | Site-specific custom fields |
+| `other1..5` | `other1..other5` | Site-specific custom fields; their form label is a standard caption (`SIGNS.md`) |
 | `comments` | `subscribe` | Notifications for the author; allow/deny comments is the `comments` parameter (`1`/`0`) |
 
 ## Per module (verified)

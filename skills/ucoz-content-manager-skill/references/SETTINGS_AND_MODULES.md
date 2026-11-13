@@ -86,6 +86,8 @@ Rules:
 
 Cover on/off is not in `fields` — use `cover_enabled`.
 
+The `name` of a field in `fields` is a standard caption, not a setting: rename `other1..5` (and other form labels) with `signs_update`, never by editing `name` in the `fields` list. → `SIGNS.md`
+
 ### Keys that need `confirm: true` (and the user's explicit decision)
 
 | Module | Key | Effect |

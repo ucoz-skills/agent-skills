@@ -25,7 +25,7 @@ MCP documentation: [ucoz.com/ai/mcp](https://www.ucoz.com/ai/mcp) · Public MCP 
 | [ucoz-design-editor-skill](skills/ucoz-design-editor-skill/SKILL.md) | Redesign and restyle a uCoz site via MCP: CSS, chrome, global blocks, menus, and module templates | 1.3 |
 | [ucoz-template-creator-skill](skills/ucoz-template-creator-skill/SKILL.md) | Create an original site-wide uCoz template via MCP: framework, CSS, modules, informers, rating, and custom Pages | 1.3 |
 | [ucoz-server-scripts-skill](skills/ucoz-server-scripts-skill/SKILL.md) | Backend features in Server Scripts via `apps_read` / `apps_write` / `apps_delete`: PHP, Node.js, Python, MySQL, cron, `ucoz_user()` identity; recipes for forms, Telegram bots, search, dashboards, reports, OG images; migration from the legacy PHP server | 1.2 |
-| [ucoz-content-manager-skill](skills/ucoz-content-manager-skill/SKILL.md) | Publish and manage site content via MCP in every content module: materials, categories with access rights, covers and in-text images, SEO and meta tags that render in templates, copy styles and a humanizer, module settings, pages and menus | 1.2 |
+| [ucoz-content-manager-skill](skills/ucoz-content-manager-skill/SKILL.md) | Publish and manage site content via MCP in every content module: materials, categories with access rights, covers and in-text images, SEO and meta tags that render in templates, copy styles and a humanizer, module settings and standard captions, pages and menus | 1.3 |
 | [ucoz-popup-design-skill](skills/ucoz-popup-design-skill/SKILL.md) | Style native popups (`_uWnd` windows, confirmations, popup forms) and `uToast` notifications via MCP: five presets, a site-matched or custom palette with contrast checks, one versioned CSS file linked from a marked template insertion | 1.0 |
 
 ## Installation
@@ -223,6 +223,7 @@ On first connection, sign in to your uCoz account and click **Allow**, then `lis
 | `users_read` / `users_write` / `users_delete` | Users and groups |
 | `subscriptions_read` / `subscriptions_write` / `subscriptions_delete` | Subscription plans |
 | `settings_read` / `settings_write` | Module settings |
+| `signs_read` / `signs_write` / `signs_delete` | Standard site captions: module names, form field labels, buttons, list titles |
 | `skills_tool` / `docs_tool` | Official agent skills and OpenAPI lookup |
 
 Site files go through `files_read` / `files_write` / `files_delete`. Deletes and other irreversible actions need `confirm: true`.
