@@ -6,7 +6,7 @@ description: >-
 
 # uCoz Shop Optimizer Skill
 
-Version: 0.7
+Version: 0.8
 
 ## Usage accounting
 
@@ -127,15 +127,17 @@ Details and the checked batches are in `references/MEDIA_WORKFLOW.md`.
 
 Do not look for `shop-openapi.yaml`. OpenAPI field names correspond to these tool parameters. The action list and fields are in `references/API_REFERENCE.md`. Do not call the HTTP routes.
 
-`confirm: true` is required for every `shop_delete` action, and for `shop_write` `img_edit`, `variation_gen`, `checkout_submit`, `balance_change`, and `balance_set`. `basket_delete` requires `confirm: true` when clearing the whole basket (no `id`).
+`confirm: true` is required for every `shop_delete` action, and for `shop_write` `img_edit`, `variation_gen`, `invoice_status`, and `invoice_payment`.
+
+The MCP is a tool of the shop owner: nothing is sold, ordered or paid in the chat. There are no basket, checkout or balance actions — buyers put goods in the basket and place orders on the site. Order replies carry no access keys, payment links or digital goods content. `basket_delete` requires `confirm: true` when clearing the whole basket (no `id`).
 
 ### Read — `shop_read`
 
-`category_list`, `list`, `get`, `variations_list`, `variation_get`, `variation_dict_list`, `stock_get`, `basket_get`, `checkout_get`, `invoices_list`, `order_get`, `comments_list`, `currencies`, `balance_get`.
+`category_list`, `list`, `get`, `variations_list`, `variation_get`, `variation_dict_list`, `stock_get`, `basket_get`, `invoices_list`, `order_get`, `comments_list`, `currencies`.
 
 ### Write — `shop_write`
 
-`category_add`, `category_update`, `category_show`, `category_hide`, `category_image`, `add`, `update`, `hide`, `cnt_save`, `img_add`, `img_edit`, `variation_update`, `variation_dict_save`, `variation_load`, `variation_gen`, `variation_edit_save`, `stock_genall`, `stock_add`, `stock_save`, `basket_add`, `basket_update`, `checkout_update`, `checkout_submit`, `invoice_hide`, `invoice_courier`, `invoice_status`, `invoice_payment`, `order_update`, `order_add_goods`, `order_delivery_tax`, `comments_add`, `comments_update`, `set_currency_rate`, `balance_change`, `balance_set`.
+`category_add`, `category_update`, `category_show`, `category_hide`, `category_image`, `add`, `update`, `hide`, `cnt_save`, `img_add`, `img_edit`, `variation_update`, `variation_dict_save`, `variation_load`, `variation_gen`, `variation_edit_save`, `stock_genall`, `stock_add`, `stock_save`, `invoice_hide`, `invoice_courier`, `invoice_status`, `invoice_payment`, `order_update`, `order_add_goods`, `order_delivery_tax`, `comments_add`, `comments_update`, `set_currency_rate`.
 
 ### Delete — `shop_delete`
 
@@ -221,15 +223,12 @@ Replacing an existing image requires explicit confirmation.
 
 These operations are protected by default.
 
-### Cart and checkout
+### Basket (read only)
 
-- `shop_read` `basket_get` — basket. Optional: `user_id`.
-- `shop_write` `basket_add` — add an item. Fields: `id`, `cnt`, `opt`, `now`.
-- `shop_write` `basket_update` — change quantity. Fields: `id`, `cnt`, `opt`, `now`.
+- `shop_read` `basket_get` — the unfinished basket of a site user: goods put in it and not ordered. Optional: `user_id`. Reads only.
 - `shop_delete` `basket_delete` — remove one line by `id`. Omitting `id` clears the basket and then requires `confirm: true`.
-- `shop_read` `checkout_get` — checkout data. Optional: `promo_code`, `custom_delivery_tax`.
-- `shop_write` `checkout_update` — recalc or edit the pending order. `mode` is `recalc` or `change`. Keys such as `cnt_REC_ID`, `del_REC_ID`, and `field_N` go in `fields`.
-- `shop_write` `checkout_submit` — place the order. Requires `confirm: true`. Fields: `payment_id`, `delivery_id`, `promo_code`, `custom_delivery_tax`; `field_N` in `fields`. Do not submit a real order without explicit confirmation.
+
+Checkout is not available through MCP: buyers place orders on the site. Diagnose the cart and checkout pages through their templates and the public site.
 
 ### Orders
 
@@ -260,7 +259,7 @@ Order statuses:
 
 Default behavior for orders is read-only reporting. Status, courier, delivery cost, order items, order fields, notes and payment change require explicit approval.
 
-### Currency, comments, balance, wishlist
+### Currency, comments, wishlist
 
 - `shop_read` `currencies` — list currencies and rates.
 - `shop_write` `set_currency_rate` — update a rate. Fields: `curr_code`, `curr_rate`. Requires explicit approval.
@@ -268,9 +267,6 @@ Default behavior for orders is read-only reporting. Status, courier, delivery co
 - `shop_write` `comments_add` — add a comment. Fields: `entry_id` or `id`, `message`, `pros`, `cons`, `parent_id`, `user_id`, `subscribe_to_replies`.
 - `shop_write` `comments_update` — edit a comment. Fields: `id`, `message`, `pros`, `cons`.
 - `shop_delete` `comments_delete` — delete a comment. Requires `id` and `confirm: true`.
-- `shop_read` `balance_get` — user balance. Optional: `user_id`.
-- `shop_write` `balance_change` — signed balance change. Requires `user_id`, `amount`, and `confirm: true`.
-- `shop_write` `balance_set` — set the balance. Requires `user_id`, `amount`, and `confirm: true`.
 - `shop_delete` `wishlist_clear` — clear the current user's wishlist. Requires `confirm: true`.
 
 ## Workflow
@@ -355,7 +351,7 @@ For category images: `upload_direct`, then `shop_write` `category_image` with on
 
 For templates: read the current template, identify variables, create a backup, prepare a minimal patch, validate, save after approval and re-read. Restoring a backup is `templates_delete` `restore_backup` with `confirm: true`.
 
-For orders and checkout: default to read-only diagnostics. Do not submit orders or change statuses without explicit confirmation. `checkout_submit` needs `confirm: true`.
+For orders: default to read-only diagnostics. Do not change statuses or payment methods without explicit confirmation (`invoice_status` and `invoice_payment` need `confirm: true`). Checkout is diagnosed through templates and the public site; orders cannot be placed through MCP.
 
 ### 8. Produce the final report
 
@@ -429,7 +425,7 @@ Return:
 - “Check that price, old price, stock and the add-to-cart button render.”
 - “Report orders: new, paid, cancelled and archived. Do not change statuses.”
 - “Create a new category and 5 products from this list. Hide the products for now with shop_write hide.”
-- “Check checkout and the basket as a test shopper. Do not place a real order.”
+- “Check the cart and checkout pages: layout, required fields, error messages. Do not place an order.”
 
 ## Safety rules
 
@@ -441,7 +437,7 @@ Return:
 - Never delete products, orders, files, templates, product images or cart contents unless explicitly requested.
 - Never invent a category-delete action.
 - Never clear a basket unless the user explicitly asked to clear it. Clearing it requires `basket_delete` without `id` and `confirm: true`.
-- Never submit a real order without explicit confirmation. `checkout_submit` requires `confirm: true`.
+- Never try to place an order, fill a basket or change a user balance: MCP has no such actions, and they belong to buyers and the Control Panel.
 - Never update legal, warranty, return, delivery or payment text unless explicitly requested.
 - Never hide public categories or products automatically.
 - Never replace existing product or category images automatically.

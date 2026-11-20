@@ -68,7 +68,7 @@
 ## Scenario 7: Cart and checkout diagnostic
 
 1. Read cart and checkout templates if the issue is visual/layout related.
-2. Use `shop_read` `basket_get` and `shop_read` `checkout_get` only when a test context is available.
+2. Use `shop_read` `basket_get` only when a test user's basket is relevant; checkout itself is checked on the public site, not through MCP.
 3. Do not remove cart items or submit orders unless explicitly asked.
 4. Check: product name, quantity, price, delivery/payment selection, promo code, required fields, error messages, mobile layout.
 5. Return diagnostic report and safe template/content fixes.

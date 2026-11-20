@@ -20,7 +20,7 @@ MCP documentation: [ucoz.com/ai/mcp](https://www.ucoz.com/ai/mcp) · Public MCP 
 |-------|-------------|---------|
 | [ucoz-landing-skill](skills/ucoz-landing-skill/SKILL.md) | Generate and edit homepage landings via MCP (visual design system + playbook) | 1.5 |
 | [ucoz-ad-campaign-landing-skill](skills/ucoz-ad-campaign-landing-skill/SKILL.md) | Hyper-segmentation experiment matrix → per-segment landings + UTM, Yandex Direct drafts/packages, Metrica goals (Google Ads on request) | 2.1 |
-| [ucoz-shop-optimizer-skill](skills/ucoz-shop-optimizer-skill/SKILL.md) | Audit and improve uCoz Online Shop via MCP | 0.7 |
+| [ucoz-shop-optimizer-skill](skills/ucoz-shop-optimizer-skill/SKILL.md) | Audit and improve uCoz Online Shop via MCP | 0.8 |
 | [ucoz-site-translator-skill](skills/ucoz-site-translator-skill/SKILL.md) | Translate and localize uCoz content in place or copy/migrate to another site via MCP | 1.2 |
 | [ucoz-design-editor-skill](skills/ucoz-design-editor-skill/SKILL.md) | Redesign and restyle a uCoz site via MCP: CSS, chrome, global blocks, menus, and module templates | 1.3 |
 | [ucoz-template-creator-skill](skills/ucoz-template-creator-skill/SKILL.md) | Create an original site-wide uCoz template via MCP: framework, CSS, modules, informers, rating, and custom Pages | 1.3 |
@@ -212,21 +212,21 @@ On first connection, sign in to your uCoz account and click **Allow**, then `lis
 | Tool | Purpose |
 |------|---------|
 | `list_sites` / `select_site` / `create_site` | Account: list, select, or create a site |
-| `templates_read` / `templates_write` / `templates_delete` | Templates, menus, mail forms, pages, backups |
+| `templates_read` / `templates_write` / `templates_delete` | Templates, menus, mail forms, pages, news and blog informers, backups |
 | `tmaker_read` / `tmaker_write` / `tmaker_publish` / `tmaker_delete` | Whole-site design skeleton |
 | `content_read` / `content_write` / `content_delete` | Content modules |
 | `forum_read` / `forum_write` / `forum_delete` | Forum |
-| `shop_read` / `shop_write` / `shop_delete` | Online shop |
+| `shop_read` / `shop_write` / `shop_delete` | Online shop for the owner: catalog, stock, orders and statuses (no basket or checkout) |
 | `files_read` / `files_write` / `files_delete` | Site file manager, including `upload_direct` for binary and batch uploads |
 | `modules_read` / `modules_write` / `modules_uninstall` | Modules, uAPI, quarantine |
-| `apps_read` / `apps_write` / `apps_delete` | Scripts environment: PHP, Node.js, and Python apps, MySQL, cron, backups |
-| `users_read` / `users_write` / `users_delete` | Users and groups |
-| `subscriptions_read` / `subscriptions_write` / `subscriptions_delete` | Subscription plans |
+| `apps_read` / `apps_write` / `apps_delete` | Scripts environment: PHP, Node.js, and Python apps, MySQL databases, cron, backups (database users and FTP accounts are created in the Control Panel) |
+| `users_read` / `users_write` / `users_delete` | Users and groups (users are created and passwords set in the Control Panel) |
+| `subscriptions_read` / `subscriptions_write` / `subscriptions_delete` | Subscriptions module: plans and members' access |
 | `settings_read` / `settings_write` | Module settings |
 | `signs_read` / `signs_write` / `signs_delete` | Standard site captions: module names, form field labels, buttons, list titles |
 | `skills_tool` / `docs_tool` | Official agent skills and OpenAPI lookup |
 
-Site files go through `files_read` / `files_write` / `files_delete`. Deletes and other irreversible actions need `confirm: true`.
+Site files go through `files_read` / `files_write` / `files_delete`; MCP has no FTP tools. Deletes and other irreversible actions need `confirm: true`. No tool accepts or returns passwords or access keys, takes payments, or places orders.
 
 ## License
 
