@@ -52,6 +52,8 @@ shows up as a startup error instead of silent 404s.
 - Use the built-in `http` module unless a framework is really needed. No build step on the server.
 - Ship `package.json` with `"type": "commonjs"` (or `"module"` for ESM) — otherwise a parent
   `package.json` may switch the module type. `name` must be a valid npm name (lowercase, no braces).
+  The template has no `dependencies`: add the block to the deployed copy only when the app needs npm
+  packages, then run `node_install_modules`.
 - An uncaught exception kills the process; Passenger respawns it on the next request (~4.7 s). The template
   logs `uncaughtException`/`unhandledRejection` to `logs/app.log`.
 - Limit request bodies (100 KB for JSON → 413). Keep every request well under **60 s** — nginx answers
