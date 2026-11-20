@@ -20,7 +20,8 @@ If a shop tool returns a permission error, say that the current account cannot d
 Pass `confirm: true` only after the user approves that change.
 
 - Every `shop_delete` action requires `confirm: true`.
-- `shop_write` requires `confirm: true` for `img_edit`, `variation_gen`, `checkout_submit`, `balance_change`, and `balance_set`.
+- `shop_write` requires `confirm: true` for `img_edit`, `variation_gen`, `invoice_status`, and `invoice_payment`.
+- There are no basket, checkout or balance actions: buyers order on the site.
 - `shop_delete` `basket_delete` requires `confirm: true` when clearing the whole basket (no `id`). Deleting one line by `id` does not.
 - `templates_delete`, including `restore_backup`, requires `confirm: true`.
 
@@ -35,13 +36,11 @@ Pass `confirm: true` only after the user approves that change.
 | `variation_get` | one variation | `id`, `variation_crc` |
 | `variation_dict_list` | one variation dictionary | `id` |
 | `stock_get` | stock by option sets | `id` |
-| `basket_get` | basket | optional `user_id` |
-| `checkout_get` | checkout form | optional `promo_code`, `custom_delivery_tax` |
+| `basket_get` | unfinished basket of a site user (read only) | optional `user_id` |
 | `invoices_list` | orders | optional `page`, `user_id`, `hide`, `status`, `group_courier`, `payment_id`, `delivery_id`, `ids`, `id`, `inv_sum`, `cdate`, `date` |
 | `order_get` | one order | order hash in `order` or `id` |
 | `comments_list` | product comments | `id` |
 | `currencies` | currencies and rates | none |
-| `balance_get` | user balance | optional `user_id` |
 
 `list` filters are plain strings. `sort` may be `id`, `art`, `brand`, `name`, `price`, `warr`, `weight`, `added_time`, `modified_time`, `num_com`, `rating`, `ordered`, `views`, `solds`, `other#`. `order` on a list is `asc` or `desc`. `f_price` is `MIN|MAX|CURRENCY`.
 
@@ -122,17 +121,13 @@ Replacing or deleting an existing photo needs explicit approval. `del_all=1` nee
 
 These operations are protected. Run them only when the user asked.
 
-### Basket and checkout
+### Basket
 
 | Action | Tool | Parameters |
 |---|---|---|
-| `basket_add` | `shop_write` | `id`; optional `cnt`, `opt`, `now` (`1` = buy now) |
-| `basket_update` | `shop_write` | `id`; optional `cnt`, `opt`, `now` |
 | `basket_delete` | `shop_delete` | `id` removes one line. No `id` clears the basket and then `confirm: true` is required |
-| `checkout_update` | `shop_write` | `mode` is `recalc` or `change`. Extra keys such as `cnt_REC_ID`, `del_REC_ID`, and `field_N` go in `fields` |
-| `checkout_submit` | `shop_write` | `confirm: true`; optional `payment_id`, `delivery_id`, `promo_code`, `custom_delivery_tax`; `field_N` in `fields` |
 
-Use the basket and checkout for diagnosis. Do not submit a real order without explicit confirmation.
+Adding to the basket and checkout are not available through MCP.
 
 ### Orders
 
@@ -165,7 +160,7 @@ Order group `hide`: `0` active, `1` archive, `2` trash.
 
 Default for orders is read-only reporting. Status, courier, payment, delivery cost, items, fields, notes, and group changes need explicit approval.
 
-### Currency, comments, balance, wishlist
+### Currency, comments, wishlist
 
 | Action | Tool | Parameters |
 |---|---|---|
@@ -173,11 +168,9 @@ Default for orders is read-only reporting. Status, courier, payment, delivery co
 | `comments_add` | `shop_write` | `message`; product id in `entry_id` or `id`; optional `pros`, `cons`, `parent_id`, `user_id`, `subscribe_to_replies` |
 | `comments_update` | `shop_write` | `id`; optional `message`, `pros`, `cons` |
 | `comments_delete` | `shop_delete` | `id`, `confirm: true` |
-| `balance_change` | `shop_write` | `user_id`, `amount` (non-zero signed change), `confirm: true`. A note can go in `fields.comment` |
-| `balance_set` | `shop_write` | `user_id`, `amount` (new balance, zero or more), `confirm: true` |
 | `wishlist_clear` | `shop_delete` | `confirm: true` |
 
-Do not mix comment moderation or balance changes into an SEO edit.
+Do not mix comment moderation into an SEO edit.
 
 ## Templates and ordinary files
 
